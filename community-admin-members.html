@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Davinci Space - Admin Members</title>
+  <link rel="stylesheet" href="./components/user-card.css">
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --bg-soft: #fbf8f2;
+      --surface: #fffdf8;
+      --surface-2: #f7f2e7;
+      --border: #e3d7bf;
+      --border-strong: #d3c19a;
+      --text: #18392b;
+      --text-soft: #5b6d62;
+      --text-muted: #7f8c84;
+      --brand: #173d2d;
+      --brand-2: #c9a24f;
+      --brand-2-dark: #b58c34;
+      --shadow: 0 8px 30px rgba(24, 57, 43, 0.08);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --container: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    body.is-drawer-open {
+      overflow: hidden;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    @keyframes davinciScanDown {
+      0% {
+        transform: translateY(-80%);
+      }
+
+      100% {
+        transform: translateY(100%);
+      }
+    }
+
+    .davinci-side {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: min(24vw, 300px);
+      pointer-events: none;
+      z-index: 0;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .davinci-side::before,
+    .davinci-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .davinci-side::before {
+      background-image: url("./assets/background.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: inherit;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .davinci-side::after {
+      left: 0;
+      width: 68%;
+      top: 0;
+      height: 80%;
+      background: linear-gradient(to bottom,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(201, 162, 79, 0.12) 18%,
+          rgba(201, 162, 79, 0.28) 50%,
+          rgba(201, 162, 79, 0.1) 82%,
+          rgba(255, 255, 255, 0) 100%);
+      opacity: 0.5;
+      animation: davinciScanDown 4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .davinci-side.left {
+      left: 0;
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.left::before {
+      background-position: left center;
+    }
+
+    .davinci-side.right {
+      right: 0;
+      mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.right::before {
+      background-position: right center;
+    }
+
+    .davinci-side.right::after {
+      left: auto;
+      right: 0;
+      animation-delay: 2.6s;
+    }
+
+    .topbar,
+    .subnav,
+    .main-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: rgba(245, 241, 232, 0.92);
+      backdrop-filter: blur(12px);
+      transition: background 220ms ease, box-shadow 220ms ease;
+    }
+
+    .topbar.is-compact {
+      background: rgba(245, 241, 232, 0.86);
+      box-shadow: 0 10px 24px rgba(24, 57, 43, 0.08);
+    }
+
+    .topbar-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: nowrap;
+      transition: padding 220ms ease, gap 220ms ease;
+    }
+
+    .topbar.is-compact .topbar-inner {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .brand-mark {
+      height: 40px;
+      object-fit: contain;
+      transition: height 220ms ease;
+    }
+
+    .topbar.is-compact .brand-mark {
+      height: 30px;
+    }
+
+    .brand-copy {
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-size: 1.08rem;
+      line-height: 1;
+      color: var(--brand);
+      transition: font-size 220ms ease;
+    }
+
+    .topbar.is-compact .brand-title {
+      font-size: 0.96rem;
+    }
+
+    .topbar-login {
+      margin-left: auto;
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 14px;
+      border: 1px solid rgba(201, 162, 79, 0.22);
+      background: var(--brand-2);
+      box-shadow: 0 10px 24px rgba(201, 162, 79, 0.24);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .subnav {
+      margin-top: 60px;
+      border-bottom: 1px solid rgba(211, 193, 154, 0.65);
+      background: rgba(245, 241, 232, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .subnav-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .subnav-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .subnav-link {
+      position: relative;
+      padding: 11px 2px 10px;
+      color: var(--text-soft);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .subnav-link.active {
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .subnav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+
+    .main-wrap {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    #adminContentMount,
+    .content-card,
+    .members-table,
+    .members-table-body,
+    .member-detail {
+      min-width: 0;
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: minmax(240px, 290px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .menu-card {
+      padding: 18px;
+      position: sticky;
+      top: 86px;
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.94);
+      color: var(--brand);
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mobile-sidebar-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: none;
+    }
+
+    .mobile-sidebar-drawer.is-open {
+      display: block;
+    }
+
+    .mobile-sidebar-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(24, 57, 43, 0.28);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+
+    .mobile-sidebar-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: min(86vw, 320px);
+      height: 100%;
+      padding: 0;
+      overflow-y: auto;
+      transform: translateX(-100%);
+      transition: transform 220ms ease;
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.96));
+      border-right: 1px solid rgba(227, 215, 191, 0.92);
+      box-shadow: 18px 0 40px rgba(24, 57, 43, 0.18);
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .mobile-sidebar-drawer.is-open .mobile-sidebar-backdrop {
+      opacity: 1;
+    }
+
+    .mobile-sidebar-drawer.is-open .mobile-sidebar-panel {
+      transform: translateX(0);
+    }
+
+    .mobile-sidebar-head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      min-height: 72px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(255, 253, 248, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(227, 215, 191, 0.9);
+    }
+
+    .mobile-sidebar-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .mobile-sidebar-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.94);
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .mobile-sidebar-close svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mobile-sidebar-content {
+      padding: 16px;
+    }
+
+    .mobile-sidebar-panel .menu-card {
+      position: static;
+      margin: 0;
+      min-height: calc(100dvh - 104px);
+      border-radius: 24px;
+      box-shadow: 0 12px 30px rgba(24, 57, 43, 0.08);
+    }
+
+    .menu-title,
+    .member-section-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    .menu-title {
+      margin: 0 0 14px;
+    }
+
+    .member-section-title {
+      margin: 0;
+    }
+
+    .menu-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-group+.menu-group {
+      margin-top: 6px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(227, 215, 191, 0.9);
+    }
+
+    .menu-group-title {
+      margin: 0;
+      padding: 0 4px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .menu-item {
+      min-height: 48px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      color: var(--text-soft);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      background: transparent;
+      transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+    }
+
+    .menu-item svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      flex: 0 0 auto;
+      stroke: currentColor;
+    }
+
+    .menu-item:hover {
+      background: rgba(23, 61, 45, 0.04);
+      border-color: rgba(23, 61, 45, 0.08);
+      color: var(--brand);
+    }
+
+    .menu-item.active {
+      background: rgba(23, 61, 45, 0.08);
+      border-color: rgba(23, 61, 45, 0.16);
+      color: var(--brand);
+      box-shadow: inset 0 0 0 1px rgba(23, 61, 45, 0.04);
+    }
+
+    .content-card {
+      padding: 26px;
+      min-height: 620px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .content-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .content-heading h1 {
+      margin: 0 0 12px;
+      font-size: 23px;
+      line-height: 1.2;
+      letter-spacing: 0;
+      color: var(--brand);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 800;
+    }
+
+    .content-heading p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.68;
+    }
+
+    .search-row {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .search-shell {
+      width: min(560px, 100%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      height: 45px;
+    }
+
+    .search-shell svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      flex: 0 0 auto;
+      stroke: currentColor;
+    }
+
+    .search-shell input {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .search-shell input::placeholder {
+      color: #9aa59f;
+    }
+
+    .members-table {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      min-width: 620px;
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+
+    .members-table-head,
+    .members-table-row {
+      display: grid;
+      grid-template-columns: 52px minmax(220px, 1.2fr) minmax(180px, 1fr) 92px;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .members-table-head {
+      padding: 0 10px 8px;
+      border-bottom: 1px solid rgba(227, 215, 191, 0.9);
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .members-table-head> :first-child {
+      color: transparent;
+      user-select: none;
+    }
+
+    .members-table-body {
+      display: grid;
+      gap: 4px;
+      align-content: start;
+    }
+
+    .members-table-row {
+      padding: 8px 10px;
+      border-radius: 18px;
+      background: rgba(255, 253, 248, 0.96);
+      cursor: pointer;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    .members-table-row:nth-child(even) {
+      background: #f9f5ec;
+    }
+
+    .members-table-row:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(24, 57, 43, 0.08);
+    }
+
+    .member-card-image {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .member-email,
+    .member-name {
+      min-width: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .member-email {
+      word-break: break-word;
+    }
+
+    .member-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .member-missing {
+      color: var(--text-muted);
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    .status-cell {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .status-badge {
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .status-badge.active {
+      background: rgba(79, 159, 97, 0.14);
+      border-color: rgba(79, 159, 97, 0.22);
+      color: #2f7c47;
+    }
+
+    .status-badge.suspended {
+      background: rgba(203, 94, 94, 0.14);
+      border-color: rgba(203, 94, 94, 0.22);
+      color: #a64747;
+    }
+
+    .status-badge.pending {
+      background: rgba(201, 162, 79, 0.18);
+      border-color: rgba(201, 162, 79, 0.24);
+      color: #956f1f;
+    }
+
+    .members-empty {
+      padding: 26px 18px;
+      border-radius: 18px;
+      border: 1px dashed rgba(211, 193, 154, 0.9);
+      background: linear-gradient(180deg, rgba(251, 248, 242, 0.88), rgba(247, 242, 231, 0.76));
+      color: var(--text-soft);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .member-detail {
+      display: none;
+    }
+
+    .member-detail.is-visible {
+      display: block;
+    }
+
+    .member-detail h2 {
+      margin: 0 0 10px;
+      color: var(--brand);
+      font-size: 1.2rem;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+
+    .member-detail p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .member-detail-shell {
+      display: grid;
+      gap: 24px;
+    }
+
+    .member-detail-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .detail-back-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      flex: 0 0 auto;
+    }
+
+    .member-detail-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .member-overview-card,
+    .member-status-card,
+    .member-controls-card {
+      padding: 0;
+    }
+
+    .member-sidebar {
+      display: grid;
+      gap: 18px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .member-overview-card {
+      display: grid;
+      gap: 16px;
+      justify-items: start;
+    }
+
+    .member-overview-media {
+      position: relative;
+      width: 100%;
+      max-width: 190px;
+    }
+
+    .member-overview-image {
+      width: 100%;
+      border-radius: 22px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .member-card-badge-stack {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .member-card-badge-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(24, 57, 43, 0.94);
+      border: 1px solid rgba(118, 201, 140, 0.5);
+      box-shadow: 0 10px 18px rgba(24, 57, 43, 0.22);
+      color: #dff7e5;
+      backdrop-filter: blur(6px);
+    }
+
+    .member-card-badge-icon.is-overflow {
+      background: rgba(79, 159, 97, 0.94);
+      border-color: rgba(79, 159, 97, 0.94);
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    .member-card-badge-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .member-overview-meta {
+      display: grid;
+      gap: 10px;
+    }
+
+    .member-overview-meta strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--brand);
+    }
+
+    .member-status-card {
+      display: grid;
+      gap: 12px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(227, 215, 191, 0.9);
+    }
+
+    .member-controls-card {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .section-description {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+
+    .detail-form-row {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .detail-form-row select {
+      width: 100%;
+      min-height: 45px;
+      border-radius: 14px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: #fffdf8;
+      padding: 0 14px;
+      font-size: 1rem;
+      color: var(--text);
+      outline: none;
+    }
+
+    .badge-library {
+      display: grid;
+      gap: 8px;
+    }
+
+    .badge-option {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: rgba(255, 251, 242, 0.92);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease, background 140ms ease;
+    }
+
+    .badge-option:hover {
+      transform: translateY(-1px);
+      border-color: rgba(201, 162, 79, 0.72);
+      box-shadow: 0 10px 20px rgba(24, 57, 43, 0.08);
+    }
+
+    .badge-option.is-selected {
+      border-color: rgba(79, 159, 97, 0.64);
+      background: rgba(79, 159, 97, 0.12);
+      box-shadow: 0 12px 24px rgba(79, 159, 97, 0.16);
+    }
+
+    .badge-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .badge-option-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(24, 57, 43, 0.08);
+      color: var(--brand);
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      flex: 0 0 auto;
+    }
+
+    .badge-option.is-selected .badge-option-icon {
+      background: rgba(79, 159, 97, 0.14);
+      color: #2f7c47;
+      border-color: rgba(79, 159, 97, 0.32);
+    }
+
+    .badge-option-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .badge-option-copy {
+      min-width: 0;
+    }
+
+    .badge-option-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 3px;
+      color: var(--brand);
+      font-size: 0.88rem;
+      font-weight: 800;
+      line-height: 1.2;
+      flex-wrap: wrap;
+    }
+
+    .badge-option-type {
+      display: inline-flex;
+      align-items: center;
+      min-height: 20px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: rgba(24, 57, 43, 0.08);
+      color: var(--text-soft);
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badge-option-mark {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(211, 193, 154, 0.9);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      background: rgba(247, 242, 231, 0.9);
+      flex: 0 0 auto;
+      transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+    }
+
+    .badge-option.is-selected .badge-option-mark {
+      background: #4f9f61;
+      border-color: #4f9f61;
+      color: #fff;
+    }
+
+    .badge-option-description {
+      color: var(--text-soft);
+      line-height: 1.4;
+      font-size: 0.82rem;
+      margin-bottom: 6px;
+    }
+
+    .badge-option-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge-meta-chip {
+      min-height: 20px;
+      border-radius: 999px;
+      background: rgba(201, 162, 79, 0.14);
+      color: #8a6517;
+      font-size: 0.69rem;
+      font-weight: 700;
+      white-space: nowrap;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0px 7px;
+    }
+
+    .badge-section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge-section-note {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .badge-manager-hint {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .detail-help {
+      color: var(--text-soft);
+      line-height: 1.65;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 0 2px;
+      flex-wrap: wrap;
+    }
+
+    .pagination-btn,
+    .pagination-page {
+      height: 40px;
+      min-width: 40px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: rgba(255, 253, 248, 0.94);
+      box-shadow: var(--shadow);
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .pagination-page.active {
+      background: #c9a24f;
+      border-color: #c9a24f;
+      color: #fff;
+    }
+
+    .pagination-btn[disabled] {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .pagination-dots {
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 0 2px;
+    }
+
+    .ui-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 80;
+    }
+
+    .ui-modal.is-open {
+      display: flex;
+    }
+
+    .ui-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(24, 57, 43, 0.28);
+      backdrop-filter: blur(10px);
+    }
+
+    .ui-modal-card {
+      position: relative;
+      width: min(100%, 460px);
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.94));
+      box-shadow: 0 24px 60px rgba(24, 57, 43, 0.18);
+      display: grid;
+      gap: 16px;
+    }
+
+    .ui-modal-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(201, 162, 79, 0.14);
+      color: #8a6517;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      justify-self: start;
+    }
+
+    .ui-modal-title {
+      margin: 0;
+      color: var(--brand);
+      font-size: 1.28rem;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .ui-modal-description {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .ui-modal-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ui-modal-actions > span {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .ui-snackbar-stack {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 90;
+      display: grid;
+      gap: 12px;
+      width: min(100vw - 40px, 360px);
+      pointer-events: none;
+    }
+
+    .ui-snackbar {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.94));
+      box-shadow: 0 18px 34px rgba(24, 57, 43, 0.14);
+      color: var(--text);
+      pointer-events: auto;
+      animation: snackbarIn 220ms ease;
+    }
+
+    .ui-snackbar-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(79, 159, 97, 0.14);
+      color: #2f7c47;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .ui-snackbar-title {
+      margin: 0 0 3px;
+      color: var(--brand);
+      font-size: 0.96rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .ui-snackbar-description {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    @keyframes snackbarIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+
+      #adminSidebarMount {
+        display: none;
+      }
+
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main-wrap {
+        padding: 24px 16px 48px;
+      }
+
+      .topbar-inner {
+        padding-left: 16px;
+        padding-right: 16px;
+        gap: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .subnav-inner {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .brand {
+        min-width: 0;
+      }
+
+      .brand-copy {
+        min-width: 0;
+      }
+
+      .brand-title {
+        font-size: 1rem;
+      }
+
+      .topbar-login {
+        min-height: 38px;
+        padding: 0 12px;
+        font-size: 0.95rem;
+      }
+
+      .content-card {
+        padding: 22px 18px;
+        min-height: 420px;
+      }
+
+      .search-shell {
+        height: 52px;
+        border-radius: 14px;
+      }
+
+      .members-table-row {
+        grid-template-columns: 52px minmax(220px, 1.2fr) minmax(180px, 1fr) 92px;
+        gap: 12px;
+        align-self: center;
+      }
+
+      .member-detail {
+        padding: 18px;
+      }
+
+      .member-detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .badge-option-mark {
+        justify-self: end;
+      }
+
+      .ui-snackbar-stack {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        width: auto;
+      }
+
+      .mobile-sidebar-panel {
+        width: min(90vw, 320px);
+      }
+
+      .mobile-sidebar-content {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="davinci-side left" aria-hidden="true"></div>
+    <div class="davinci-side right" aria-hidden="true"></div>
+
+    <div id="communityHeaderMount"></div>
+    <div class="mobile-sidebar-drawer" id="mobileSidebarDrawer" aria-hidden="true">
+      <div class="mobile-sidebar-backdrop" data-drawer-close></div>
+      <div class="mobile-sidebar-panel" aria-label="Mobile admin navigation">
+        <div class="mobile-sidebar-head">
+          <span class="mobile-sidebar-title">Admin menu</span>
+          <button class="mobile-sidebar-close" type="button" aria-label="Close admin menu" data-drawer-close>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12"></path>
+              <path d="M18 6 6 18"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="mobile-sidebar-content">
+          <div id="mobileSidebarMount"></div>
+        </div>
+      </div>
+    </div>
+
+    <main class="main-wrap">
+      <div class="admin-layout">
+        <div id="adminSidebarMount"></div>
+        <div id="adminContentMount"></div>
+      </div>
+    </main>
+
+    <template id="adminMembersContentTemplate">
+      <div class="content-heading">
+        <div>
+          <h1>Members</h1>
+          <p>Search members by email or name, review card image, and check current account status.</p>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <label class="search-shell" for="memberSearch">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.5-3.5"></path>
+          </svg>
+          <input id="memberSearch" type="search" placeholder="Search by email or name">
+        </label>
+      </div>
+
+      <div class="table-scroll" aria-label="Scrollable members table">
+        <section class="members-table" aria-label="Members table">
+          <div class="members-table-head" aria-hidden="true">
+            <div>Card</div>
+            <div>Email</div>
+            <div>Name</div>
+            <div>Status</div>
+          </div>
+          <div class="members-table-body" id="membersTableBody"></div>
+        </section>
+      </div>
+
+      <nav class="pagination" aria-label="Members pagination" id="membersPagination"></nav>
+
+      <section class="member-detail" id="memberDetail" aria-label="Selected member"></section>
+    </template>
+
+    <div class="ui-modal" id="uiConfirmModal" aria-hidden="true">
+      <div class="ui-modal-backdrop" data-modal-close></div>
+      <div class="ui-modal-card" role="dialog" aria-modal="true" aria-labelledby="uiConfirmTitle"
+        aria-describedby="uiConfirmDescription">
+        <span class="ui-modal-eyebrow" id="uiConfirmEyebrow">Warning</span>
+        <div>
+          <h2 class="ui-modal-title" id="uiConfirmTitle">Discard changes?</h2>
+          <p class="ui-modal-description" id="uiConfirmDescription">You have unsaved changes. If you leave now, your
+            updates will be lost.</p>
+        </div>
+        <div class="ui-modal-actions">
+          <span id="uiConfirmCancelMount"></span>
+          <span id="uiConfirmAcceptMount"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui-snackbar-stack" id="uiSnackbarStack" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <script src="./components/community-header.js"></script>
+  <script src="./components/admin-sidebar.js"></script>
+  <script src="./components/admin-content-shell.js"></script>
+  <script src="./components/cta-button.js"></script>
+  <script src="./components/user-card.js"></script>
+  <script>
+    DavinciCommunityHeader.render(document.getElementById("communityHeaderMount"), {
+      brandHref: "./community-list.html",
+      navItems: [
+        { label: "Home", href: "./community-home.html" },
+        { label: "Board Games", href: "./community-board-game.html" },
+        { label: "Entrance", href: "./community-entrance.html" },
+        { label: "Leaderboard", href: "./community-leaderboard.html" }
+      ]
+    });
+
+    DavinciAdminSidebar.render(document.getElementById("adminSidebarMount"), {
+      activeItem: "Members"
+    });
+
+    document.getElementById("mobileSidebarMount").innerHTML = document.getElementById("adminSidebarMount").innerHTML;
+
+    DavinciAdminContentShell.render(document.getElementById("adminContentMount"), {
+      ariaLabel: "Members content",
+      templateId: "adminMembersContentTemplate"
+    });
+  </script>
+  <script>
+    document.getElementById("uiConfirmCancelMount").innerHTML = DavinciCTAButton.render({
+      tag: "button",
+      type: "button",
+      id: "uiConfirmCancel",
+      label: "Cancel",
+      variant: "text"
+    });
+
+    document.getElementById("uiConfirmAcceptMount").innerHTML = DavinciCTAButton.render({
+      tag: "button",
+      type: "button",
+      id: "uiConfirmAccept",
+      label: "Save changes",
+      variant: "contained"
+    });
+
+    const topbar = document.getElementById("topbar");
+    const topbarInner = topbar ? topbar.querySelector(".topbar-inner") : null;
+    const mobileSidebarDrawer = document.getElementById("mobileSidebarDrawer");
+    const memberSearch = document.getElementById("memberSearch");
+    const membersTableBody = document.getElementById("membersTableBody");
+    const membersPagination = document.getElementById("membersPagination");
+    const memberDetail = document.getElementById("memberDetail");
+    const contentHeading = document.querySelector(".content-heading");
+    const searchRow = document.querySelector(".search-row");
+    const membersTable = document.querySelector(".members-table");
+    const uiConfirmModal = document.getElementById("uiConfirmModal");
+    const uiConfirmEyebrow = document.getElementById("uiConfirmEyebrow");
+    const uiConfirmTitle = document.getElementById("uiConfirmTitle");
+    const uiConfirmDescription = document.getElementById("uiConfirmDescription");
+    const uiConfirmCancel = document.getElementById("uiConfirmCancel");
+    const uiConfirmAccept = document.getElementById("uiConfirmAccept");
+    const uiSnackbarStack = document.getElementById("uiSnackbarStack");
+    const pageSize = 8;
+    let currentPage = 1;
+    let selectedMemberId = null;
+    let memberDraftState = null;
+    let confirmResolver = null;
+    let snackbarTimerId = 0;
+    let isMobileDrawerOpen = false;
+    const badgeCatalog = [
+      {
+        value: "Admin",
+        type: "Permission",
+        icon:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.4 8.6-7 10-3.6-1.4-7-5-7-10V6l7-3Z"></path><path d="M9.5 12l1.7 1.7L14.8 10"></path></svg>',
+        description: "Full operational access badge for members handling sensitive admin workflows.",
+        meta: ["Manage members", "Manage settings", "Moderate"]
+      },
+      {
+        value: "Author",
+        type: "Role",
+        icon:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5V16l10.6-10.6a2.1 2.1 0 0 1 3 0l1 1a2.1 2.1 0 0 1 0 3L8 20H4Z"></path><path d="M13.5 6.5l4 4"></path></svg>',
+        description: "Marks members who can publish articles, updates, collections or editorial posts.",
+        meta: ["Create post", "Editorial access"]
+      },
+      {
+        value: "Moderator",
+        type: "Role",
+        icon:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-3.5 7-10V5l-7-2-7 2v6c0 6.5 7 10 7 10Z"></path><path d="M9.5 12.5l1.8 1.8 3.7-4"></path></svg>',
+        description: "Signals community moderation responsibility across comments, posts and member interactions.",
+        meta: ["Moderate", "Member support"]
+      },
+      {
+        value: "Founder",
+        type: "Identity",
+        icon:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 2.4 5 5.6.8-4 3.9.9 5.6-4.9-2.7-4.9 2.7.9-5.6-4-3.9 5.6-.8L12 4Z"></path></svg>',
+        description: "Leadership and origin marker for the people who started or strategically lead the space.",
+        meta: ["Leadership", "Trust signal"]
+      },
+      {
+        value: "Mentor",
+        type: "Support",
+        icon:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21c4-2.5 6-5.5 6-9V5l-6-2-6 2v7c0 3.5 2 6.5 6 9Z"></path><path d="M9 12h6"></path><path d="M12 9v6"></path></svg>',
+        description: "Useful for experts who offer onboarding, education, review or guidance to others.",
+        meta: ["Guidance", "Onboarding"]
+      },
+      {
+        value: "VIP",
+        type: "Access",
+        icon:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18h14"></path><path d="m6 9 3 3 3-6 3 6 3-3 1 9H5l1-9Z"></path></svg>',
+        description: "Premium visibility badge for members who should receive priority treatment or exclusive perks.",
+        meta: ["Priority", "Premium access"]
+      },
+      {
+        value: "Collector",
+        type: "Behavior",
+        icon:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="3"></rect><circle cx="9" cy="12" r="2"></circle><path d="M13 10h3"></path><path d="M13 14h4"></path></svg>',
+        description: "Identifies members focused on collecting drops, editions, rewards or curated assets.",
+        meta: ["Collects drops", "High intent"]
+      },
+      {
+        value: "Early Supporter",
+        type: "Community",
+        icon:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"></path><path d="M7 8h7a3 3 0 1 0 0-6H9"></path><path d="M17 16h-7a3 3 0 1 0 0 6h5"></path></svg>',
+        description: "Recognizes members who joined early and contributed momentum before broader growth.",
+        meta: ["Loyalty", "Early adopter"]
+      }
+    ];
+    const statusOptions = ["Active", "Pending", "Suspended"];
+
+    const members = [
+      { id: 1, image: "./assets/membership-1.png", email: "muskan@davinci.space", name: "Muskan Ahlawadia", status: "Active", badges: ["Admin", "Founder", "Early Supporter"] },
+      { id: 2, image: "./assets/membership-2.png", email: "christian@davinci.space", name: "Christian Rio", status: "Active", badges: ["Moderator", "Author"] },
+      { id: 3, image: "./assets/membership-3.png", email: "frank@davinci.space", name: "Frank van Bok", status: "Suspended", badges: ["Mentor"] },
+      { id: 4, image: "./assets/membership-4.png", email: "titus@davinci.space", name: "Titus Blair", status: "Active", badges: ["VIP", "Collector"] },
+      { id: 5, image: "./assets/membership-5.png", email: "yash@davinci.space", name: "Yash Chauhan", status: "Pending", badges: ["Author"] },
+      { id: 6, image: "./assets/membership-6.png", email: "code41@davinci.space", name: "Code41", status: "Suspended", badges: [] },
+      { id: 7, image: "./assets/membership-1.png", email: "sayed@davinci.space", name: "Sayed Hridoy", status: "Active", badges: ["Moderator", "Collector"] },
+      { id: 8, image: "./assets/membership-2.png", email: "nate@davinci.space", name: "Nate Herk", status: "Pending", badges: [] },
+      { id: 9, image: "./assets/membership-3.png", email: "", name: "Anika Sol", status: "Suspended", badges: ["VIP"] },
+      { id: 10, image: "./assets/membership-4.png", email: "lucas@davinci.space", name: "Lucas Morel", status: "Active", badges: ["Author", "Mentor"] },
+      { id: 11, image: "./assets/membership-5.png", email: "kathy@davinci.space", name: "Kathy Rose", status: "Pending", badges: ["Mentor"] },
+      { id: 12, image: "./assets/membership-6.png", email: "guido@davinci.space", name: "", status: "Suspended", badges: [] },
+      { id: 13, image: "./assets/membership-1.png", email: "mira@davinci.space", name: "Mira Voss", status: "Active", badges: ["Founder"] },
+      { id: 14, image: "./assets/membership-2.png", email: "rami@davinci.space", name: "Rami Cole", status: "Pending", badges: ["Author"] },
+      { id: 15, image: "./assets/membership-3.png", email: "elena@davinci.space", name: "Elena Park", status: "Suspended", badges: [] },
+      { id: 16, image: "./assets/membership-4.png", email: "theo@davinci.space", name: "Theo Mercer", status: "Active", badges: ["VIP", "Moderator"] },
+      { id: 17, image: "./assets/membership-5.png", email: "nora@davinci.space", name: "Nora Lane", status: "Pending", badges: ["Moderator"] },
+      { id: 18, image: "./assets/membership-6.png", email: "isaac@davinci.space", name: "Isaac Bloom", status: "Active", badges: ["Mentor"] },
+      { id: 19, image: "./assets/membership-1.png", email: "sofia@davinci.space", name: "Sofia Trent", status: "Active", badges: ["Founder", "VIP"] },
+      { id: 20, image: "./assets/membership-2.png", email: "", name: "", status: "Pending", badges: [] }
+    ];
+
+    const updateTopbar = () => {
+      if (window.scrollY > 12) {
+        topbar.classList.add("is-compact");
+      } else {
+        topbar.classList.remove("is-compact");
+      }
+    };
+
+    const setDrawerOpen = (nextOpen) => {
+      isMobileDrawerOpen = nextOpen;
+      mobileSidebarDrawer.classList.toggle("is-open", nextOpen);
+      mobileSidebarDrawer.setAttribute("aria-hidden", nextOpen ? "false" : "true");
+      document.body.classList.toggle("is-drawer-open", nextOpen);
+    };
+
+    const closeDrawer = () => {
+      setDrawerOpen(false);
+    };
+
+    const openDrawer = () => {
+      setDrawerOpen(true);
+    };
+
+    const getFilteredMembers = () => {
+      const query = memberSearch.value.trim().toLowerCase();
+
+      if (!query) {
+        return members;
+      }
+
+      return members.filter((member) =>
+        member.email.toLowerCase().includes(query) ||
+        member.name.toLowerCase().includes(query)
+      );
+    };
+
+    const buildPaginationModel = (totalPages, page) => {
+      if (totalPages <= 5) {
+        return Array.from({ length: totalPages }, (_, index) => index + 1);
+      }
+
+      if (page <= 3) {
+        return [1, 2, 3, "...", totalPages];
+      }
+
+      if (page >= totalPages - 2) {
+        return [1, "...", totalPages - 2, totalPages - 1, totalPages];
+      }
+
+      return [1, "...", page, "...", totalPages];
+    };
+
+    const formatEmail = (email) => {
+      return email && email.trim()
+        ? email
+        : '<span class="member-missing">No email</span>';
+    };
+
+    const formatName = (name) => {
+      return name && name.trim()
+        ? name
+        : '<span class="member-missing">No name</span>';
+    };
+
+    const getCardAlt = (member) => {
+      if (member.name && member.name.trim()) {
+        return `${member.name} card image`;
+      }
+
+      if (member.email && member.email.trim()) {
+        return `${member.email} card image`;
+      }
+
+      return "Member card image";
+    };
+
+    const getStatusClass = (status) => {
+      return status.toLowerCase();
+    };
+
+    const getMemberLabel = (member) => {
+      if (member.name && member.name.trim()) {
+        return member.name;
+      }
+
+      if (member.email && member.email.trim()) {
+        return member.email;
+      }
+
+      return "Unknown member";
+    };
+
+    const renderStatusOptions = (selectedStatus) => {
+      return statusOptions.map((status) => `
+        <option value="${status}" ${status === selectedStatus ? "selected" : ""}>${status}</option>
+      `).join("");
+    };
+
+    const getBadgeMeta = (badgeValue) => {
+      return badgeCatalog.find((badge) => badge.value === badgeValue) || null;
+    };
+
+    const buildMemberCardBadgeItems = (selectedBadges) => {
+      if (!selectedBadges.length) {
+        return [];
+      }
+
+      const visibleBadges = selectedBadges.length > 5 ? selectedBadges.slice(-5) : selectedBadges;
+      const hiddenCount = selectedBadges.length - visibleBadges.length;
+      const badgesToRender = [];
+
+      if (hiddenCount > 0) {
+        badgesToRender.push({
+          text: String(hiddenCount),
+          label: `${hiddenCount} more badges`,
+          variant: "accent"
+        });
+      }
+
+      visibleBadges.forEach((badgeValue) => {
+        const badge = getBadgeMeta(badgeValue);
+
+        if (!badge) {
+          return;
+        }
+
+        badgesToRender.push({
+          icon: badge.icon,
+          label: `${badge.value} badge`
+        });
+      });
+
+      return badgesToRender;
+    };
+
+    const renderBadgeOptions = (selectedBadges) => {
+      return badgeCatalog.map((badge) => {
+        const isSelected = selectedBadges.includes(badge.value);
+
+        return `
+          <label class="badge-option ${isSelected ? "is-selected" : ""}">
+            <input type="checkbox" value="${badge.value}" data-member-control="badge" ${isSelected ? "checked" : ""}>
+            <span class="badge-option-icon" aria-hidden="true">${badge.icon}</span>
+            <div class="badge-option-copy">
+              <div class="badge-option-title">
+                <span>${badge.value}</span>
+                <span class="badge-option-type">${badge.type}</span>
+              </div>
+              <div class="badge-option-description">${badge.description}</div>
+              <div class="badge-option-meta">
+                ${badge.meta.map((item) => `<span class="badge-meta-chip">${item}</span>`).join("")}
+              </div>
+            </div>
+            <span class="badge-option-mark">✓</span>
+          </label>
+        `;
+      }).join("");
+    };
+
+    const createMemberDraftState = (member) => ({
+      status: member.status,
+      badges: [...member.badges]
+    });
+
+    const syncSelectedBadgesPreview = () => {
+      const selectedBadgesNode = memberDetail.querySelector("#memberCardPreview");
+      const member = members.find((item) => item.id === selectedMemberId);
+
+      if (!selectedBadgesNode || !memberDraftState || !member) {
+        return;
+      }
+
+      selectedBadgesNode.innerHTML = DavinciUserCard.render({
+        image: member.image,
+        alt: getCardAlt(member),
+        badges: buildMemberCardBadgeItems(memberDraftState.badges)
+      });
+    };
+
+    const openConfirmDialog = ({
+      eyebrow = "Warning",
+      title,
+      description,
+      cancelLabel = "Cancel",
+      confirmLabel = "Confirm"
+    }) => {
+      uiConfirmEyebrow.textContent = eyebrow;
+      uiConfirmTitle.textContent = title;
+      uiConfirmDescription.textContent = description;
+      uiConfirmCancel.textContent = cancelLabel;
+      uiConfirmAccept.textContent = confirmLabel;
+      uiConfirmModal.classList.add("is-open");
+      uiConfirmModal.setAttribute("aria-hidden", "false");
+
+      return new Promise((resolve) => {
+        confirmResolver = resolve;
+      });
+    };
+
+    const closeConfirmDialog = (result) => {
+      uiConfirmModal.classList.remove("is-open");
+      uiConfirmModal.setAttribute("aria-hidden", "true");
+
+      if (confirmResolver) {
+        confirmResolver(result);
+        confirmResolver = null;
+      }
+    };
+
+    const showSnackbar = ({
+      title,
+      description = ""
+    }) => {
+      if (snackbarTimerId) {
+        window.clearTimeout(snackbarTimerId);
+      }
+
+      uiSnackbarStack.innerHTML = `
+        <div class="ui-snackbar" role="status">
+          <span class="ui-snackbar-mark">✓</span>
+          <div>
+            <p class="ui-snackbar-title">${title}</p>
+            ${description ? `<p class="ui-snackbar-description">${description}</p>` : ""}
+          </div>
+        </div>
+      `;
+
+      snackbarTimerId = window.setTimeout(() => {
+        uiSnackbarStack.innerHTML = "";
+        snackbarTimerId = 0;
+      }, 3200);
+    };
+
+    const saveBadgesForSelectedMember = () => {
+      if (selectedMemberId === null || !memberDraftState) {
+        return;
+      }
+
+      const member = members.find((item) => item.id === selectedMemberId);
+
+      if (!member) {
+        return;
+      }
+
+      member.badges = [...memberDraftState.badges];
+      showSnackbar({
+        title: "Badges updated",
+        description: `${getMemberLabel(member)} badges were saved successfully.`
+      });
+    };
+
+    const saveStatusForSelectedMember = (nextStatus) => {
+      if (selectedMemberId === null || !memberDraftState) {
+        return;
+      }
+
+      const member = members.find((item) => item.id === selectedMemberId);
+
+      if (!member) {
+        return;
+      }
+
+      member.status = nextStatus;
+      memberDraftState.status = nextStatus;
+      showSnackbar({
+        title: "Status updated",
+        description: `${getMemberLabel(member)} is now ${nextStatus}.`
+      });
+    };
+
+    const renderMembers = () => {
+      if (selectedMemberId !== null) {
+        const selectedMember = members.find((member) => member.id === selectedMemberId);
+        const memberLabel = selectedMember ? getMemberLabel(selectedMember) : "Unknown member";
+
+        if (!selectedMember) {
+          selectedMemberId = null;
+          renderMembers();
+          return;
+        }
+
+        contentHeading.style.display = "none";
+        searchRow.style.display = "none";
+        membersTable.style.display = "none";
+        membersPagination.style.display = "none";
+        if (!memberDraftState) {
+          memberDraftState = createMemberDraftState(selectedMember);
+        }
+        memberDetail.classList.add("is-visible");
+        memberDetail.innerHTML = `
+          <div class="member-detail-shell">
+            <div class="member-detail-topbar">
+              ${DavinciCTAButton.render({
+                tag: "button",
+                type: "button",
+                label: "Back to members",
+                variant: "text",
+                className: "detail-back-btn",
+                xPadding: "0px",
+                color: "var(--text-muted)",
+                hoverColor: "var(--text-muted)",
+                hoverBackground: "transparent",
+                icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>',
+                attributes: {
+                  "data-detail-action": "back"
+                }
+              })}
+            </div>
+            <div>
+              <h2>Editing member: ${memberLabel}</h2>
+            </div>
+            <div class="member-detail-grid">
+              <div class="member-sidebar">
+                <section class="member-overview-card" aria-label="Selected member overview">
+                  <div class="member-overview-media" id="memberCardPreview">${DavinciUserCard.render({
+                    image: selectedMember.image,
+                    alt: getCardAlt(selectedMember),
+                    badges: buildMemberCardBadgeItems(memberDraftState.badges)
+                  })}</div>
+                  <div class="member-overview-meta">
+                    <div>
+                      <strong>Name</strong>
+                      <span>${formatName(selectedMember.name)}</span>
+                    </div>
+                    <div>
+                      <strong>Email</strong>
+                      <span>${formatEmail(selectedMember.email)}</span>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="member-status-card" aria-label="Selected member status">
+                  <h3 class="member-section-title">Account status</h3>
+                  <p class="section-description">Controls whether this member can actively access and use the community.</p>
+                  <div class="detail-form-row">
+                    <label class="field-label" for="memberStatusSelect">Status</label>
+                    <select id="memberStatusSelect" data-member-control="status">
+                      ${renderStatusOptions(memberDraftState.status)}
+                    </select>
+                  </div>
+                </section>
+              </div>
+
+              <section class="member-controls-card" aria-label="Selected member controls">
+                <div class="detail-form-row">
+                  <div class="badge-section-head">
+                    <h3 class="member-section-title">Badge assignment</h3>
+                  </div>
+                  <div class="badge-manager-hint">
+                    ${DavinciCTAButton.render({
+                      label: "Badge manager",
+                      href: "./community-admin-badge-manager.html",
+                      variant: "text",
+                      icon: '<svg viewBox="0 0 24 24"><path d="m12 3 2.4 4.8 5.3.8-3.8 3.7.9 5.3L12 15l-4.8 2.6.9-5.3L4.3 8.6l5.3-.8L12 3Z"></path></svg>'
+                    })}
+                  </div>
+                  <div class="badge-library">
+                    ${renderBadgeOptions(memberDraftState.badges)}
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      contentHeading.style.display = "";
+      searchRow.style.display = "";
+      membersTable.style.display = "";
+      membersPagination.style.display = "";
+      memberDraftState = null;
+      memberDetail.classList.remove("is-visible");
+      memberDetail.innerHTML = "";
+
+      const filteredMembers = getFilteredMembers();
+      const totalPages = Math.max(1, Math.ceil(filteredMembers.length / pageSize));
+
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
+      const start = (currentPage - 1) * pageSize;
+      const visibleMembers = filteredMembers.slice(start, start + pageSize);
+
+      if (!visibleMembers.length) {
+        membersTableBody.innerHTML = '<div class="members-empty">No members match the current search.</div>';
+      } else {
+        membersTableBody.innerHTML = visibleMembers.map((member) => `
+          <div class="members-table-row" data-member-id="${member.id}">
+            <img class="member-card-image" src="${member.image}" alt="${getCardAlt(member)}">
+            <div class="member-email">
+              ${formatEmail(member.email)}
+            </div>
+            <div class="member-name">
+              <span>${formatName(member.name)}</span>
+            </div>
+            <div class="status-cell">
+              <span class="status-badge ${getStatusClass(member.status)}">${member.status}</span>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      const paginationModel = buildPaginationModel(totalPages, currentPage);
+      membersPagination.innerHTML = `
+        <button class="pagination-btn" type="button" data-page-nav="prev" ${currentPage === 1 ? "disabled" : ""}>Previous</button>
+        ${paginationModel.map((item) => item === "..."
+        ? '<span class="pagination-dots">...</span>'
+        : `<button class="pagination-page ${item === currentPage ? "active" : ""}" type="button" data-page="${item}">${item}</button>`
+      ).join("")}
+        <button class="pagination-btn" type="button" data-page-nav="next" ${currentPage === totalPages ? "disabled" : ""}>Next</button>
+      `;
+    };
+
+    if (topbarInner) {
+      const mobileMenuToggle = document.createElement("button");
+      mobileMenuToggle.type = "button";
+      mobileMenuToggle.className = "mobile-menu-toggle";
+      mobileMenuToggle.setAttribute("aria-label", "Open admin menu");
+      mobileMenuToggle.setAttribute("aria-controls", "mobileSidebarDrawer");
+      mobileMenuToggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>';
+      topbarInner.appendChild(mobileMenuToggle);
+
+      mobileMenuToggle.addEventListener("click", () => {
+        if (isMobileDrawerOpen) {
+          closeDrawer();
+          return;
+        }
+
+        openDrawer();
+      });
+    }
+
+    memberSearch.addEventListener("input", () => {
+      currentPage = 1;
+      renderMembers();
+    });
+
+    membersPagination.addEventListener("click", (event) => {
+      const pageButton = event.target.closest("[data-page]");
+      const navButton = event.target.closest("[data-page-nav]");
+
+      if (pageButton) {
+        currentPage = Number(pageButton.dataset.page);
+        renderMembers();
+      }
+
+      if (navButton) {
+        currentPage += navButton.dataset.pageNav === "next" ? 1 : -1;
+        renderMembers();
+      }
+    });
+
+    membersTableBody.addEventListener("click", (event) => {
+      const row = event.target.closest("[data-member-id]");
+
+      if (!row) {
+        return;
+      }
+
+      selectedMemberId = Number(row.dataset.memberId);
+      renderMembers();
+    });
+
+    memberDetail.addEventListener("click", (event) => {
+      const actionButton = event.target.closest("[data-detail-action]");
+
+      if (!actionButton) {
+        return;
+      }
+
+      if (actionButton.dataset.detailAction === "back") {
+        selectedMemberId = null;
+        renderMembers();
+        return;
+      }
+    });
+
+    memberDetail.addEventListener("change", async (event) => {
+      const badgeInput = event.target.closest("[data-member-control='badge']");
+      const statusSelect = event.target.closest("[data-member-control='status']");
+
+      if (statusSelect && memberDraftState) {
+        const member = members.find((item) => item.id === selectedMemberId);
+
+        if (!member) {
+          return;
+        }
+
+        const previousStatus = memberDraftState.status;
+        const nextStatus = statusSelect.value;
+
+        if (nextStatus === previousStatus) {
+          return;
+        }
+
+        const shouldUpdateStatus = await openConfirmDialog({
+          eyebrow: "Status change",
+          title: "Change member status?",
+          description: `Are you sure you want to change ${getMemberLabel(member)} status to ${nextStatus}?`,
+          cancelLabel: "Cancel",
+          confirmLabel: "Save changes"
+        });
+
+        if (!shouldUpdateStatus) {
+          statusSelect.value = previousStatus;
+          return;
+        }
+
+        saveStatusForSelectedMember(nextStatus);
+        return;
+      }
+
+      if (!badgeInput || !memberDraftState) {
+        return;
+      }
+
+      memberDraftState.badges = Array.from(memberDetail.querySelectorAll("[data-member-control='badge']:checked"))
+        .map((input) => input.value);
+
+      badgeInput.closest(".badge-option")?.classList.toggle("is-selected", badgeInput.checked);
+      syncSelectedBadgesPreview();
+      saveBadgesForSelectedMember();
+    });
+
+    uiConfirmModal.addEventListener("click", (event) => {
+      if (event.target.closest("[data-modal-close]")) {
+        closeConfirmDialog(false);
+      }
+    });
+
+    mobileSidebarDrawer.addEventListener("click", (event) => {
+      if (event.target.closest("[data-drawer-close]")) {
+        closeDrawer();
+        return;
+      }
+
+      if (event.target.closest("#mobileSidebarMount a")) {
+        closeDrawer();
+      }
+    });
+
+    uiConfirmCancel.addEventListener("click", () => {
+      closeConfirmDialog(false);
+    });
+
+    uiConfirmAccept.addEventListener("click", () => {
+      closeConfirmDialog(true);
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        if (uiConfirmModal.classList.contains("is-open")) {
+          closeConfirmDialog(false);
+          return;
+        }
+
+        if (isMobileDrawerOpen) {
+          closeDrawer();
+        }
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 900 && isMobileDrawerOpen) {
+        closeDrawer();
+      }
+    });
+
+    updateTopbar();
+    renderMembers();
+    window.addEventListener("scroll", updateTopbar, { passive: true });
+  </script>
+</body>
+
+</html>

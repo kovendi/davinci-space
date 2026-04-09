@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Davinci Space - Community Entrance</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --bg-soft: #fbf8f2;
+      --surface: #fffdf8;
+      --surface-2: #f7f2e7;
+      --border: #e3d7bf;
+      --border-strong: #d3c19a;
+      --text: #18392b;
+      --text-soft: #5b6d62;
+      --text-muted: #7f8c84;
+      --brand: #173d2d;
+      --brand-2: #c9a24f;
+      --brand-2-dark: #b58c34;
+      --accent: #b44a4a;
+      --shadow: 0 8px 30px rgba(24, 57, 43, 0.08);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --container: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    @keyframes davinciScanDown {
+      0% {
+        transform: translateY(-80%);
+      }
+      100% {
+        transform: translateY(100%);
+      }
+    }
+
+    .davinci-side {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: min(24vw, 300px);
+      pointer-events: none;
+      z-index: 0;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .davinci-side::before,
+    .davinci-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .davinci-side::before {
+      background-image: url("./assets/background.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: inherit;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .davinci-side::after {
+      left: 0;
+      width: 68%;
+      top: 0%;
+      height: 80%;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(201, 162, 79, 0.12) 18%,
+          rgba(201, 162, 79, 0.28) 50%,
+          rgba(201, 162, 79, 0.1) 82%,
+          rgba(255, 255, 255, 0) 100%
+        );
+      opacity: 0.5;
+      animation: davinciScanDown 4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .davinci-side.left {
+      left: 0;
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.left::before {
+      background-position: left center;
+    }
+
+    .davinci-side.right {
+      right: 0;
+      mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.right::before {
+      background-position: right center;
+    }
+
+    .davinci-side.right::after {
+      left: auto;
+      right: 0;
+      animation-delay: 2.6s;
+    }
+
+    .topbar,
+    .subnav,
+    .main-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(245, 241, 232, 0.92);
+      backdrop-filter: blur(12px);
+      transition: background 220ms ease, box-shadow 220ms ease;
+    }
+
+    .topbar.is-compact {
+      background: rgba(245, 241, 232, 0.86);
+      box-shadow: 0 10px 24px rgba(24, 57, 43, 0.08);
+    }
+
+    .topbar-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: padding 220ms ease, gap 220ms ease;
+    }
+
+    .topbar.is-compact .topbar-inner {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .brand-mark {
+      height: 40px;
+      object-fit: contain;
+      transition: height 220ms ease;
+    }
+
+    .topbar.is-compact .brand-mark {
+      height: 30px;
+    }
+
+    .brand-copy {
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-size: 1.08rem;
+      line-height: 1;
+      color: var(--brand);
+      transition: font-size 220ms ease;
+    }
+
+    .topbar.is-compact .brand-title {
+      font-size: 0.96rem;
+    }
+
+    .topbar-login {
+      margin-left: auto;
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 14px;
+      border: 1px solid rgba(201, 162, 79, 0.22);
+      background: var(--brand-2);
+      box-shadow: 0 10px 24px rgba(201, 162, 79, 0.24);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
+    .join-chip {
+      height: 40px;
+      border-radius: 12px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--brand-2);
+      color: #fff;
+      border: 1px solid var(--brand-2-dark);
+      box-shadow: 0 8px 20px rgba(201, 162, 79, 0.22);
+      font-weight: 800;
+      transition: height 220ms ease, background 180ms ease;
+    }
+
+    .join-chip:hover {
+      background: var(--brand-2-dark);
+    }
+
+    .topbar.is-compact .join-chip {
+      height: 34px;
+    }
+
+    .subnav {
+      border-bottom: 1px solid rgba(211, 193, 154, 0.65);
+      background: rgba(245, 241, 232, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .subnav-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+    }
+
+    .subnav-link {
+      position: relative;
+      padding: 11px 2px 10px;
+      color: var(--text-soft);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .subnav-link.active {
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .subnav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+
+    .main-wrap {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .about-panel {
+      padding: 26px;
+    }
+
+    .about-panel h1 {
+      margin: 0 0 18px;
+      font-size: 23px;
+      line-height: 1.2;
+      letter-spacing: 0;
+      color: var(--brand);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 800;
+    }
+
+    .lead {
+      margin: 0 0 22px;
+      color: var(--text-soft);
+      font-size: 1rem;
+      line-height: 1.68;
+    }
+
+    .hero-media {
+      aspect-ratio: 16 / 9;
+      border-radius: 22px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(227, 215, 191, 0.8);
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.22), rgba(201, 162, 79, 0.18)),
+        url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80");
+      background-size: cover, cover;
+      background-position: center center, center center;
+    }
+
+    .hero-media-badge {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid rgba(255, 253, 248, 0.6);
+      color: var(--brand);
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(24, 57, 43, 0.12);
+    }
+
+    .thumb-row {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(4, 92px);
+      gap: 10px;
+    }
+
+    .thumb {
+      height: 92px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(227, 215, 191, 0.8);
+      background-size: cover, cover;
+      background-position: center center, center center;
+      box-shadow: var(--shadow);
+    }
+
+    .thumb.one {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.22), rgba(201, 162, 79, 0.16)),
+        url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .thumb.two {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.24), rgba(201, 162, 79, 0.14)),
+        url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .thumb.three {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.24), rgba(201, 162, 79, 0.16)),
+        url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .thumb.four {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.24), rgba(201, 162, 79, 0.16)),
+        url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .meta-row {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .meta-pill {
+      padding: 11px 14px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .meta-pill strong {
+      color: var(--brand);
+    }
+
+    .story {
+      margin-top: 28px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .story p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 1rem;
+      line-height: 1.74;
+    }
+
+    .quote-block {
+      margin-top: 10px;
+      padding: 18px 20px;
+      border-left: 4px solid var(--brand-2);
+      background: linear-gradient(135deg, rgba(201, 162, 79, 0.12), rgba(255, 253, 248, 0.6));
+      border-radius: 0 18px 18px 0;
+      color: var(--brand);
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .sidebar {
+      display: grid;
+      gap: 18px;
+      position: sticky;
+      top: 120px;
+    }
+
+    .summary-card {
+      overflow: hidden;
+    }
+
+    .summary-cover {
+      aspect-ratio: 5 / 3;
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.2), rgba(201, 162, 79, 0.12)),
+        url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80");
+      background-size: cover, cover;
+      background-position: center center, center center;
+      border-bottom: 1px solid rgba(227, 215, 191, 0.8);
+    }
+
+    .summary-body {
+      padding: 18px;
+    }
+
+    .summary-body h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: var(--brand);
+      line-height: 1.1;
+    }
+
+    .summary-link {
+      margin-top: 6px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .summary-copy {
+      margin: 16px 0 18px;
+      color: var(--text-soft);
+      font-size: 0.96rem;
+      line-height: 1.65;
+    }
+
+    .link-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--text-soft);
+    }
+
+    .link-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+    }
+
+    .stats-grid {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(227, 215, 191, 0.8);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.28rem;
+      color: var(--brand);
+    }
+
+    .stat span {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .member-row {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .member-row img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--surface);
+      object-fit: cover;
+      margin-left: -8px;
+    }
+
+    .member-row img:first-child {
+      margin-left: 0;
+    }
+
+    .join-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 18px;
+      min-height: 40px;
+      padding: 0 13px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--brand-2);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(201, 162, 79, 0.24);
+    }
+
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(24, 34, 29, 0.38);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 180ms ease, visibility 180ms ease;
+    }
+
+    .auth-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .auth-modal {
+      width: min(100%, 460px);
+      background: #fffdf9;
+      border: 1px solid rgba(211, 193, 154, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(24, 57, 43, 0.18);
+      padding: 22px 22px 18px;
+      position: relative;
+    }
+
+    .auth-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(247, 242, 231, 0.95);
+      color: var(--text-soft);
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .auth-brand img {
+      height: 38px;
+      width: auto;
+    }
+
+    .auth-brand-name {
+      color: var(--brand);
+      font-size: 1.02rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .auth-panel {
+      display: none;
+      text-align: center;
+    }
+
+    .auth-panel.is-active {
+      display: block;
+    }
+
+    .auth-panel h2 {
+      margin: 0;
+      font-size: 1.9rem;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      color: #22272c;
+    }
+
+    .auth-panel p {
+      margin: 12px auto 0;
+      max-width: 34ch;
+      color: #4d5861;
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .auth-form {
+      margin-top: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .auth-field {
+      width: 100%;
+      height: 54px;
+      border-radius: 12px;
+      border: 1px solid #ddd4c2;
+      background: #fff;
+      padding: 0 16px;
+      font-size: 1rem;
+      color: #2b2e31;
+      outline: none;
+    }
+
+    .auth-field:focus {
+      border-color: var(--brand-2);
+      box-shadow: 0 0 0 4px rgba(201, 162, 79, 0.12);
+    }
+
+    .auth-meta {
+      margin-top: 2px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .auth-link {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .auth-submit {
+      margin-top: 16px;
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 12px;
+      background: #d8d8d8;
+      color: #7b7b7b;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .auth-submit-secondary {
+      margin-top: 12px;
+      background: transparent;
+      color: var(--brand);
+      border: 1px solid rgba(23, 61, 45, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(23, 61, 45, 0.04);
+    }
+
+    .auth-divider {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #8b8f94;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(211, 193, 154, 0.8);
+    }
+
+    .auth-footer {
+      margin-top: 16px;
+      color: #4d5861;
+      font-size: 0.95rem;
+    }
+
+    .auth-switch-btn {
+      border: 0;
+      background: transparent;
+      color: var(--brand-2-dark);
+      font-weight: 700;
+      font: inherit;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .auth-legal {
+      margin-top: 14px;
+      color: #8b8f94;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1020px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner,
+      .subnav-inner,
+      .main-wrap {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .davinci-side {
+        width: 22vw;
+        opacity: 0.11;
+      }
+
+      .davinci-side::after {
+        opacity: 0.2;
+      }
+
+      .topbar-inner {
+        flex-wrap: wrap;
+      }
+
+      .topbar-login { margin-left: auto; }
+
+      .topbar-actions {
+        margin-left: auto;
+      }
+
+      .thumb-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .about-panel {
+        padding: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .join-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="davinci-side left" aria-hidden="true"></div>
+    <div class="davinci-side right" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a href="./community-list.html" class="brand">
+          <img src="./assets/logo-2.png" alt="Davinci Space logo" class="brand-mark">
+          <div class="brand-copy">
+            <span class="brand-title">Davinci Space</span>
+          </div>
+        </a>
+
+        <button class="topbar-login" type="button" data-auth-open="login">Log in</button>
+
+      </div>
+    </header>
+
+    <nav class="subnav">
+      <div class="subnav-inner">
+        <a class="subnav-link" href="./community-home.html">Home</a>
+        <a class="subnav-link active" href="./community-entrance.html">Entrance</a>
+        <a class="subnav-link" href="./community-leaderboard.html">Leaderboard</a>
+      </div>
+    </nav>
+
+    <main class="main-wrap">
+      <div class="layout">
+        <section class="panel about-panel">
+          <h1>Davinci Space</h1>
+
+          <p class="lead">
+            Davinci Space is the main entrance to the network, designed to introduce the tone, structure, and purpose of the wider community ecosystem. It gives new members a clear first impression before they step into more focused circles. The experience is calm, curated, and built to make discovery feel intentional.
+          </p>
+
+          <div class="hero-media">
+          </div>
+
+          <div class="thumb-row">
+            <div class="thumb one" aria-hidden="true"></div>
+            <div class="thumb two" aria-hidden="true"></div>
+            <div class="thumb three" aria-hidden="true"></div>
+            <div class="thumb four" aria-hidden="true"></div>
+          </div>
+
+          <button class="join-btn" type="button" onclick="window.location.href='./community-payment.html'">Join $49/month</button>
+
+          <div class="story">
+            <p>
+              This is the root space where people discover the network, understand the philosophy behind each circle, and decide where they belong. Some arrive to browse artist communities, others to join research, culture or founder spaces, but the role of Davinci Space remains the same: create a coherent home for them all. It is less about pushing a single destination and more about offering a clear orientation layer, where members can quickly understand the character of the ecosystem before committing their time and attention.
+            </p>
+            <p>
+              Inside, the experience is designed to feel editorial rather than noisy. Communities are presented with a refined visual language, clear membership signals and room to expand into their own sub-communities over time. That makes the entrance feel less like a crowded directory and more like a considered overview, where each space has enough presence to feel distinct while still belonging to a larger whole. The result is a more confident first step for new members and a more legible structure for existing ones returning to explore further.
+            </p>
+            <div class="quote-block">
+              A calm parent layer for communities that want structure, atmosphere and room to evolve.
+            </div>
+            <p>
+              As new communities mature, they can themselves become super communities. That keeps the system flexible without losing clarity, and gives Davinci Space a living, layered architecture instead of a flat directory. Over time, this layered model allows the network to grow in depth without becoming harder to navigate, preserving both discovery and coherence as more circles, topics and leaders emerge within the platform.
+            </p>
+          </div>
+
+          <button class="join-btn" type="button" data-auth-open="login">Join $49/month</button>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="auth-overlay" id="authOverlay" aria-hidden="true">
+    <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="auth-close" type="button" aria-label="Close">×</button>
+
+      <div class="auth-brand">
+        <img src="./assets/logo-2.png" alt="Davinci Space logo">
+        <span class="auth-brand-name">Davinci Space</span>
+      </div>
+
+      <section class="auth-panel is-active" data-auth-panel="login">
+        <h2 id="authTitle">Log in to Davinci Space</h2>
+        <div class="auth-form">
+          <input class="auth-field" type="email" placeholder="Email">
+          <input class="auth-field" type="password" placeholder="Password">
+        </div>
+        <div class="auth-meta">
+          <a class="auth-link" href="#">Forgot password?</a>
+        </div>
+        <button class="auth-submit" type="button">Log in</button>
+        <div class="auth-footer">
+          Don't have an account?
+          <button class="auth-switch-btn" type="button" data-auth-switch="signup">Sign up for free</button>
+        </div>
+        <div class="auth-divider" aria-hidden="true">OR</div>
+        <button class="auth-submit auth-submit-secondary" type="button">Log in with your Davinci account</button>
+      </section>
+
+      <section class="auth-panel" data-auth-panel="signup">
+        <h2>Create your account</h2>
+        <p>Join Davinci Space to like, post, comment and enter communities.</p>
+        <div class="auth-form">
+          <input class="auth-field" type="text" placeholder="Username">
+          <input class="auth-field" type="email" placeholder="Email">
+          <input class="auth-field" type="password" placeholder="Password">
+        </div>
+        <button class="auth-submit" type="button">Sign up</button>
+        <div class="auth-legal">
+          By signing up, you accept our terms and privacy policy.
+        </div>
+        <div class="auth-footer">
+          Already have an account?
+          <button class="auth-switch-btn" type="button" data-auth-switch="login">Log in</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const topbar = document.querySelector(".topbar");
+    const authOverlay = document.querySelector("#authOverlay");
+    const authPanels = document.querySelectorAll("[data-auth-panel]");
+    const authOpeners = document.querySelectorAll("[data-auth-open]");
+    const authSwitchers = document.querySelectorAll("[data-auth-switch]");
+    const authClose = document.querySelector(".auth-close");
+
+    const syncTopbarState = () => {
+      if (!topbar) return;
+      topbar.classList.toggle("is-compact", window.scrollY > 24);
+    };
+
+    const showAuthPanel = (panelName) => {
+      authPanels.forEach((panel) => {
+        panel.classList.toggle("is-active", panel.dataset.authPanel === panelName);
+      });
+    };
+
+    const openAuth = (panelName = "login") => {
+      if (!authOverlay) return;
+      showAuthPanel(panelName);
+      authOverlay.classList.add("is-open");
+      authOverlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    };
+
+    const closeAuth = () => {
+      if (!authOverlay) return;
+      authOverlay.classList.remove("is-open");
+      authOverlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+
+    syncTopbarState();
+    window.addEventListener("scroll", syncTopbarState, { passive: true });
+
+    authOpeners.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        openAuth(trigger.dataset.authOpen);
+      });
+    });
+
+    authSwitchers.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        showAuthPanel(trigger.dataset.authSwitch);
+      });
+    });
+
+    authClose?.addEventListener("click", closeAuth);
+
+    authOverlay?.addEventListener("click", (event) => {
+      if (event.target === authOverlay) {
+        closeAuth();
+      }
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && authOverlay?.classList.contains("is-open")) {
+        closeAuth();
+      }
+    });
+  </script>
+</body>
+</html>

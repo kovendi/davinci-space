@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Davinci Space - Select Your Plan</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --bg-soft: #fbf8f2;
+      --surface: #fffdf8;
+      --surface-2: #f7f2e7;
+      --border: #e3d7bf;
+      --border-strong: #d3c19a;
+      --text: #18392b;
+      --text-soft: #5b6d62;
+      --text-muted: #7f8c84;
+      --brand: #173d2d;
+      --brand-2: #c9a24f;
+      --brand-2-dark: #b58c34;
+      --shadow: 0 8px 30px rgba(24, 57, 43, 0.08);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --container: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    @keyframes davinciScanDown {
+      0% { transform: translateY(-80%); }
+      100% { transform: translateY(100%); }
+    }
+
+    .davinci-side {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: min(24vw, 300px);
+      pointer-events: none;
+      z-index: 0;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .davinci-side::before,
+    .davinci-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .davinci-side::before {
+      background-image: url("./assets/background.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: inherit;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .davinci-side::after {
+      left: 0;
+      width: 68%;
+      top: 0%;
+      height: 80%;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(201, 162, 79, 0.12) 18%,
+        rgba(201, 162, 79, 0.28) 50%,
+        rgba(201, 162, 79, 0.1) 82%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      opacity: 0.5;
+      animation: davinciScanDown 4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .davinci-side.left {
+      left: 0;
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.left::before { background-position: left center; }
+
+    .davinci-side.right {
+      right: 0;
+      mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.right::before { background-position: right center; }
+
+    .davinci-side.right::after {
+      left: auto;
+      right: 0;
+      animation-delay: 2.6s;
+    }
+
+    .topbar,
+    .main-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(245, 241, 232, 0.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 24px rgba(24, 57, 43, 0.05);
+    }
+
+    .topbar-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      height: 40px;
+      width: auto;
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      line-height: 1;
+    }
+
+    .brand-title {
+      color: var(--brand);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-subtitle {
+      color: var(--text-muted);
+      font-size: 0.74rem;
+    }
+
+    .back-link {
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 253, 248, 0.9);
+      color: var(--text-soft);
+      font-weight: 700;
+    }
+
+    .main-wrap {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 34px 20px 72px;
+    }
+
+    .shell {
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .heading {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .heading h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      color: var(--brand);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .heading p {
+      margin: 10px auto 0;
+      max-width: 52ch;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 22px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+      min-height: 420px;
+    }
+
+    .plan-card.featured {
+      border-color: var(--brand-2);
+      box-shadow: 0 16px 38px rgba(201, 162, 79, 0.18);
+    }
+
+    .plan-price {
+      text-align: center;
+      color: var(--brand);
+      font-weight: 900;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .plan-price small {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-soft);
+      margin-left: 2px;
+    }
+
+    .plan-name {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .plan-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: var(--text-soft);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      flex: 1 1 auto;
+    }
+
+    .plan-list li {
+      position: relative;
+      padding-left: 22px;
+    }
+
+    .plan-list li::before {
+      content: "•";
+      position: absolute;
+      left: 6px;
+      top: 0;
+      color: var(--brand-2-dark);
+      font-weight: 900;
+    }
+
+    .plan-cta {
+      margin-top: auto;
+      min-height: 40px;
+      border: 0;
+      border-radius: 14px;
+      padding: 0 13px;
+      background: var(--brand-2);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 10px 24px rgba(201, 162, 79, 0.24);
+      cursor: pointer;
+    }
+
+    .plan-card:not(.featured) .plan-cta {}
+
+    @media (max-width: 980px) {
+      .plans {
+        grid-template-columns: 1fr;
+      }
+
+      .plan-card.featured {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner,
+      .main-wrap {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .davinci-side {
+        width: 22vw;
+      }
+
+      .shell {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="davinci-side left" aria-hidden="true"></div>
+    <div class="davinci-side right" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a href="./community-list.html" class="brand">
+          <img src="./assets/logo.svg" alt="Davinci Space logo" class="brand-mark">
+          <div class="brand-copy">
+            <span class="brand-title">Davinci Space</span>
+            <span class="brand-subtitle">Select your plan</span>
+          </div>
+        </a>
+
+        <a class="back-link" href="./community-home.html">Back to Community</a>
+      </div>
+    </header>
+
+    <main class="main-wrap">
+      <section class="shell">
+        <div class="heading">
+          <h1>Select your plan</h1>
+          <p>Choose how you want to enter Davinci Space. Start with a lighter plan or unlock the full network from day one.</p>
+        </div>
+
+        <div class="plans">
+          <article class="plan-card">
+            <div class="plan-price">$49<small>/month</small></div>
+            <div class="plan-name">Standard</div>
+            <ul class="plan-list">
+              <li>Access to core community conversations</li>
+              <li>Weekly editorial digest and updates</li>
+              <li>Founding member directory access</li>
+              <li>Monthly live community session</li>
+              <li>Good fit for getting started inside the network</li>
+            </ul>
+            <button class="plan-cta" type="button" onclick="window.location.href='./community-data-collection.html'">Try for free</button>
+          </article>
+
+          <article class="plan-card featured">
+            <div class="plan-price">$499<small>/year</small></div>
+            <div class="plan-name">Premium</div>
+            <ul class="plan-list">
+              <li>Everything in Standard, billed annually</li>
+              <li>Priority access to curated sub-communities</li>
+              <li>Founder and host office hours</li>
+              <li>Private resource library and premium drops</li>
+              <li>Best value for members building long-term here</li>
+            </ul>
+            <button class="plan-cta" type="button" onclick="window.location.href='./community-data-collection.html'">Try for free</button>
+          </article>
+
+          <article class="plan-card">
+            <div class="plan-price">$297<small>/month</small></div>
+            <div class="plan-name">VIP</div>
+            <ul class="plan-list">
+              <li>Personalized onboarding into the ecosystem</li>
+              <li>Direct support and guided introductions</li>
+              <li>Private strategy calls and premium rooms</li>
+              <li>High-touch experience for serious operators</li>
+              <li>Ideal if you want faster access and context</li>
+            </ul>
+            <button class="plan-cta" type="button" onclick="window.location.href='./community-data-collection.html'">Try for free</button>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

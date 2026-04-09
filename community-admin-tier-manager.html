@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Davinci Space - Tier Manager</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --surface: #fffdf8;
+      --border: #e3d7bf;
+      --text: #18392b;
+      --text-soft: #5b6d62;
+      --text-muted: #7f8c84;
+      --brand: #173d2d;
+      --brand-2: #c9a24f;
+      --brand-2-dark: #b58c34;
+      --shadow: 0 8px 30px rgba(24, 57, 43, 0.08);
+      --container: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body.is-drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    @keyframes davinciScanDown {
+      0% {
+        transform: translateY(-80%);
+      }
+
+      100% {
+        transform: translateY(100%);
+      }
+    }
+
+    .davinci-side {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: min(24vw, 300px);
+      pointer-events: none;
+      z-index: 0;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .davinci-side::before,
+    .davinci-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .davinci-side::before {
+      background-image: url("./assets/background.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: inherit;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .davinci-side::after {
+      left: 0;
+      width: 68%;
+      top: 0;
+      height: 80%;
+      background: linear-gradient(to bottom,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(201, 162, 79, 0.12) 18%,
+          rgba(201, 162, 79, 0.28) 50%,
+          rgba(201, 162, 79, 0.1) 82%,
+          rgba(255, 255, 255, 0) 100%);
+      opacity: 0.5;
+      animation: davinciScanDown 4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .davinci-side.left {
+      left: 0;
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.left::before {
+      background-position: left center;
+    }
+
+    .davinci-side.right {
+      right: 0;
+      mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.right::before {
+      background-position: right center;
+    }
+
+    .davinci-side.right::after {
+      left: auto;
+      right: 0;
+      animation-delay: 2.6s;
+    }
+
+    .topbar,
+    .subnav,
+    .main-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: rgba(245, 241, 232, 0.92);
+      backdrop-filter: blur(12px);
+      transition: background 220ms ease, box-shadow 220ms ease;
+    }
+
+    .topbar.is-compact {
+      background: rgba(245, 241, 232, 0.86);
+      box-shadow: 0 10px 24px rgba(24, 57, 43, 0.08);
+    }
+
+    .topbar-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: nowrap;
+      transition: padding 220ms ease, gap 220ms ease;
+    }
+
+    .topbar.is-compact .topbar-inner {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .brand-mark {
+      height: 40px;
+      object-fit: contain;
+      transition: height 220ms ease;
+    }
+
+    .topbar.is-compact .brand-mark {
+      height: 30px;
+    }
+
+    .brand-copy {
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-size: 1.08rem;
+      line-height: 1;
+      color: var(--brand);
+      transition: font-size 220ms ease;
+    }
+
+    .topbar.is-compact .brand-title {
+      font-size: 0.96rem;
+    }
+
+    .subnav {
+      margin-top: 60px;
+      border-bottom: 1px solid rgba(211, 193, 154, 0.65);
+      background: rgba(245, 241, 232, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .subnav-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .subnav-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .subnav-link {
+      position: relative;
+      padding: 11px 2px 10px;
+      color: var(--text-soft);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .subnav-link.active {
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .subnav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+
+    .main-wrap {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: minmax(240px, 290px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    #adminContentMount,
+    .content-card,
+    .manager-view,
+    .editor-view,
+    .members-table {
+      min-width: 0;
+    }
+
+    .panel {
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(247, 242, 231, 0.92));
+      box-shadow: var(--shadow);
+    }
+
+    .menu-card {
+      border-radius: 28px;
+      padding: 22px 18px;
+      position: sticky;
+      top: 132px;
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      margin-left: auto;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.94);
+      color: var(--brand);
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mobile-sidebar-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: none;
+    }
+
+    .mobile-sidebar-drawer.is-open {
+      display: block;
+    }
+
+    .mobile-sidebar-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(24, 57, 43, 0.28);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+
+    .mobile-sidebar-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: min(86vw, 320px);
+      height: 100%;
+      padding: 0;
+      overflow-y: auto;
+      transform: translateX(-100%);
+      transition: transform 220ms ease;
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.96));
+      border-right: 1px solid rgba(227, 215, 191, 0.92);
+      box-shadow: 18px 0 40px rgba(24, 57, 43, 0.18);
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .mobile-sidebar-drawer.is-open .mobile-sidebar-backdrop {
+      opacity: 1;
+    }
+
+    .mobile-sidebar-drawer.is-open .mobile-sidebar-panel {
+      transform: translateX(0);
+    }
+
+    .mobile-sidebar-head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      min-height: 72px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(255, 253, 248, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(227, 215, 191, 0.9);
+    }
+
+    .mobile-sidebar-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .mobile-sidebar-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.94);
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .mobile-sidebar-close svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mobile-sidebar-content {
+      padding: 16px;
+    }
+
+    .mobile-sidebar-panel .menu-card {
+      position: static;
+      margin: 0;
+      min-height: calc(100dvh - 104px);
+      border-radius: 24px;
+      box-shadow: 0 12px 30px rgba(24, 57, 43, 0.08);
+    }
+
+    .menu-title,
+    .menu-group-title {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .menu-list {
+      display: grid;
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .menu-group {
+      display: grid;
+      gap: 8px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(227, 215, 191, 0.9);
+    }
+
+    .menu-group:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 0 14px;
+      border-radius: 16px;
+      border: 1px solid transparent;
+      color: var(--text-soft);
+      font-size: 0.92rem;
+      font-weight: 700;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .menu-item svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    .menu-item.active {
+      background: rgba(24, 57, 43, 0.06);
+      border-color: rgba(211, 193, 154, 0.9);
+      color: var(--brand);
+    }
+
+    .content-card {
+      border-radius: 30px;
+      padding: 26px;
+      min-height: 620px;
+      display: grid;
+      align-content: start;
+    }
+
+    .manager-view,
+    .editor-view {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .content-heading,
+    .editor-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .content-heading h1,
+    .editor-heading h1 {
+      margin: 0 0 12px;
+      font-size: 23px;
+      line-height: 1.2;
+      letter-spacing: 0;
+      color: var(--brand);
+      font-weight: 800;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .search-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: nowrap;
+    }
+
+    .search-shell {
+      width: auto;
+      min-width: 0;
+      max-width: 560px;
+      flex: 1 1 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      height: 45px;
+    }
+
+    .search-shell svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      flex: 0 0 auto;
+      stroke: currentColor;
+    }
+
+    .search-shell input {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font-size: 1rem;
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .search-shell input::placeholder {
+      color: #9aa59f;
+    }
+
+    .content-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      flex: 0 0 auto;
+    }
+
+    .members-table {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      min-width: 711px;
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+
+    .members-table-head,
+    .members-table-row {
+      display: grid;
+      grid-template-columns: minmax(200px, 1fr) 120px 140px 110px 64px;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .members-table-head {
+      padding: 0 10px 8px;
+      border-bottom: 1px solid rgba(227, 215, 191, 0.9);
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .members-table-body {
+      display: grid;
+      gap: 4px;
+      align-content: start;
+    }
+
+    .members-table-row {
+      position: relative;
+      z-index: 0;
+      padding: 8px 10px;
+      border-radius: 18px;
+      background: rgba(255, 253, 248, 0.96);
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+      cursor: pointer;
+    }
+
+    .members-table-row:nth-child(even) {
+      background: #f9f5ec;
+    }
+
+    .members-table-row:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(24, 57, 43, 0.08);
+      z-index: 1;
+    }
+
+    .members-table-row.has-open-menu {
+      z-index: 3;
+    }
+
+    .members-empty {
+      padding: 26px 18px;
+      border-radius: 18px;
+      border: 1px dashed rgba(211, 193, 154, 0.9);
+      background: linear-gradient(180deg, rgba(251, 248, 242, 0.88), rgba(247, 242, 231, 0.76));
+      color: var(--text-soft);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .tier-name {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tier-position-prefix {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tier-name strong,
+    .tier-cell {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tier-cell.is-soft {
+      color: var(--text-soft);
+    }
+
+    .status-badge {
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .status-badge.active {
+      background: rgba(79, 159, 97, 0.14);
+      border-color: rgba(79, 159, 97, 0.22);
+      color: #2f7c47;
+    }
+
+    .status-badge.inactive {
+      background: rgba(203, 94, 94, 0.14);
+      border-color: rgba(203, 94, 94, 0.22);
+      color: #a64747;
+    }
+
+    .action-cell {
+      display: flex;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .action-menu-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: rgba(255, 253, 248, 0.94);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .action-menu-btn:hover {
+      color: var(--brand);
+      border-color: rgba(23, 61, 45, 0.12);
+      background: rgba(23, 61, 45, 0.04);
+    }
+
+    .action-menu-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .action-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 180px;
+      padding: 8px;
+      border-radius: 16px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.94));
+      box-shadow: 0 18px 34px rgba(24, 57, 43, 0.14);
+      display: none;
+      z-index: 20;
+    }
+
+    .action-dropdown.is-open {
+      display: grid;
+      gap: 4px;
+    }
+
+    .action-dropdown-item {
+      width: 100%;
+      min-height: 42px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .action-dropdown-item:hover {
+      background: rgba(23, 61, 45, 0.05);
+    }
+
+    .action-dropdown-item.is-danger {
+      color: #a64747;
+    }
+
+    .action-dropdown-item svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    .editor-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .editor-form {
+      display: grid;
+      gap: 20px;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .editor-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .editor-field.is-half {
+      max-width: calc((100% - 16px) / 2);
+    }
+
+    .editor-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .editor-input,
+    .editor-textarea {
+      width: 100%;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: rgba(255, 253, 248, 0.96);
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      box-shadow: var(--shadow);
+    }
+
+    .editor-textarea {
+      min-height: 132px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .toggle-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .toggle-option {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 0 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: rgba(255, 253, 248, 0.96);
+      color: var(--text);
+      font-weight: 700;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    .toggle-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .toggle-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(211, 193, 154, 0.9);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      background: rgba(247, 242, 231, 0.9);
+      flex: 0 0 auto;
+    }
+
+    .toggle-option.is-selected {
+      border-color: rgba(79, 159, 97, 0.64);
+      background: rgba(79, 159, 97, 0.12);
+    }
+
+    .toggle-option.is-selected .toggle-check {
+      background: #4f9f61;
+      border-color: #4f9f61;
+      color: #fff;
+    }
+
+    .toggle-option.is-selected.is-danger {
+      border-color: rgba(203, 94, 94, 0.48);
+      background: rgba(203, 94, 94, 0.12);
+    }
+
+    .toggle-option.is-selected.is-danger .toggle-check {
+      background: #cb5e5e;
+      border-color: #cb5e5e;
+    }
+
+    .editor-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ui-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 80;
+    }
+
+    .ui-modal.is-open {
+      display: flex;
+    }
+
+    .ui-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(24, 57, 43, 0.28);
+      backdrop-filter: blur(10px);
+    }
+
+    .ui-modal-card {
+      position: relative;
+      width: min(100%, 460px);
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.94));
+      box-shadow: 0 24px 60px rgba(24, 57, 43, 0.18);
+      display: grid;
+      gap: 16px;
+    }
+
+    .ui-modal-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(201, 162, 79, 0.14);
+      color: #8a6517;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      justify-self: start;
+    }
+
+    .ui-modal-title {
+      margin: 0;
+      color: var(--brand);
+      font-size: 1.28rem;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .ui-modal-description {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .ui-modal-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ui-modal-actions > span {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .ui-snackbar-stack {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 90;
+      display: grid;
+      gap: 12px;
+      width: min(100vw - 40px, 360px);
+      pointer-events: none;
+    }
+
+    .ui-snackbar {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.94));
+      box-shadow: 0 18px 34px rgba(24, 57, 43, 0.14);
+      color: var(--text);
+      animation: snackbarIn 220ms ease;
+    }
+
+    .ui-snackbar-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(79, 159, 97, 0.14);
+      color: #2f7c47;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .ui-snackbar-title {
+      margin: 0 0 3px;
+      color: var(--brand);
+      font-size: 0.96rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .ui-snackbar-description {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 0 2px;
+      flex-wrap: wrap;
+    }
+
+    .pagination-btn,
+    .pagination-page {
+      height: 40px;
+      min-width: 40px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: rgba(255, 253, 248, 0.94);
+      box-shadow: var(--shadow);
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .pagination-page.active {
+      background: #c9a24f;
+      border-color: #c9a24f;
+      color: #fff;
+    }
+
+    .pagination-btn[disabled] {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .pagination-dots {
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 0 2px;
+    }
+
+    @keyframes snackbarIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 960px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+
+      #adminSidebarMount {
+        display: none;
+      }
+
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner,
+      .subnav-inner,
+      .main-wrap {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .content-card {
+        padding: 22px 18px;
+        min-height: 420px;
+      }
+
+      .search-row,
+      .editor-topbar {
+        flex-wrap: wrap;
+      }
+
+      .content-actions {
+        width: 100%;
+        justify-content: flex-start;
+        order: -1;
+      }
+
+      .search-shell {
+        width: 100%;
+        max-width: none;
+        height: 52px;
+        border-radius: 14px;
+      }
+
+      .editor-grid,
+      .toggle-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .editor-field.is-half {
+        max-width: none;
+      }
+
+      .brand {
+        min-width: 0;
+      }
+
+      .brand-copy {
+        min-width: 0;
+      }
+
+      .brand-title {
+        font-size: 1rem;
+      }
+
+      .mobile-sidebar-panel {
+        width: min(90vw, 320px);
+      }
+
+      .mobile-sidebar-content {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="davinci-side left" aria-hidden="true"></div>
+    <div class="davinci-side right" aria-hidden="true"></div>
+
+    <div id="communityHeaderMount"></div>
+    <div class="mobile-sidebar-drawer" id="mobileSidebarDrawer" aria-hidden="true">
+      <div class="mobile-sidebar-backdrop" data-drawer-close></div>
+      <div class="mobile-sidebar-panel" aria-label="Mobile admin navigation">
+        <div class="mobile-sidebar-head">
+          <span class="mobile-sidebar-title">Admin menu</span>
+          <button class="mobile-sidebar-close" type="button" aria-label="Close admin menu" data-drawer-close>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12"></path>
+              <path d="M18 6 6 18"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="mobile-sidebar-content">
+          <div id="mobileSidebarMount"></div>
+        </div>
+      </div>
+    </div>
+
+    <main class="main-wrap">
+      <div class="admin-layout">
+        <div id="adminSidebarMount"></div>
+        <div id="adminContentMount"></div>
+      </div>
+    </main>
+
+    <template id="adminTierManagerContentTemplate">
+      <div id="tierManagerView" class="manager-view"></div>
+    </template>
+
+    <div class="ui-modal" id="uiConfirmModal" aria-hidden="true">
+      <div class="ui-modal-backdrop" data-modal-close></div>
+      <div class="ui-modal-card" role="dialog" aria-modal="true" aria-labelledby="uiConfirmTitle"
+        aria-describedby="uiConfirmDescription">
+        <span class="ui-modal-eyebrow" id="uiConfirmEyebrow">Warning</span>
+        <div>
+          <h2 class="ui-modal-title" id="uiConfirmTitle">Confirm action</h2>
+          <p class="ui-modal-description" id="uiConfirmDescription">Are you sure?</p>
+        </div>
+        <div class="ui-modal-actions">
+          <span id="uiConfirmCancelMount"></span>
+          <span id="uiConfirmAcceptMount"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui-snackbar-stack" id="uiSnackbarStack" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <script src="./components/community-header.js"></script>
+  <script src="./components/admin-sidebar.js"></script>
+  <script src="./components/admin-content-shell.js"></script>
+  <script src="./components/cta-button.js"></script>
+  <script>
+    DavinciCommunityHeader.render(document.getElementById("communityHeaderMount"), {
+      brandHref: "./community-list.html",
+      navItems: [
+        { label: "Home", href: "./community-home.html" },
+        { label: "Board Games", href: "./community-board-game.html" },
+        { label: "Entrance", href: "./community-entrance.html" },
+        { label: "Leaderboard", href: "./community-leaderboard.html" }
+      ]
+    });
+
+    DavinciAdminSidebar.render(document.getElementById("adminSidebarMount"), {
+      activeItem: "Tiers"
+    });
+
+    document.getElementById("mobileSidebarMount").innerHTML = document.getElementById("adminSidebarMount").innerHTML;
+
+    DavinciAdminContentShell.render(document.getElementById("adminContentMount"), {
+      ariaLabel: "Tier manager content",
+      templateId: "adminTierManagerContentTemplate"
+    });
+
+    document.getElementById("uiConfirmCancelMount").innerHTML = DavinciCTAButton.render({
+      tag: "button",
+      type: "button",
+      id: "uiConfirmCancel",
+      label: "Cancel",
+      variant: "text"
+    });
+
+    document.getElementById("uiConfirmAcceptMount").innerHTML = DavinciCTAButton.render({
+      tag: "button",
+      type: "button",
+      id: "uiConfirmAccept",
+      label: "Confirm",
+      variant: "contained"
+    });
+
+    const topbar = document.getElementById("topbar");
+    const topbarInner = topbar ? topbar.querySelector(".topbar-inner") : null;
+    const mobileSidebarDrawer = document.getElementById("mobileSidebarDrawer");
+    const tierManagerView = document.getElementById("tierManagerView");
+    const uiConfirmModal = document.getElementById("uiConfirmModal");
+    const uiConfirmEyebrow = document.getElementById("uiConfirmEyebrow");
+    const uiConfirmTitle = document.getElementById("uiConfirmTitle");
+    const uiConfirmDescription = document.getElementById("uiConfirmDescription");
+    const uiConfirmCancel = document.getElementById("uiConfirmCancel");
+    const uiConfirmAccept = document.getElementById("uiConfirmAccept");
+    const uiSnackbarStack = document.getElementById("uiSnackbarStack");
+
+    const pageSize = 5;
+    let currentPage = 1;
+    let openMenuTierId = null;
+    let confirmResolver = null;
+    let snackbarTimerId = 0;
+    let viewMode = "list";
+    let editorContext = null;
+    let editorDraft = null;
+    let pendingConfirm = null;
+    let isMobileDrawerOpen = false;
+    const searchState = { query: "" };
+    const intervalOptions = ["Yearly", "Monthly"];
+    const statusOptions = ["Active", "Inactive"];
+
+    const tiers = [
+      { id: 1, name: "Starter", priceCents: 900, billingInterval: "Monthly", position: 1, features: "Basic access, monthly drops, community voting.", status: "Active" },
+      { id: 2, name: "Collector", priceCents: 1900, billingInterval: "Monthly", position: 2, features: "Everything in Starter, early releases, premium raffles.", status: "Active" },
+      { id: 3, name: "Founders Circle", priceCents: 4900, billingInterval: "Monthly", position: 3, features: "Founder lounge, direct support, collector insights.", status: "Active" },
+      { id: 4, name: "Season Pass", priceCents: 9900, billingInterval: "Monthly", position: 4, features: "Seasonal access, curated perks, exclusive assets.", status: "Inactive" },
+      { id: 5, name: "Pro", priceCents: 12900, billingInterval: "Monthly", position: 5, features: "Priority support, advanced drops, analytics preview.", status: "Active" },
+      { id: 6, name: "Studio", priceCents: 24900, billingInterval: "Yearly", position: 6, features: "Studio features, collab tooling, private launches.", status: "Active" },
+      { id: 7, name: "Patron", priceCents: 39900, billingInterval: "Yearly", position: 7, features: "Patron access, concierge support, insider roadmap.", status: "Inactive" },
+      { id: 8, name: "Enterprise", priceCents: 99900, billingInterval: "Yearly", position: 8, features: "Enterprise onboarding, dedicated support, custom terms.", status: "Active" }
+    ];
+
+    const updateTopbar = () => {
+      if (!topbar) {
+        return;
+      }
+
+      topbar.classList.toggle("is-compact", window.scrollY > 12);
+    };
+
+    const setDrawerOpen = (nextOpen) => {
+      isMobileDrawerOpen = nextOpen;
+      mobileSidebarDrawer.classList.toggle("is-open", nextOpen);
+      mobileSidebarDrawer.setAttribute("aria-hidden", nextOpen ? "false" : "true");
+      document.body.classList.toggle("is-drawer-open", nextOpen);
+    };
+
+    const closeDrawer = () => {
+      setDrawerOpen(false);
+    };
+
+    const openDrawer = () => {
+      setDrawerOpen(true);
+    };
+
+    const showSnackbar = ({ title, description = "" }) => {
+      if (snackbarTimerId) {
+        window.clearTimeout(snackbarTimerId);
+      }
+
+      uiSnackbarStack.innerHTML = `
+        <div class="ui-snackbar" role="status">
+          <span class="ui-snackbar-mark">✓</span>
+          <div>
+            <p class="ui-snackbar-title">${title}</p>
+            ${description ? `<p class="ui-snackbar-description">${description}</p>` : ""}
+          </div>
+        </div>
+      `;
+
+      snackbarTimerId = window.setTimeout(() => {
+        uiSnackbarStack.innerHTML = "";
+        snackbarTimerId = 0;
+      }, 3200);
+    };
+
+    const openConfirmDialog = ({ eyebrow, title, description, cancelLabel, confirmLabel }) => {
+      uiConfirmEyebrow.textContent = eyebrow;
+      uiConfirmTitle.textContent = title;
+      uiConfirmDescription.textContent = description;
+      uiConfirmCancel.textContent = cancelLabel;
+      uiConfirmAccept.textContent = confirmLabel;
+      uiConfirmModal.classList.add("is-open");
+      uiConfirmModal.setAttribute("aria-hidden", "false");
+
+      return new Promise((resolve) => {
+        confirmResolver = resolve;
+      });
+    };
+
+    const closeConfirmDialog = (result) => {
+      uiConfirmModal.classList.remove("is-open");
+      uiConfirmModal.setAttribute("aria-hidden", "true");
+
+      if (confirmResolver) {
+        confirmResolver(result);
+        confirmResolver = null;
+      }
+    };
+
+    const buildPaginationModel = (totalPages, page) => {
+      if (totalPages <= 5) {
+        return Array.from({ length: totalPages }, (_, index) => index + 1);
+      }
+
+      if (page <= 3) {
+        return [1, 2, 3, "...", totalPages];
+      }
+
+      if (page >= totalPages - 2) {
+        return [1, "...", totalPages - 2, totalPages - 1, totalPages];
+      }
+
+      return [1, "...", page, "...", totalPages];
+    };
+
+    const getFilteredTiers = () => {
+      const query = searchState.query.trim().toLowerCase();
+
+      if (!query) {
+        return tiers;
+      }
+
+      return tiers.filter((tier) =>
+        tier.name.toLowerCase().includes(query) ||
+        tier.billingInterval.toLowerCase().includes(query)
+      );
+    };
+
+    const createEditorDraft = (tier) => ({
+      name: tier ? tier.name : "",
+      priceCents: tier ? String(tier.priceCents) : "",
+      billingInterval: tier ? tier.billingInterval : "Monthly",
+      position: tier ? String(tier.position) : "",
+      features: tier ? tier.features : "",
+      status: tier ? tier.status : "Active"
+    });
+
+    const isEditorDirty = () => {
+      if (!editorDraft || !editorContext) {
+        return false;
+      }
+
+      if (editorContext.mode === "create") {
+        return editorDraft.name.trim() !== "" ||
+          editorDraft.priceCents.trim() !== "" ||
+          editorDraft.position.trim() !== "" ||
+          editorDraft.features.trim() !== "" ||
+          editorDraft.billingInterval !== "Monthly" ||
+          editorDraft.status !== "Active";
+      }
+
+      const sourceTier = tiers.find((tier) => tier.id === editorContext.tierId);
+
+      if (!sourceTier) {
+        return false;
+      }
+
+      return JSON.stringify({
+        name: editorDraft.name,
+        priceCents: editorDraft.priceCents,
+        billingInterval: editorDraft.billingInterval,
+        position: editorDraft.position,
+        features: editorDraft.features,
+        status: editorDraft.status
+      }) !== JSON.stringify({
+        name: sourceTier.name,
+        priceCents: String(sourceTier.priceCents),
+        billingInterval: sourceTier.billingInterval,
+        position: String(sourceTier.position),
+        features: sourceTier.features,
+        status: sourceTier.status
+      });
+    };
+
+    const renderToggleOptions = (options, selectedValue, controlName) => {
+      return options.map((option) => `
+        <label class="toggle-option ${selectedValue === option ? "is-selected" : ""} ${controlName === "status" && option === "Inactive" ? "is-danger" : ""}">
+          <input type="radio" name="${controlName}" value="${option}" data-editor-control="${controlName}" ${selectedValue === option ? "checked" : ""}>
+          <span class="toggle-check">✓</span>
+          <span>${option}</span>
+        </label>
+      `).join("");
+    };
+
+    const renderListView = () => {
+      const filteredTiers = getFilteredTiers();
+      const totalPages = Math.max(1, Math.ceil(filteredTiers.length / pageSize));
+
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
+      const start = (currentPage - 1) * pageSize;
+      const visibleTiers = filteredTiers.slice(start, start + pageSize);
+
+      tierManagerView.innerHTML = `
+        <div class="content-heading">
+          <div>
+            <h1>Tier Manager</h1>
+          </div>
+        </div>
+        <div class="search-row">
+          <label class="search-shell" for="tierSearch">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m20 20-3.5-3.5"></path>
+            </svg>
+            <input id="tierSearch" type="search" placeholder="Search tiers by name or interval">
+          </label>
+          <div class="content-actions" id="tierManagerActions"></div>
+        </div>
+        <div class="table-scroll" aria-label="Scrollable tier table">
+        <section class="members-table" aria-label="Tier table">
+          <div class="members-table-head" aria-hidden="true">
+            <div>Name</div>
+            <div>Price</div>
+            <div>Billing Inter.</div>
+            <div>Status</div>
+            <div>Action</div>
+          </div>
+          <div class="members-table-body" id="tierTableBody"></div>
+        </section>
+        </div>
+        <nav class="pagination" aria-label="Tier pagination" id="tierPagination"></nav>
+      `;
+
+      document.getElementById("tierManagerActions").innerHTML = DavinciCTAButton.render({
+        label: "Create",
+        href: "#",
+        variant: "contained",
+        icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>',
+        attributes: { "data-tier-create": "true" }
+      });
+
+      const tierSearch = document.getElementById("tierSearch");
+      const tierTableBody = document.getElementById("tierTableBody");
+      const tierPagination = document.getElementById("tierPagination");
+      tierSearch.value = searchState.query;
+
+      if (!visibleTiers.length) {
+        tierTableBody.innerHTML = '<div class="members-empty">No tiers match the current search.</div>';
+      } else {
+        tierTableBody.innerHTML = visibleTiers.map((tier) => `
+          <div class="members-table-row ${openMenuTierId === tier.id ? "has-open-menu" : ""}" data-tier-id="${tier.id}">
+            <div class="tier-name">
+              <span class="tier-position-prefix">#${tier.position}</span>
+              <strong>${tier.name}</strong>
+            </div>
+            <div class="tier-cell">${tier.priceCents}</div>
+            <div class="tier-cell is-soft">${tier.billingInterval}</div>
+            <div><span class="status-badge ${tier.status.toLowerCase()}">${tier.status}</span></div>
+            <div class="action-cell">
+              <button class="action-menu-btn" type="button" data-action-menu-toggle="${tier.id}" aria-label="Tier actions">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="5" r="1.8"></circle>
+                  <circle cx="12" cy="12" r="1.8"></circle>
+                  <circle cx="12" cy="19" r="1.8"></circle>
+                </svg>
+              </button>
+              <div class="action-dropdown ${openMenuTierId === tier.id ? "is-open" : ""}">
+                <button class="action-dropdown-item" type="button" data-tier-action="edit" data-tier-id="${tier.id}">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5V16l10.6-10.6a2.1 2.1 0 0 1 3 0l1 1a2.1 2.1 0 0 1 0 3L8 20H4Z"></path><path d="M13.5 6.5l4 4"></path></svg>
+                  <span>Edit</span>
+                </button>
+                <button class="action-dropdown-item" type="button" data-tier-action="${tier.status === "Active" ? "deactivate" : "activate"}" data-tier-id="${tier.id}">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">${tier.status === "Active"
+                    ? '<path d="M6 6l12 12"></path><path d="M6 18 18 6"></path>'
+                    : '<path d="M5 13l4 4L19 7"></path>'}</svg>
+                  <span>${tier.status === "Active" ? "Deactivate" : "Activate"}</span>
+                </button>
+                <button class="action-dropdown-item is-danger" type="button" data-tier-action="delete" data-tier-id="${tier.id}">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
+                  <span>Delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      const paginationModel = buildPaginationModel(totalPages, currentPage);
+      tierPagination.innerHTML = `
+        <button class="pagination-btn" type="button" data-page-nav="prev" ${currentPage === 1 ? "disabled" : ""}>Previous</button>
+        ${paginationModel.map((item) => item === "..."
+          ? '<span class="pagination-dots">...</span>'
+          : `<button class="pagination-page ${item === currentPage ? "active" : ""}" type="button" data-page="${item}">${item}</button>`
+        ).join("")}
+        <button class="pagination-btn" type="button" data-page-nav="next" ${currentPage === totalPages ? "disabled" : ""}>Next</button>
+      `;
+
+      tierSearch.addEventListener("input", () => {
+        searchState.query = tierSearch.value;
+        currentPage = 1;
+        openMenuTierId = null;
+        renderCurrentView();
+      });
+
+      tierPagination.addEventListener("click", (event) => {
+        const pageButton = event.target.closest("[data-page]");
+        const navButton = event.target.closest("[data-page-nav]");
+
+        if (pageButton) {
+          currentPage = Number(pageButton.dataset.page);
+          openMenuTierId = null;
+          renderCurrentView();
+        }
+
+        if (navButton) {
+          currentPage += navButton.dataset.pageNav === "next" ? 1 : -1;
+          openMenuTierId = null;
+          renderCurrentView();
+        }
+      });
+    };
+
+    const renderEditorView = () => {
+      const isEdit = editorContext.mode === "edit";
+      const currentTier = isEdit ? tiers.find((tier) => tier.id === editorContext.tierId) : null;
+      const title = isEdit && currentTier ? currentTier.name : "New";
+
+      tierManagerView.innerHTML = `
+        <div class="editor-view">
+          <div class="editor-topbar">
+            ${DavinciCTAButton.render({
+              tag: "button",
+              type: "button",
+              label: "Back to tiers",
+              variant: "text",
+              xPadding: "0px",
+              color: "var(--text-muted)",
+              hoverColor: "var(--text-muted)",
+              hoverBackground: "transparent",
+              icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>',
+              attributes: { "data-tier-back": "true" }
+            })}
+          </div>
+          <div class="editor-heading">
+            <div>
+              <h1>${title}</h1>
+            </div>
+            ${isEdit ? DavinciCTAButton.render({
+              tag: "button",
+              type: "button",
+              label: "Delete",
+              variant: "text",
+              color: "#a64747",
+              hoverColor: "#8f3535",
+              hoverBackground: "rgba(203, 94, 94, 0.12)",
+              attributes: { "data-tier-delete-header": "true" }
+            }) : ""}
+          </div>
+          <div class="editor-form">
+            <div class="editor-grid">
+              <div class="editor-field">
+                <label class="editor-label" for="tierNameInput">Name</label>
+                <input class="editor-input" id="tierNameInput" type="text" value="${editorDraft.name}">
+              </div>
+              <div class="editor-field">
+                <label class="editor-label" for="tierPriceInput">Price</label>
+                <input class="editor-input" id="tierPriceInput" type="number" min="0" step="1" value="${editorDraft.priceCents}">
+              </div>
+              <div class="editor-field">
+                <span class="editor-label">Billing interval</span>
+                <div class="toggle-grid" id="billingIntervalGrid">${renderToggleOptions(intervalOptions, editorDraft.billingInterval, "billingInterval")}</div>
+              </div>
+              <div class="editor-field">
+                <label class="editor-label" for="tierPositionInput">Position</label>
+                <input class="editor-input" id="tierPositionInput" type="number" min="0" step="1" value="${editorDraft.position}">
+              </div>
+            </div>
+            <div class="editor-field">
+              <label class="editor-label" for="tierFeaturesInput">Features</label>
+              <textarea class="editor-textarea" id="tierFeaturesInput">${editorDraft.features}</textarea>
+            </div>
+            <div class="editor-field is-half">
+              <span class="editor-label">Status</span>
+              <div class="toggle-grid" id="statusGrid">${renderToggleOptions(statusOptions, editorDraft.status, "status")}</div>
+            </div>
+            <div class="editor-actions">
+              ${DavinciCTAButton.render({
+                tag: "button",
+                type: "button",
+                label: "Cancel",
+                variant: "text",
+                attributes: { "data-tier-cancel": "true" }
+              })}
+              ${DavinciCTAButton.render({
+                tag: "button",
+                type: "button",
+                label: "Save",
+                variant: "contained",
+                attributes: { "data-tier-save": "true" }
+              })}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("tierNameInput").addEventListener("input", (event) => {
+        editorDraft.name = event.target.value;
+      });
+
+      document.getElementById("tierPriceInput").addEventListener("input", (event) => {
+        editorDraft.priceCents = event.target.value;
+      });
+
+      document.getElementById("tierPositionInput").addEventListener("input", (event) => {
+        editorDraft.position = event.target.value;
+      });
+
+      document.getElementById("tierFeaturesInput").addEventListener("input", (event) => {
+        editorDraft.features = event.target.value;
+      });
+
+      document.getElementById("billingIntervalGrid").addEventListener("change", (event) => {
+        const input = event.target.closest("[data-editor-control='billingInterval']");
+
+        if (!input) {
+          return;
+        }
+
+        editorDraft.billingInterval = input.value;
+        renderCurrentView();
+      });
+
+      document.getElementById("statusGrid").addEventListener("change", (event) => {
+        const input = event.target.closest("[data-editor-control='status']");
+
+        if (!input) {
+          return;
+        }
+
+        editorDraft.status = input.value;
+        renderCurrentView();
+      });
+    };
+
+    const renderCurrentView = () => {
+      if (viewMode === "editor") {
+        renderEditorView();
+        return;
+      }
+
+      renderListView();
+    };
+
+    if (topbarInner) {
+      const mobileMenuToggle = document.createElement("button");
+      mobileMenuToggle.type = "button";
+      mobileMenuToggle.className = "mobile-menu-toggle";
+      mobileMenuToggle.setAttribute("aria-label", "Open admin menu");
+      mobileMenuToggle.setAttribute("aria-controls", "mobileSidebarDrawer");
+      mobileMenuToggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>';
+      topbarInner.appendChild(mobileMenuToggle);
+
+      mobileMenuToggle.addEventListener("click", () => {
+        if (isMobileDrawerOpen) {
+          closeDrawer();
+          return;
+        }
+
+        openDrawer();
+      });
+    }
+
+    const enterCreateMode = () => {
+      viewMode = "editor";
+      editorContext = { mode: "create", tierId: null };
+      editorDraft = createEditorDraft(null);
+      renderCurrentView();
+    };
+
+    const enterEditMode = (tierId) => {
+      const tier = tiers.find((item) => item.id === tierId);
+
+      if (!tier) {
+        return;
+      }
+
+      viewMode = "editor";
+      editorContext = { mode: "edit", tierId };
+      editorDraft = createEditorDraft(tier);
+      renderCurrentView();
+    };
+
+    const maybeLeaveEditor = async () => {
+      if (isEditorDirty()) {
+        const shouldDiscard = await openConfirmDialog({
+          eyebrow: "Unsaved changes",
+          title: "Discard your changes?",
+          description: "You updated this tier but have not saved yet. If you leave now, those edits will be lost.",
+          cancelLabel: "Keep editing",
+          confirmLabel: "Discard changes"
+        });
+
+        if (!shouldDiscard) {
+          return;
+        }
+      }
+
+      viewMode = "list";
+      editorContext = null;
+      editorDraft = null;
+      renderCurrentView();
+    };
+
+    const saveEditor = () => {
+      const payload = {
+        name: editorDraft.name.trim() || "Untitled tier",
+        priceCents: Number(editorDraft.priceCents || 0),
+        billingInterval: editorDraft.billingInterval,
+        position: Number(editorDraft.position || 0),
+        features: editorDraft.features.trim(),
+        status: editorDraft.status
+      };
+
+      if (editorContext.mode === "create") {
+        tiers.unshift({
+          id: Date.now(),
+          ...payload
+        });
+        currentPage = 1;
+        showSnackbar({
+          title: "Tier created",
+          description: `${payload.name} was created successfully.`
+        });
+      } else {
+        const tier = tiers.find((item) => item.id === editorContext.tierId);
+
+        if (tier) {
+          Object.assign(tier, payload);
+          showSnackbar({
+            title: "Tier updated",
+            description: `${payload.name} was saved successfully.`
+          });
+        }
+      }
+
+      viewMode = "list";
+      editorContext = null;
+      editorDraft = null;
+      renderCurrentView();
+    };
+
+    const confirmDeleteTier = (tierId) => {
+      const tier = tiers.find((item) => item.id === tierId);
+
+      if (!tier) {
+        return;
+      }
+
+      openConfirmDialog({
+        eyebrow: "Delete tier",
+        title: "Delete tier?",
+        description: `Are you sure you want to delete the ${tier.name} tier?`,
+        cancelLabel: "Cancel",
+        confirmLabel: "Delete"
+      }).then((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+
+        const index = tiers.findIndex((item) => item.id === tierId);
+
+        if (index !== -1) {
+          const removedTier = tiers.splice(index, 1)[0];
+          viewMode = "list";
+          editorContext = null;
+          editorDraft = null;
+          renderCurrentView();
+          showSnackbar({
+            title: "Tier deleted",
+            description: `${removedTier.name} was removed successfully.`
+          });
+        }
+      });
+    };
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("[data-tier-create]")) {
+        event.preventDefault();
+        enterCreateMode();
+        return;
+      }
+
+      if (event.target.closest("[data-tier-back]") || event.target.closest("[data-tier-cancel]")) {
+        event.preventDefault();
+        maybeLeaveEditor();
+        return;
+      }
+
+      if (event.target.closest("[data-tier-save]")) {
+        event.preventDefault();
+        saveEditor();
+        return;
+      }
+
+      if (event.target.closest("[data-tier-delete-header]")) {
+        event.preventDefault();
+        if (editorContext && editorContext.mode === "edit") {
+          confirmDeleteTier(editorContext.tierId);
+        }
+        return;
+      }
+
+      const toggleButton = event.target.closest("[data-action-menu-toggle]");
+      const actionButton = event.target.closest("[data-tier-action]");
+      const row = event.target.closest("[data-tier-id]");
+
+      if (toggleButton) {
+        const tierId = Number(toggleButton.getAttribute("data-action-menu-toggle"));
+        openMenuTierId = openMenuTierId === tierId ? null : tierId;
+        renderCurrentView();
+        return;
+      }
+
+      if (actionButton) {
+        const tierId = Number(actionButton.getAttribute("data-tier-id"));
+        const tier = tiers.find((item) => item.id === tierId);
+
+        openMenuTierId = null;
+        renderCurrentView();
+
+        if (!tier) {
+          return;
+        }
+
+        const action = actionButton.getAttribute("data-tier-action");
+
+        if (action === "edit") {
+          enterEditMode(tierId);
+          return;
+        }
+
+        if (action === "activate") {
+          tier.status = "Active";
+          renderCurrentView();
+          showSnackbar({
+            title: "Tier activated",
+            description: `${tier.name} is now active.`
+          });
+          return;
+        }
+
+        if (action === "delete") {
+          confirmDeleteTier(tierId);
+          return;
+        }
+
+        openConfirmDialog({
+          eyebrow: "Deactivate tier",
+          title: "Deactivate tier?",
+          description: `Are you sure you want to deactivate the ${tier.name} tier?`,
+          cancelLabel: "Cancel",
+          confirmLabel: "Deactivate"
+        }).then((confirmed) => {
+          if (!confirmed) {
+            return;
+          }
+
+          tier.status = "Inactive";
+          renderCurrentView();
+          showSnackbar({
+            title: "Tier deactivated",
+            description: `${tier.name} is now inactive.`
+          });
+        });
+        return;
+      }
+
+      if (row && viewMode === "list" && !event.target.closest(".action-cell")) {
+        enterEditMode(Number(row.getAttribute("data-tier-id")));
+        return;
+      }
+
+      if (!event.target.closest(".action-cell") && openMenuTierId !== null) {
+        openMenuTierId = null;
+        renderCurrentView();
+      }
+    });
+
+    uiConfirmModal.addEventListener("click", (event) => {
+      if (event.target.closest("[data-modal-close]")) {
+        closeConfirmDialog(false);
+      }
+    });
+
+    mobileSidebarDrawer.addEventListener("click", (event) => {
+      if (event.target.closest("[data-drawer-close]")) {
+        closeDrawer();
+        return;
+      }
+
+      if (event.target.closest("#mobileSidebarMount a")) {
+        closeDrawer();
+      }
+    });
+
+    uiConfirmCancel.addEventListener("click", () => {
+      closeConfirmDialog(false);
+    });
+
+    uiConfirmAccept.addEventListener("click", () => {
+      closeConfirmDialog(true);
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        if (uiConfirmModal.classList.contains("is-open")) {
+          closeConfirmDialog(false);
+          return;
+        }
+
+        if (isMobileDrawerOpen) {
+          closeDrawer();
+          return;
+        }
+
+        if (openMenuTierId !== null) {
+          openMenuTierId = null;
+          renderCurrentView();
+        }
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 960 && isMobileDrawerOpen) {
+        closeDrawer();
+      }
+    });
+
+    renderCurrentView();
+    updateTopbar();
+    window.addEventListener("scroll", updateTopbar, { passive: true });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+.davinci-user-card {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+}
+
+.davinci-user-card-media {
+  position: relative;
+  width: 100%;
+  max-width: var(--davinci-user-card-width, 190px);
+}
+
+.davinci-user-card-image {
+  width: 100%;
+  border-radius: 22px;
+  border: 1px solid rgba(227, 215, 191, 0.9);
+  box-shadow: 0 8px 30px rgba(24, 57, 43, 0.08);
+}
+
+.davinci-user-card-stack {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.davinci-user-card-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(24, 57, 43, 0.94);
+  border: 1px solid rgba(118, 201, 140, 0.5);
+  box-shadow: 0 10px 18px rgba(24, 57, 43, 0.22);
+  color: #dff7e5;
+  backdrop-filter: blur(6px);
+}
+
+.davinci-user-card-badge.is-accent {
+  background: rgba(79, 159, 97, 0.94);
+  border-color: rgba(79, 159, 97, 0.94);
+  color: #ffffff;
+}
+
+.davinci-user-card-badge.is-text {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.davinci-user-card-badge svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.davinci-user-card-meta {
+  display: grid;
+  gap: 10px;
+}
+
+.davinci-user-card-meta strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--brand, #173d2d);
+}
+
+.davinci-user-card-meta span {
+  color: var(--text-soft, #5b6d62);
+}

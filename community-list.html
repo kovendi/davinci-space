@@ -1,0 +1,1002 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Davinci Space – Communities</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --bg-soft: #fbf8f2;
+      --surface: #fffdf8;
+      --surface-2: #f7f2e7;
+      --border: #e3d7bf;
+      --border-strong: #d3c19a;
+
+      --text: #18392b;
+      --text-soft: #5b6d62;
+      --text-muted: #7f8c84;
+
+      --brand: #173d2d;
+      --brand-2: #c9a24f;
+      --brand-2-dark: #b58c34;
+      --accent: #b44a4a;
+
+      --shadow: 0 8px 30px rgba(24, 57, 43, 0.08);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+
+      --container: 1085px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    @keyframes davinciScanDown {
+      0% {
+        transform: translateY(-80%);
+      }
+      100% {
+        transform: translateY(100%);
+      }
+    }
+
+    .davinci-side {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: min(24vw, 300px);
+      pointer-events: none;
+      z-index: 0;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .davinci-side::before,
+    .davinci-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .davinci-side::before {
+      background-image: url("./assets/background.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: inherit;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .davinci-side::after {
+      left: 0;
+      width: 68%;
+      top: 0%;
+      height: 80%;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(201, 162, 79, 0.12) 18%,
+          rgba(201, 162, 79, 0.28) 50%,
+          rgba(201, 162, 79, 0.1) 82%,
+          rgba(255, 255, 255, 0) 100%
+        );
+      opacity: 0.5;
+      animation: davinciScanDown 4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .davinci-side.left {
+      left: 0;
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.left::before {
+      background-position: left center;
+    }
+
+    .davinci-side.right {
+      right: 0;
+      mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.right::before {
+      background-position: right center;
+    }
+
+    .davinci-side.right::after {
+      left: auto;
+      right: 0;
+    }
+
+    .davinci-side.right::after {
+      animation-delay: 2.6s;
+    }
+
+    .topbar,
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(245, 241, 232, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(211, 193, 154, 0.7);
+      transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .topbar-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      transition: padding 220ms ease, gap 220ms ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      color: var(--brand);
+      letter-spacing: -0.02em;
+      transition: gap 220ms ease;
+    }
+
+    .brand-mark {
+      height: 40px;
+      flex: 0 0 auto;
+      object-fit: contain;
+      transition: height 220ms ease;
+    }
+
+    .brand-name {
+      display: flex;
+      flex-direction: column;
+      line-height: 0.95;
+      font-size: 0.98rem;
+      transition: font-size 220ms ease;
+    }
+
+    .super-community-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 14px;
+      background: var(--brand-2);
+      border: 0;
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(201, 162, 79, 0.24);
+      font-size: 1rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: padding 220ms ease, font-size 220ms ease, gap 220ms ease;
+    }
+
+    .topbar.is-compact {
+      background: rgba(245, 241, 232, 0.86);
+      box-shadow: 0 10px 24px rgba(24, 57, 43, 0.08);
+    }
+
+    .topbar.is-compact .topbar-inner {
+      padding-top: 6px;
+      padding-bottom: 6px;
+      gap: 10px;
+    }
+
+    .topbar.is-compact .brand {
+      gap: 8px;
+    }
+
+    .topbar.is-compact .brand-mark {
+      height: 30px;
+    }
+
+    .topbar.is-compact .brand-name {
+      font-size: 0.7rem;
+    }
+
+    .topbar.is-compact .super-community-pill {
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 13px;
+      font-size: 1rem;
+    }
+
+    .ghost-btn,
+    .primary-btn {
+      min-height: 40px;
+      border-radius: 14px;
+      padding: 0 13px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: 1px solid var(--border-strong);
+      cursor: pointer;
+      transition: 180ms ease;
+    }
+
+    .ghost-btn {
+      background: var(--surface);
+      color: var(--brand);
+    }
+
+    .ghost-btn:hover {
+      background: var(--surface-2);
+    }
+
+    .primary-btn {
+      background: var(--brand-2);
+      color: #fff;
+      border: 0;
+      box-shadow: 0 10px 24px rgba(201, 162, 79, 0.24);
+    }
+
+    .primary-btn:hover {
+      background: var(--brand-2-dark);
+    }
+
+    .container {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 28px 20px 56px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 24px 0 18px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.35rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: var(--brand);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 16px auto 0;
+      font-size: 1.03rem;
+      line-height: 1.65;
+      color: var(--text-soft);
+    }
+
+    .search-row {
+      margin-top: 26px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-shell {
+      width: min(760px, 100%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      height: 58px;
+    }
+
+    .search-shell svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      flex: 0 0 auto;
+    }
+
+    .search-shell input {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .search-shell input::placeholder {
+      color: #9aa59f;
+    }
+
+    .chips {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 22px;
+    }
+
+    .creator-cta {
+      margin: 0 auto 20px;
+      width: min(760px, 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .creator-cta-copy {
+      max-width: 560px;
+    }
+
+    .creator-cta h2 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.2;
+      letter-spacing: 0;
+      color: var(--brand);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 800;
+    }
+
+    .creator-cta p {
+      margin: 4px 0 0;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .creator-cta-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .creator-cta .primary-btn {}
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: 180ms ease;
+    }
+
+    .chip.active,
+    .chip:hover {
+      background: rgba(201, 162, 79, 0.14);
+      color: var(--brand);
+      border-color: rgba(201, 162, 79, 0.38);
+    }
+
+    .main {
+      min-width: 0;
+      margin-top: 30px;
+    }
+
+    .toolbar {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .results-label {
+      font-weight: 800;
+      color: var(--brand);
+      font-size: 1rem;
+    }
+
+    .sort-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .community-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .community-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .community-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      box-shadow: 0 14px 36px rgba(24, 57, 43, 0.11);
+    }
+
+    .card-cover {
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(227, 215, 191, 0.8);
+      background-size: cover;
+      background-position: center center;
+    }
+
+    .cover-1 {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.24), rgba(201, 162, 79, 0.18)),
+        url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .cover-2 {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.28), rgba(201, 162, 79, 0.18)),
+        url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .cover-3 {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.24), rgba(201, 162, 79, 0.18)),
+        url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .cover-4 {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.24), rgba(201, 162, 79, 0.16)),
+        url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .cover-5 {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.28), rgba(201, 162, 79, 0.18)),
+        url("https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .cover-6 {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.24), rgba(201, 162, 79, 0.18)),
+        url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80");
+    }
+
+    .cover-1,
+    .cover-2,
+    .cover-3,
+    .cover-4,
+    .cover-5,
+    .cover-6 {
+      background-position: center center, center center;
+      background-repeat: no-repeat, no-repeat;
+      background-size: cover, cover;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.55);
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--brand);
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(135deg, var(--brand), #295a45);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .avatar-logo {
+      padding: 7px;
+      background: rgba(255, 253, 248, 0.94);
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .avatar-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .title-wrap {
+      min-width: 0;
+    }
+
+    .community-title {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: var(--brand);
+      line-height: 1.2;
+    }
+
+    .community-desc {
+      margin: 0 0 14px;
+      color: var(--text-soft);
+      font-size: 0.93rem;
+      line-height: 1.58;
+      height: calc(1.58em * 3);
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(227, 215, 191, 0.9);
+      font-size: 0.88rem;
+      color: var(--text-soft);
+    }
+
+    .price.free {
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .price.paid {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 0 2px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      height: 40px;
+      min-width: 40px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      background: rgba(255, 253, 248, 0.94);
+      box-shadow: 0 8px 30px rgba(24, 57, 43, 0.08);
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .page-btn.active {
+      background: #c9a24f;
+      color: #fff;
+      border-color: #c9a24f;
+    }
+
+    @media (max-width: 1100px) {
+      .community-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner,
+      .container {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .davinci-side {
+        width: 22vw;
+        opacity: 0.12;
+      }
+
+      .davinci-side::after {
+        opacity: 0.22;
+      }
+
+      .topbar-inner {
+        flex-wrap: wrap;
+      }
+
+      .hero {
+        padding-top: 8px;
+      }
+
+      .community-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-shell {
+        height: 52px;
+        border-radius: 14px;
+      }
+
+      .hero h1 {
+        font-size: 2.1rem;
+      }
+
+      .chips {
+        justify-content: flex-start;
+      }
+
+      .creator-cta {
+        margin-bottom: 18px;
+      }
+
+      .toolbar {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="davinci-side left" aria-hidden="true"></div>
+    <div class="davinci-side right" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a href="./community-list.html" class="brand">
+          <img src="./assets/logo-2.png" alt="Davinci Space logo" class="brand-mark">
+          <span class="brand-name">Davinci Space</span>
+        </a>
+
+        <a href="./community-payment.html" class="super-community-pill">Create Community</a>
+
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="creator-cta">
+          <div class="creator-cta-copy">
+            <h2>Your community title goes here.</h2>
+            <p>Your community owner-defined short description goes here.</p>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <div class="search-shell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-3.5-3.5"></path>
+            </svg>
+            <input type="text" placeholder="Search communities, topics or creators">
+          </div>
+        </div>
+
+        <div class="chips">
+          <div class="chip active">All</div>
+          <div class="chip">Artists</div>
+          <div class="chip">Academics</div>
+          <div class="chip">Business</div>
+          <div class="chip">Founders</div>
+          <div class="chip">Culture</div>
+          <div class="chip">Sports</div>
+          <div class="chip">Creators</div>
+        </div>
+      </section>
+
+      <section class="main">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="results-label">128 communities</div>
+            </div>
+          </div>
+
+          <div class="community-grid">
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-1">
+                <div class="card-badge">Artists</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar avatar-logo">
+                    <img src="./assets/logo-2.png" alt="Davinci Space logo">
+                  </div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Davinci Space</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  The parent community for curated sub-communities across artists, culture, research and private circles inside the Davinci Space network.
+                </p>
+                <div class="meta-row">
+                  <span>8.4k members</span>
+                  <span class="price paid">$19/month</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-2">
+                <div class="card-badge">Business</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">BN</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Builders Network</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  Connect with founders and operators around deals, lead sharing, curated discussions and real business growth.
+                </p>
+                <div class="meta-row">
+                  <span>12.1k members</span>
+                  <span class="price free">Free</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-3">
+                <div class="card-badge">Academics</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">AC</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Open Research Circle</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  A community for research collaboration, publication sharing, conference coordination and hiring opportunities.
+                </p>
+                <div class="meta-row">
+                  <span>5.7k members</span>
+                  <span class="price paid">$12/month</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-4">
+                <div class="card-badge">Creators</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">CR</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Creator Study</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  Share experiments, content systems, monetization ideas and community-first creator workflows in one place.
+                </p>
+                <div class="meta-row">
+                  <span>9.3k members</span>
+                  <span class="price free">Free</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-5">
+                <div class="card-badge">Founders</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">FD</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Founding Table</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  For early-stage teams that want private discussion spaces, governance, resource sharing and member verification.
+                </p>
+                <div class="meta-row">
+                  <span>2.1k members</span>
+                  <span class="price paid">$29/month</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-6">
+                <div class="card-badge">Culture</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">CU</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Heritage Commons</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  A digital home for cultural organizations, local archives, heritage projects and community-funded initiatives.
+                </p>
+                <div class="meta-row">
+                  <span>3.8k members</span>
+                  <span class="price free">Free</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-2">
+                <div class="card-badge">Sports</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">SP</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Performance Circle</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  Organize matches, private coaching, recurring events and premium members-only discussions around performance.
+                </p>
+                <div class="meta-row">
+                  <span>6.2k members</span>
+                  <span class="price paid">$9/month</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-1">
+                <div class="card-badge">NGO</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">NG</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Civic Action Space</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  Built for mission-driven organizations that need community updates, events, fundraising and a trusted member base.
+                </p>
+                <div class="meta-row">
+                  <span>11.5k members</span>
+                  <span class="price free">Free</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-3">
+                <div class="card-badge">Private</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">PC</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Patron Circle</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  A premium community model with private access, elegant content areas, events and paid membership tiers.
+                </p>
+                <div class="meta-row">
+                  <span>1.7k members</span>
+                  <span class="price paid">$49/month</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="community-card" onclick="window.location.href='./community-entrance.html'">
+              <div class="card-cover cover-4">
+                <div class="card-badge">Artists</div>
+              </div>
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar">LA</div>
+                  <div class="title-wrap">
+                    <h3 class="community-title">Longform Atelier for Independent Visual Artists and Collectors</h3>
+                  </div>
+                </div>
+                <p class="community-desc">
+                  A curated community for portfolio reviews, private salons, exhibition planning and long-form discussion around contemporary visual practice.
+                </p>
+                <div class="meta-row">
+                  <span>4.9k members</span>
+                  <span class="price paid">$15/month</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="pagination">
+            <div class="page-btn">Previous</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <div class="page-btn">4</div>
+            <div class="page-btn">Next</div>
+          </div>
+        </section>
+    </main>
+  </div>
+
+  <script>
+    const topbar = document.querySelector(".topbar");
+
+    const syncTopbarState = () => {
+      if (!topbar) return;
+      topbar.classList.toggle("is-compact", window.scrollY > 24);
+    };
+
+    syncTopbarState();
+    window.addEventListener("scroll", syncTopbarState, { passive: true });
+  </script>
+</body></html>

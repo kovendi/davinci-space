@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Davinci Space - Community Post</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --bg-soft: #fbf8f2;
+      --surface: #fffdf8;
+      --surface-2: #f7f2e7;
+      --border: #e3d7bf;
+      --border-strong: #d3c19a;
+      --text: #18392b;
+      --text-soft: #5b6d62;
+      --text-muted: #7f8c84;
+      --brand: #173d2d;
+      --brand-2: #c9a24f;
+      --brand-2-dark: #b58c34;
+      --accent: #b44a4a;
+      --shadow: 0 8px 30px rgba(24, 57, 43, 0.08);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --panel-bg: rgba(255, 253, 248, 0.94);
+      --panel-bg-strong: rgba(255, 253, 248, 0.98);
+      --panel-border-soft: rgba(227, 215, 191, 0.9);
+      --panel-border-mid: rgba(211, 193, 154, 0.72);
+      --panel-radius-card: 20px;
+      --panel-radius-inner: 16px;
+      --panel-padding: 16px;
+      --container: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body { min-height: 100vh; }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+    }
+
+    @keyframes davinciScanDown {
+      0% {
+        transform: translateY(-80%);
+      }
+      100% {
+        transform: translateY(100%);
+      }
+    }
+
+    .davinci-side {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: min(24vw, 300px);
+      pointer-events: none;
+      z-index: 0;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .davinci-side::before,
+    .davinci-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .davinci-side::before {
+      background-image: url("./assets/background.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: inherit;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .davinci-side::after {
+      left: 0;
+      width: 68%;
+      top: 0%;
+      height: 80%;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(201, 162, 79, 0.12) 18%,
+          rgba(201, 162, 79, 0.28) 50%,
+          rgba(201, 162, 79, 0.1) 82%,
+          rgba(255, 255, 255, 0) 100%
+        );
+      opacity: 0.5;
+      animation: davinciScanDown 4s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .davinci-side.left {
+      left: 0;
+      mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.left::before {
+      background-position: left center;
+    }
+
+    .davinci-side.right {
+      right: 0;
+      mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    }
+
+    .davinci-side.right::before {
+      background-position: right center;
+    }
+
+    .davinci-side.right::after {
+      left: auto;
+      right: 0;
+      animation-delay: 2.6s;
+    }
+
+    .topbar,
+    .subnav,
+    .main-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(245, 241, 232, 0.92);
+      backdrop-filter: blur(12px);
+      transition: background 220ms ease, box-shadow 220ms ease;
+    }
+
+    .topbar.is-compact {
+      background: rgba(245, 241, 232, 0.86);
+      box-shadow: 0 10px 24px rgba(24, 57, 43, 0.08);
+    }
+
+    .topbar-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: padding 220ms ease, gap 220ms ease;
+    }
+
+    .topbar.is-compact .topbar-inner {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .brand-mark {
+      height: 40px;
+      object-fit: contain;
+      transition: height 220ms ease;
+    }
+
+    .topbar.is-compact .brand-mark { height: 30px; }
+
+    .brand-copy {
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-size: 1.08rem;
+      line-height: 1;
+      color: var(--brand);
+      transition: font-size 220ms ease;
+    }
+    .topbar.is-compact .brand-title { font-size: 0.96rem; }
+
+    .topbar-login {
+      margin-left: auto;
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 14px;
+      border: 1px solid rgba(201, 162, 79, 0.22);
+      background: var(--brand-2);
+      box-shadow: 0 10px 24px rgba(201, 162, 79, 0.24);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .join-btn,
+    .auth-submit,
+    .auth-switch-btn,
+    .auth-close {
+      cursor: pointer;
+    }
+
+    .subnav {
+      border-bottom: 1px solid rgba(211, 193, 154, 0.65);
+      background: rgba(245, 241, 232, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .subnav-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+    }
+
+    .subnav-link {
+      position: relative;
+      padding: 11px 2px 10px;
+      color: var(--text-soft);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .subnav-link.active {
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .subnav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+
+    .main-wrap {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.72fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    .feed-column {
+      display: grid;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .posts-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+      padding: 6px 0 8px;
+      flex-wrap: nowrap;
+      overflow: visible;
+      position: relative;
+      z-index: 8;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex-wrap: nowrap;
+    }
+
+    .topics-group {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .filter-group:last-of-type {
+      flex: 0 0 auto;
+    }
+
+    .filter-divider {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1;
+      opacity: 0.8;
+    }
+
+    .scope-switch {
+      display: inline-flex;
+      align-items: center;
+      height: 42px;
+      padding: 1px;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .scope-option {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--text-soft);
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      line-height: 1;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .scope-option.active {
+      background: rgba(23, 61, 45, 0.08);
+      box-shadow: inset 0 0 0 1px rgba(23, 61, 45, 0.16);
+      color: var(--brand);
+    }
+
+    .topics-list {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+      min-width: 0;
+      flex: 1 1 auto;
+      overflow: visible;
+    }
+
+    .filter {
+      appearance: none;
+      height: 42px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      font-size: 0.92rem;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .filter.active {
+      background: rgba(23, 61, 45, 0.08);
+      border-color: rgba(23, 61, 45, 0.16);
+      color: var(--brand);
+    }
+
+    .filter.more {
+      margin-left: 0;
+    }
+
+    .filter.is-hidden {
+      display: none;
+    }
+
+    .filter.is-collapsed {
+      display: none;
+    }
+
+    .filter-row-tools,
+    .topic-more {
+      display: flex;
+      align-items: center;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .filter-row-tools {
+      margin-left: auto;
+    }
+
+    .sort-toggle {
+      height: 42px;
+      width: auto;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 253, 248, 0.92);
+      box-shadow: var(--shadow);
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      font-weight: 700;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .sort-toggle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
+    .sort-toggle-label {
+      line-height: 1;
+    }
+
+    .sort-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 182px;
+      padding: 8px;
+      border-radius: var(--panel-radius-card);
+      border: 1px solid var(--panel-border-mid);
+      background: var(--panel-bg-strong);
+      box-shadow: var(--shadow);
+      display: none;
+      z-index: 20;
+    }
+
+    .topic-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 190px;
+      padding: 8px;
+      border-radius: var(--panel-radius-card);
+      border: 1px solid var(--panel-border-mid);
+      background: var(--panel-bg-strong);
+      box-shadow: var(--shadow);
+      display: none;
+      z-index: 20;
+    }
+
+    .topic-menu.is-open {
+      display: grid;
+      gap: 4px;
+    }
+
+    .topic-menu-option {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 0.94rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .topic-menu-option.active {
+      background: rgba(245, 214, 135, 0.72);
+      color: #1b1b1b;
+    }
+
+    .sort-menu.is-open {
+      display: grid;
+      gap: 4px;
+    }
+
+    .sort-option {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 14px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sort-option svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      flex: 0 0 auto;
+    }
+
+    .sort-option.active {
+      background: rgba(245, 214, 135, 0.72);
+      color: #1b1b1b;
+    }
+
+    .action-guide {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .action-guide.is-hidden {
+      display: none;
+    }
+
+    .action-guide-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--panel-border-soft);
+    }
+
+    .action-guide-head-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .action-guide-ring {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      background:
+        conic-gradient(var(--brand-2) 0 50%, rgba(23, 61, 45, 0.14) 50% 100%);
+      position: relative;
+    }
+
+    .action-guide-ring::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: inherit;
+      background: var(--panel-bg);
+    }
+
+    .action-guide-title {
+      margin: 0;
+      color: var(--brand);
+      font-size: 1.08rem;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .action-guide-tools {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 0 0 auto;
+    }
+
+    .action-guide-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid var(--panel-border-soft);
+    }
+
+    .action-guide-progress-bar {
+      width: 54px;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(227, 215, 191, 0.88);
+    }
+
+    .action-guide-progress-fill {
+      width: 50%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--brand-2), var(--brand));
+    }
+
+    .action-guide-progress-value {
+      color: var(--brand);
+      font-size: 0.92rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .action-guide-dismiss {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .action-guide-list {
+      display: grid;
+    }
+
+    .action-guide-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--panel-border-soft);
+    }
+
+    .action-guide-item:last-child {
+      border-bottom: 0;
+    }
+
+    .action-guide-status {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(23, 61, 45, 0.34);
+      background: transparent;
+      color: transparent;
+    }
+
+    .action-guide-status.done {
+      border-color: var(--brand-2);
+      background: var(--brand-2);
+      color: var(--brand);
+    }
+
+    .action-guide-status svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.4;
+    }
+
+    .action-guide-link {
+      color: var(--brand);
+      font-size: 0.98rem;
+      font-weight: 500;
+      text-decoration: none;
+      line-height: 1.35;
+    }
+
+    .action-guide-link:hover {
+      text-decoration: underline;
+    }
+
+    .post-card {
+      padding: var(--panel-padding);
+      display: grid;
+      gap: 14px;
+      border-radius: var(--panel-radius-inner);
+    }
+
+    .post-card.pinned {
+      border-color: var(--panel-border-mid);
+      box-shadow: 0 10px 28px rgba(201, 162, 79, 0.12);
+    }
+
+    .post-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .author img {
+      width: 40px;
+      height: 40px;
+      border-radius: 20%;
+      object-fit: cover;
+    }
+
+    .author-meta {
+      min-width: 0;
+    }
+
+    .author-name {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--brand);
+    }
+
+    .author-sub {
+      margin-top: 2px;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .pin {
+      color: var(--brand);
+      font-size: 0.92rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .post-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 104px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .post-copy h2 {
+      margin: 0 0 10px;
+      font-size: 1.06rem;
+      line-height: 1.35;
+      color: #24382f;
+    }
+
+    .post-copy p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.98rem;
+      line-height: 1.62;
+    }
+
+    .post-thumb {
+      width: 104px;
+      height: 104px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(227, 215, 191, 0.85);
+      background-size: cover, cover;
+      background-position: center center, center center;
+    }
+
+    .thumb-a {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.18), rgba(201, 162, 79, 0.12)),
+        url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=500&q=80");
+    }
+
+    .thumb-b {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.18), rgba(201, 162, 79, 0.12)),
+        url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=500&q=80");
+    }
+
+    .thumb-c {
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.18), rgba(201, 162, 79, 0.12)),
+        url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=500&q=80");
+    }
+
+    .post-footer {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .metric {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .metric svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      flex: 0 0 auto;
+    }
+
+    .faces {
+      display: flex;
+      align-items: center;
+    }
+
+    .faces img {
+      width: 26px;
+      height: 26px;
+      border-radius: 20%;
+      object-fit: cover;
+      border: 2px solid var(--surface);
+      margin-left: 0;
+    }
+
+    .comment-link {
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 0 2px;
+      flex-wrap: wrap;
+    }
+
+    .pagination-btn,
+    .pagination-page {
+      height: 40px;
+      min-width: 40px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid var(--panel-border-soft);
+      background: var(--panel-bg);
+      box-shadow: var(--shadow);
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .pagination-page.active {
+      background: #c9a24f;
+      border-color: #c9a24f;
+      color: #fff;
+    }
+
+    .pagination-dots {
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 0 2px;
+    }
+
+    .sidebar {
+      display: grid;
+      gap: 18px;
+      position: sticky;
+      top: 120px;
+    }
+
+    .identity-card {
+      position: relative;
+      overflow: hidden;
+      padding: var(--panel-padding);
+      border-radius: var(--panel-radius-card);
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border-mid);
+      box-shadow: var(--shadow);
+    }
+
+    .identity-label {
+      margin: 0 0 16px;
+      color: #2b312d;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .community-banner {
+      aspect-ratio: 16 / 9;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(227, 215, 191, 0.8);
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.22), rgba(201, 162, 79, 0.18)),
+        url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80");
+      background-size: cover, cover;
+      background-position: center center, center center;
+      box-shadow: var(--shadow);
+    }
+
+    .community-banner-badge {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid rgba(255, 253, 248, 0.6);
+      color: var(--brand);
+      font-size: 0.86rem;
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(24, 57, 43, 0.12);
+    }
+
+    .community-intro-copy {
+      margin: 16px 0 0;
+      display: grid;
+      gap: 12px;
+      color: var(--text-soft);
+      font-size: 0.96rem;
+      line-height: 1.65;
+    }
+
+    .community-intro-copy p {
+      margin: 0;
+    }
+
+    .community-login-cta {
+      margin-top: 18px;
+    }
+
+    .leaderboard-card {
+      padding: var(--panel-padding);
+      border-radius: var(--panel-radius-card);
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border-mid);
+      box-shadow: var(--shadow);
+    }
+
+    .leaderboard-title {
+      margin: 0 0 18px;
+      color: #2b312d;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .leaderboard-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .leaderboard-row {
+      display: grid;
+      grid-template-columns: 26px 34px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .leaderboard-rank {
+      width: 26px;
+      text-align: center;
+      color: #7a7f7b;
+      font-size: 0.98rem;
+      font-weight: 900;
+    }
+
+    .leaderboard-rank.medal {
+      width: 28px;
+      height: 32px;
+      padding-top: 3px;
+      clip-path: polygon(50% 0%, 100% 16%, 100% 78%, 50% 100%, 0% 78%, 0% 16%);
+      color: #fff;
+      font-size: 0.96rem;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .leaderboard-rank.gold { background: linear-gradient(180deg, #ffd979, #efb642); }
+    .leaderboard-rank.silver { background: linear-gradient(180deg, #acacac, #7f7f7f); }
+    .leaderboard-rank.bronze { background: linear-gradient(180deg, #cb9c68, #9f6b3f); }
+
+    .leaderboard-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 20%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 253, 248, 0.95);
+      box-shadow: 0 4px 10px rgba(24, 57, 43, 0.12);
+    }
+
+    .leaderboard-name {
+      min-width: 0;
+      color: #2a2d2f;
+      font-size: 0.98rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .leaderboard-score {
+      color: var(--brand);
+      font-size: 0.98rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .leaderboard-flame {
+      margin-left: 4px;
+    }
+
+    .leaderboard-footer {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(211, 193, 154, 0.55);
+      text-align: center;
+    }
+
+    .leaderboard-link {
+      color: var(--brand);
+      font-size: 0.96rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .post-detail-column {
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .post-detail-card {
+      padding: 0;
+      display: grid;
+      gap: 18px;
+    }
+
+    .post-detail-block,
+    .comments-block {
+      display: grid;
+      gap: 18px;
+    }
+
+    .post-comments-divider {
+      height: 1px;
+      background: rgba(211, 193, 154, 0.55);
+    }
+
+    .post-detail-media {
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(227, 215, 191, 0.85);
+      background:
+        linear-gradient(135deg, rgba(23, 61, 45, 0.16), rgba(201, 162, 79, 0.16)),
+        url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80");
+      background-size: cover, cover;
+      background-position: center center, center center;
+      position: relative;
+    }
+
+    .post-detail-play {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.94);
+      border: 1px solid rgba(255, 253, 248, 0.72);
+      color: var(--brand);
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .post-detail-copy h1 {
+      margin: 0 0 12px;
+      font-size: 23px;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .post-detail-copy p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .post-detail-stats {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .comments-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .comments-title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #2b312d;
+    }
+
+    .comments-count {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .comment-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .comment-card {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 8px;
+      align-items: start;
+    }
+
+    .comment-thread {
+      display: grid;
+      gap: 10px;
+    }
+
+    .comment-replies {
+      margin-left: 26px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .comment-card.reply .comment-author img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .comment-bubble {
+      grid-column: 2;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--panel-border-soft);
+      background: rgba(255, 253, 248, 0.88);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 10px;
+    }
+
+    .comment-card.reply .comment-bubble {
+      background: rgba(247, 242, 231, 0.78);
+      box-shadow: none;
+    }
+
+    .comment-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .comment-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .comment-author img {
+      width: 34px;
+      height: 34px;
+      border-radius: 20%;
+      object-fit: cover;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+    }
+
+    .comment-author-name {
+      color: var(--brand);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .comment-author-line {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .comment-author-meta {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .comment-author-meta::before {
+      content: "•";
+      color: var(--text-muted);
+      padding: 0px 4px;
+    }
+
+    .comment-copy {
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      line-height: 1.62;
+    }
+
+    .comment-actions {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 500;
+    }
+
+    .comment-actions span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .comment-actions span + span::before {
+      content: "";
+      margin: 0px 8px;
+      color: var(--text-muted);
+    }
+
+    .comment-actions svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      flex: 0 0 auto;
+    }
+
+    .comment-composer {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding-top: 6px;
+    }
+
+    .comment-composer.reply {
+      margin-left: 45px;
+      padding-top: 2px;
+    }
+
+    .comment-composer-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 20%;
+      object-fit: cover;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+    }
+
+    .comment-composer-input {
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(127, 140, 132, 0.55);
+      background: rgba(255, 253, 248, 0.92);
+      color: var(--text);
+      font-size: 0.96rem;
+      display: block;
+      width: 100%;
+      outline: none;
+      box-shadow: none;
+    }
+
+    .comment-composer-input::placeholder {
+      color: #97928a;
+    }
+
+    .comment-composer-input:focus {
+      border-color: var(--brand-2);
+      box-shadow: 0 0 0 4px rgba(201, 162, 79, 0.12);
+    }
+
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(24, 34, 29, 0.38);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 180ms ease, visibility 180ms ease;
+    }
+
+    .auth-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .auth-modal {
+      width: min(100%, 460px);
+      background: #fffdf9;
+      border: 1px solid rgba(211, 193, 154, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(24, 57, 43, 0.18);
+      padding: 22px 22px 18px;
+      position: relative;
+    }
+
+    .auth-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(247, 242, 231, 0.95);
+      color: var(--text-soft);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .auth-brand img {
+      height: 38px;
+      width: auto;
+    }
+
+    .auth-brand-name {
+      color: var(--brand);
+      font-size: 1.02rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .auth-panel {
+      display: none;
+      text-align: center;
+    }
+
+    .auth-panel.is-active {
+      display: block;
+    }
+
+    .auth-panel h2 {
+      margin: 0;
+      font-size: 1.9rem;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      color: #22272c;
+    }
+
+    .auth-panel p {
+      margin: 12px auto 0;
+      max-width: 34ch;
+      color: #4d5861;
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .auth-form {
+      margin-top: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .auth-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .auth-field {
+      width: 100%;
+      height: 54px;
+      border-radius: 12px;
+      border: 1px solid #ddd4c2;
+      background: #fff;
+      padding: 0 16px;
+      font-size: 1rem;
+      color: #2b2e31;
+      outline: none;
+    }
+
+    .auth-field:focus {
+      border-color: var(--brand-2);
+      box-shadow: 0 0 0 4px rgba(201, 162, 79, 0.12);
+    }
+
+    .auth-meta {
+      margin-top: 2px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .auth-link {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .auth-submit {
+      margin-top: 16px;
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 12px;
+      background: #d8d8d8;
+      color: #7b7b7b;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .auth-submit-secondary {
+      margin-top: 12px;
+      background: transparent;
+      color: var(--brand);
+      border: 1px solid rgba(23, 61, 45, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(23, 61, 45, 0.04);
+    }
+
+    .auth-divider {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #8b8f94;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(211, 193, 154, 0.8);
+    }
+
+    .auth-footer {
+      margin-top: 16px;
+      color: #4d5861;
+      font-size: 0.95rem;
+    }
+
+    .auth-switch-btn {
+      border: 0;
+      background: transparent;
+      color: var(--brand-2-dark);
+      font-weight: 700;
+      font: inherit;
+      padding: 0;
+    }
+
+    .auth-legal {
+      margin-top: 14px;
+      color: #8b8f94;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1020px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner,
+      .subnav-inner,
+      .main-wrap {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .davinci-side {
+        width: 22vw;
+        opacity: 0.11;
+      }
+
+      .davinci-side::after {
+        opacity: 0.2;
+      }
+
+      .topbar-inner { flex-wrap: wrap; }
+
+      .topbar-login { margin-left: auto; }
+
+      .post-body {
+        grid-template-columns: 1fr;
+      }
+
+      .post-thumb {
+        width: 88px;
+        height: 88px;
+      }
+
+      .filters {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .filter-divider {
+        display: none;
+      }
+
+      .filter-group {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .topics-list {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .auth-row {
+        grid-template-columns: 1fr;
+      }
+
+      .post-detail-column {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="davinci-side left" aria-hidden="true"></div>
+    <div class="davinci-side right" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a href="./community-list.html" class="brand">
+          <img src="./assets/logo-2.png" alt="Davinci Space logo" class="brand-mark">
+          <div class="brand-copy">
+            <span class="brand-title">Davinci Space</span>
+          </div>
+        </a>
+
+        <button class="topbar-login" type="button" data-auth-open="login">Log in</button>
+
+      </div>
+    </header>
+
+    <nav class="subnav">
+      <div class="subnav-inner">
+        <a class="subnav-link active" href="./community-home-public-no-loggedin.html">Home</a>
+        <a class="subnav-link" href="./community-entrance.html">Entrance</a>
+        <a class="subnav-link" href="./community-leaderboard.html">Leaderboard</a>
+      </div>
+    </nav>
+
+    <main class="main-wrap">
+      <div class="layout">
+        <section class="panel post-detail-column" aria-label="Post detail and comments">
+          <article class="post-detail-card">
+            <div class="post-detail-block">
+              <div class="post-top">
+                <div class="author">
+                  <img src="./assets/membership-1.png" alt="Author avatar">
+                  <div class="author-meta">
+                    <div class="author-name">nateherk</div>
+                    <div class="author-sub">24h • YouTube Resources</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="post-detail-copy">
+                <h1>New Video: Build &amp; Sell with Claude Code (10+ Hour Course)</h1>
+                <p>This is the complete Claude Code course. I put a ton of time into this one. I start from zero and walk you through setup, workflows, deployment and the real systems behind the business. If you want to understand how to package, build, and ship client-facing systems with AI, this is the full walkthrough.</p>
+              </div>
+
+              <div class="post-detail-media">
+              </div>
+
+              <div class="post-detail-stats">
+                <span class="metric">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-1 7"></path>
+                    <path d="M7 10H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3"></path>
+                    <path d="M7 20h8.4a2 2 0 0 0 2-1.6l1.1-6A2 2 0 0 0 16.5 10H14"></path>
+                  </svg>
+                  <span>353</span>
+                </span>
+                <span class="metric">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5A8.4 8.4 0 0 1 8 18.7L3 20l1.3-4A8.5 8.5 0 1 1 21 11.5Z"></path>
+                  </svg>
+                  <span>179 comments</span>
+                </span>
+                <div class="faces">
+                  <img src="./assets/membership-2.png" alt="Member avatar">
+                  <img src="./assets/membership-3.png" alt="Member avatar">
+                  <img src="./assets/membership-4.png" alt="Member avatar">
+                  <img src="./assets/membership-5.png" alt="Member avatar">
+                </div>
+              </div>
+            </div>
+
+            <div class="post-comments-divider" aria-hidden="true"></div>
+
+            <section class="comments-block" aria-label="Comments">
+            <div class="comments-head">
+              <h2 class="comments-title">Comments</h2>
+              <div class="comments-count">179 replies</div>
+            </div>
+
+            <div class="comment-list">
+              <div class="comment-thread">
+                <article class="comment-card">
+                  <div class="comment-author">
+                    <img src="./assets/membership-2.png" alt="Comment author avatar">
+                  </div>
+                  <div class="comment-bubble">
+                    <div class="comment-top">
+                      <div class="comment-author">
+                        <div>
+                          <div class="comment-author-line">
+                            <div class="comment-author-name">Christian Rio</div>
+                            <div class="comment-author-meta">18m ago</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="comment-copy">This is one of the most useful long-form breakdowns I have seen lately. The part about packaging the offer before building the whole backend was especially strong.</div>
+                  </div>
+                  <div class="comment-actions">
+                    <span>
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M14 9V5a3 3 0 0 0-3-3l-1 7"></path>
+                        <path d="M7 10H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3"></path>
+                        <path d="M7 20h8.4a2 2 0 0 0 2-1.6l1.1-6A2 2 0 0 0 16.5 10H14"></path>
+                      </svg>
+                      42
+                    </span>
+                  </div>
+                </article>
+
+                <div class="comment-replies">
+                  <article class="comment-card reply">
+                    <div class="comment-author">
+                      <img src="./assets/membership-1.png" alt="Reply author avatar">
+                    </div>
+                    <div class="comment-bubble">
+                      <div class="comment-top">
+                        <div class="comment-author">
+                          <div>
+                            <div class="comment-author-line">
+                              <div class="comment-author-name">nateherk</div>
+                              <div class="comment-author-meta">12m ago</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="comment-copy">That was exactly the goal. Most people overbuild first and only later try to attach an offer to it.</div>
+                    </div>
+                    <div class="comment-actions">
+                      <span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M14 9V5a3 3 0 0 0-3-3l-1 7"></path>
+                          <path d="M7 10H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3"></path>
+                          <path d="M7 20h8.4a2 2 0 0 0 2-1.6l1.1-6A2 2 0 0 0 16.5 10H14"></path>
+                        </svg>
+                        9
+                      </span>
+                    </div>
+                  </article>
+
+                </div>
+              </div>
+
+              <div class="comment-thread">
+                <article class="comment-card">
+                  <div class="comment-author">
+                    <img src="./assets/membership-5.png" alt="Comment author avatar">
+                  </div>
+                  <div class="comment-bubble">
+                    <div class="comment-top">
+                      <div class="comment-author">
+                        <div>
+                          <div class="comment-author-line">
+                            <div class="comment-author-name">Muskan Ahlawadia</div>
+                            <div class="comment-author-meta">31m ago</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="comment-copy">Loved the clarity in this. Most people jump straight into tools and skip the business framing. This was a good reminder that system design starts with the client result.</div>
+                  </div>
+                  <div class="comment-actions">
+                    <span>
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M14 9V5a3 3 0 0 0-3-3l-1 7"></path>
+                        <path d="M7 10H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3"></path>
+                        <path d="M7 20h8.4a2 2 0 0 0 2-1.6l1.1-6A2 2 0 0 0 16.5 10H14"></path>
+                      </svg>
+                      27
+                    </span>
+                  </div>
+                </article>
+
+                <div class="comment-replies">
+                  <article class="comment-card reply">
+                    <div class="comment-author">
+                      <img src="./assets/membership-3.png" alt="Reply author avatar">
+                    </div>
+                    <div class="comment-bubble">
+                      <div class="comment-top">
+                        <div class="comment-author">
+                          <div>
+                            <div class="comment-author-line">
+                              <div class="comment-author-name">Frank van Bok</div>
+                              <div class="comment-author-meta">24m ago</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="comment-copy">Exactly. The business framing section is what made the whole lesson click for me too.</div>
+                    </div>
+                    <div class="comment-actions">
+                      <span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M14 9V5a3 3 0 0 0-3-3l-1 7"></path>
+                          <path d="M7 10H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3"></path>
+                          <path d="M7 20h8.4a2 2 0 0 0 2-1.6l1.1-6A2 2 0 0 0 16.5 10H14"></path>
+                        </svg>
+                        6
+                      </span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <article class="comment-card">
+                <div class="comment-author">
+                  <img src="./assets/membership-3.png" alt="Comment author avatar">
+                </div>
+                <div class="comment-bubble">
+                  <div class="comment-top">
+                    <div class="comment-author">
+                      <div>
+                        <div class="comment-author-line">
+                          <div class="comment-author-name">Frank van Bok</div>
+                          <div class="comment-author-meta">44m ago</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="comment-copy">The deployment section saved me a lot of time. I had been overcomplicating my stack and this helped me simplify the whole flow.</div>
+                </div>
+                <div class="comment-actions">
+                  <span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-1 7"></path>
+                      <path d="M7 10H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3"></path>
+                      <path d="M7 20h8.4a2 2 0 0 0 2-1.6l1.1-6A2 2 0 0 0 16.5 10H14"></path>
+                    </svg>
+                    18
+                  </span>
+                </div>
+              </article>
+
+              <article class="comment-card">
+                <div class="comment-author">
+                  <img src="./assets/membership-4.png" alt="Comment author avatar">
+                </div>
+                <div class="comment-bubble">
+                  <div class="comment-top">
+                    <div class="comment-author">
+                      <div>
+                        <div class="comment-author-line">
+                          <div class="comment-author-name">Yash Chauhan</div>
+                          <div class="comment-author-meta">1h ago</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="comment-copy">Watching this tonight. The promise alone is strong because people keep trying to sell low-trust automation work instead of outcome-based systems.</div>
+                </div>
+                <div class="comment-actions">
+                  <span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-1 7"></path>
+                      <path d="M7 10H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3"></path>
+                      <path d="M7 20h8.4a2 2 0 0 0 2-1.6l1.1-6A2 2 0 0 0 16.5 10H14"></path>
+                    </svg>
+                    11
+                  </span>
+                </div>
+              </article>
+
+              <article class="comment-card">
+                <div class="comment-author">
+                  <img src="./assets/membership-6.png" alt="Comment author avatar">
+                </div>
+                <div class="comment-bubble">
+                  <div class="comment-top">
+                    <div class="comment-author">
+                      <div>
+                        <div class="comment-author-line">
+                          <div class="comment-author-name">Code41</div>
+                          <div class="comment-author-meta">2h ago</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="comment-copy">Would love a follow-up post just on the offer structure. That section feels like the difference between hobby projects and something clients actually pay for.</div>
+                </div>
+                <div class="comment-actions">
+                  <span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-1 7"></path>
+                      <path d="M7 10H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3"></path>
+                      <path d="M7 20h8.4a2 2 0 0 0 2-1.6l1.1-6A2 2 0 0 0 16.5 10H14"></path>
+                    </svg>
+                    9
+                  </span>
+                </div>
+              </article>
+            </div>
+
+          </section>
+          </article>
+        </section>
+
+        <aside class="sidebar">
+          <section class="identity-card" aria-label="About us">
+            <p class="identity-label">About us</p>
+            <div class="community-banner" aria-hidden="true">
+            </div>
+            <div class="community-intro-copy">
+              <p>Davinci Space is a curated community built around meaningful conversation, creative exchange, and long-term participation.</p>
+              <p>It is designed to feel calm and intentional, with enough structure for discovery but enough openness for people to find their own place inside it.</p>
+            </div>
+            <div class="community-login-cta" id="communityLoginCtaMount"></div>
+          </section>
+
+          <section class="leaderboard-card" aria-label="Leaderboard">
+            <h2 class="leaderboard-title">Leaderboard (30-day)</h2>
+
+            <div class="leaderboard-list">
+              <div class="leaderboard-row">
+                <div class="leaderboard-rank medal gold">1</div>
+                <img class="leaderboard-avatar" src="./assets/membership-5.png" alt="Muskan Ahlawadia avatar">
+                <div class="leaderboard-name">Muskan Ahlawadia</div>
+                <div class="leaderboard-score">+5460</div>
+              </div>
+
+              <div class="leaderboard-row">
+                <div class="leaderboard-rank medal silver">2</div>
+                <img class="leaderboard-avatar" src="./assets/membership-1.png" alt="Christian Rio avatar">
+                <div class="leaderboard-name">Christian Rio <span class="leaderboard-flame">🔥</span></div>
+                <div class="leaderboard-score">+2627</div>
+              </div>
+
+              <div class="leaderboard-row">
+                <div class="leaderboard-rank medal bronze">3</div>
+                <img class="leaderboard-avatar" src="./assets/membership-3.png" alt="Frank van Bok avatar">
+                <div class="leaderboard-name">Frank van Bok</div>
+                <div class="leaderboard-score">+1626</div>
+              </div>
+
+              <div class="leaderboard-row">
+                <div class="leaderboard-rank">4</div>
+                <img class="leaderboard-avatar" src="./assets/membership-2.png" alt="Titus Blair avatar">
+                <div class="leaderboard-name">Titus Blair</div>
+                <div class="leaderboard-score">+1360</div>
+              </div>
+
+              <div class="leaderboard-row">
+                <div class="leaderboard-rank">5</div>
+                <img class="leaderboard-avatar" src="./assets/membership-4.png" alt="Yash Chauhan avatar">
+                <div class="leaderboard-name">Yash Chauhan <span class="leaderboard-flame">🔥</span></div>
+                <div class="leaderboard-score">+977</div>
+              </div>
+            </div>
+
+            <div class="leaderboard-footer">
+              <a class="leaderboard-link" href="./community-leaderboard.html">See all leaderboards</a>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="auth-overlay" id="authOverlay" aria-hidden="true">
+    <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="auth-close" type="button" aria-label="Close">×</button>
+
+      <div class="auth-brand">
+        <img src="./assets/logo-2.png" alt="Davinci Space logo">
+        <span class="auth-brand-name">Davinci Space</span>
+      </div>
+
+      <section class="auth-panel is-active" data-auth-panel="login">
+        <h2 id="authTitle">Log in to Davinci Space</h2>
+        <div class="auth-form">
+          <input class="auth-field" type="email" placeholder="Email">
+          <input class="auth-field" type="password" placeholder="Password">
+        </div>
+        <div class="auth-meta">
+          <a class="auth-link" href="#">Forgot password?</a>
+        </div>
+        <button class="auth-submit" type="button">Log in</button>
+        <div class="auth-footer">
+          Don't have an account?
+          <button class="auth-switch-btn" type="button" data-auth-switch="signup">Sign up for free</button>
+        </div>
+        <div class="auth-divider" aria-hidden="true">OR</div>
+        <button class="auth-submit auth-submit-secondary" type="button">Log in with your Davinci account</button>
+      </section>
+
+      <section class="auth-panel" data-auth-panel="signup">
+        <h2>Create your account</h2>
+        <p>Join Davinci Space to like, post, comment and enter communities.</p>
+        <div class="auth-form">
+          <input class="auth-field" type="text" placeholder="Username">
+          <input class="auth-field" type="email" placeholder="Email">
+          <input class="auth-field" type="password" placeholder="Password">
+        </div>
+        <button class="auth-submit" type="button">Sign up</button>
+        <div class="auth-legal">
+          By signing up, you accept our terms and privacy policy.
+        </div>
+        <div class="auth-footer">
+          Already have an account?
+          <button class="auth-switch-btn" type="button" data-auth-switch="login">Log in</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="./components/cta-button.js"></script>
+  <script>
+    document.getElementById("communityLoginCtaMount").innerHTML = DavinciCTAButton.render({
+      tag: "button",
+      type: "button",
+      label: "Log in",
+      variant: "contained",
+      attributes: { "data-auth-open": "login" }
+    });
+  </script>
+  <script>
+    const topbar = document.querySelector(".topbar");
+    const authOverlay = document.querySelector("#authOverlay");
+    const authPanels = document.querySelectorAll("[data-auth-panel]");
+    const authOpeners = document.querySelectorAll("[data-auth-open]");
+    const authSwitchers = document.querySelectorAll("[data-auth-switch]");
+    const authClose = document.querySelector(".auth-close");
+    const filtersBar = document.querySelector(".filters");
+    const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
+    const scopeButtons = Array.from(document.querySelectorAll(".scope-option[data-filter]"));
+    const topicPrimaryButtons = Array.from(document.querySelectorAll(".topics-list > .filter[data-primary-filter]"));
+    const scopeSwitch = document.querySelector(".scope-switch");
+    const topicsGroup = document.querySelector(".filter-group.topics-group");
+    const moreToggle = document.querySelector("[data-more-toggle]");
+    const topicMenu = document.querySelector("[data-topic-menu]");
+    const extraFilterButtons = Array.from(document.querySelectorAll("[data-extra-filter]"));
+    const filterToolRow = document.querySelector(".filter-row-tools");
+    const filterDividers = Array.from(document.querySelectorAll(".filter-divider"));
+    const sortToggle = document.querySelector("[data-sort-toggle]");
+    const sortMenu = document.querySelector("[data-sort-menu]");
+    const sortOptions = Array.from(document.querySelectorAll("[data-sort]"));
+    const posts = Array.from(document.querySelectorAll(".post-card"));
+    const postsContainer = document.querySelector(".posts-list");
+    const actionGuide = document.querySelector("[data-action-guide]");
+    const actionGuideDismiss = document.querySelector("[data-action-guide-dismiss]");
+
+    let activeScope = "all";
+    let activeTopic = "General Discussion";
+    let activeSort = "default";
+    let moreExpanded = false;
+
+    const syncTopbarState = () => {
+      if (!topbar) return;
+      topbar.classList.toggle("is-compact", window.scrollY > 24);
+    };
+
+    const showAuthPanel = (panelName) => {
+      authPanels.forEach((panel) => {
+        panel.classList.toggle("is-active", panel.dataset.authPanel === panelName);
+      });
+    };
+
+    const openAuth = (panelName = "login") => {
+      if (!authOverlay) return;
+      showAuthPanel(panelName);
+      authOverlay.classList.add("is-open");
+      authOverlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    };
+
+    const closeAuth = () => {
+      if (!authOverlay) return;
+      authOverlay.classList.remove("is-open");
+      authOverlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+
+    const syncMoreFilters = () => {
+      topicMenu?.classList.toggle("is-open", moreExpanded);
+      moreToggle?.setAttribute("aria-expanded", String(moreExpanded));
+    };
+
+    const syncPrimaryFilterLayout = () => {
+      if (!filtersBar || !filterToolRow || !scopeSwitch || window.innerWidth <= 720) {
+        topicPrimaryButtons.forEach((button) => {
+          button.classList.remove("is-collapsed");
+        });
+        return;
+      }
+
+      topicPrimaryButtons.forEach((button) => {
+        button.classList.remove("is-collapsed");
+      });
+
+      const filtersWidth = filtersBar.clientWidth;
+      const scopeWidth = scopeSwitch.offsetWidth;
+      const moreWidth = moreToggle?.offsetWidth || 0;
+      const toolsWidth = filterToolRow.offsetWidth;
+      const dividerWidth = filterDividers.reduce((sum, divider) => sum + divider.offsetWidth, 0);
+      const reservedWidth = scopeWidth + moreWidth + toolsWidth + dividerWidth + 16;
+      let usedWidth = 0;
+
+      topicPrimaryButtons.forEach((button, index) => {
+        const isPriority = button.dataset.filter === activeTopic || index === 0;
+        const buttonWidth = button.offsetWidth;
+        const nextWidth = usedWidth === 0 ? buttonWidth : usedWidth + 10 + buttonWidth;
+        const fits = nextWidth + reservedWidth <= filtersWidth;
+
+        if (isPriority || fits) {
+          usedWidth = nextWidth;
+          button.classList.remove("is-collapsed");
+        } else {
+          button.classList.add("is-collapsed");
+        }
+      });
+    };
+
+    const applyFilter = () => {
+      posts.forEach((post) => {
+        const matchesScope = activeScope === "following"
+          ? post.dataset.following === "true"
+          : true;
+        const matchesTopic = activeTopic
+          ? post.dataset.tag === activeTopic
+          : true;
+        post.hidden = !(matchesScope && matchesTopic);
+      });
+    };
+
+    const applySort = () => {
+      const visiblePosts = posts.filter((post) => !post.hidden);
+      const sortedPosts = [...visiblePosts].sort((a, b) => {
+        if (activeSort === "new") {
+          return Number(a.dataset.order) - Number(b.dataset.order);
+        }
+
+        if (activeSort === "top") {
+          return Number(b.dataset.score) - Number(a.dataset.score);
+        }
+
+        if (activeSort === "unread") {
+          const unreadDelta = Number(b.dataset.unread === "true") - Number(a.dataset.unread === "true");
+          if (unreadDelta !== 0) return unreadDelta;
+          return Number(a.dataset.order) - Number(b.dataset.order);
+        }
+
+        return Number(a.dataset.order) - Number(b.dataset.order);
+      });
+
+      sortedPosts.forEach((post) => {
+        postsContainer?.appendChild(post);
+      });
+    };
+
+    const setActiveFilter = (filterName) => {
+      if (filterName === "all" || filterName === "following") {
+        activeScope = filterName;
+      } else {
+        activeTopic = activeTopic === filterName ? "" : filterName;
+      }
+
+      scopeButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.filter === activeScope);
+      });
+
+      filterButtons.forEach((button) => {
+        if (button.classList.contains("scope-option")) return;
+        button.classList.toggle("active", button.dataset.filter === activeTopic);
+      });
+
+      moreToggle?.classList.toggle(
+        "active",
+        extraFilterButtons.some((button) => button.dataset.filter === activeTopic)
+      );
+
+      if (extraFilterButtons.some((button) => button.dataset.filter === filterName)) {
+        moreExpanded = true;
+        syncMoreFilters();
+      }
+      applyFilter();
+      applySort();
+      syncPrimaryFilterLayout();
+    };
+
+    const setActiveSort = (sortName) => {
+      activeSort = sortName;
+      sortOptions.forEach((button) => {
+        button.classList.toggle("active", button.dataset.sort === sortName);
+      });
+      applySort();
+      sortMenu?.classList.remove("is-open");
+      sortToggle?.setAttribute("aria-expanded", "false");
+    };
+
+    syncTopbarState();
+    syncMoreFilters();
+    applyFilter();
+    applySort();
+    syncPrimaryFilterLayout();
+    window.addEventListener("scroll", syncTopbarState, { passive: true });
+    window.addEventListener("resize", syncPrimaryFilterLayout);
+
+    authOpeners.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        openAuth(trigger.dataset.authOpen);
+      });
+    });
+
+    authSwitchers.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        showAuthPanel(trigger.dataset.authSwitch);
+      });
+    });
+
+    authClose?.addEventListener("click", closeAuth);
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveFilter(button.dataset.filter);
+      });
+    });
+
+    moreToggle?.addEventListener("click", () => {
+      moreExpanded = !moreExpanded;
+      syncMoreFilters();
+    });
+
+    sortToggle?.addEventListener("click", () => {
+      const willOpen = !sortMenu?.classList.contains("is-open");
+      sortMenu?.classList.toggle("is-open", willOpen);
+      sortToggle.setAttribute("aria-expanded", String(willOpen));
+    });
+
+    sortOptions.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveSort(button.dataset.sort);
+      });
+    });
+
+    actionGuideDismiss?.addEventListener("click", () => {
+      actionGuide?.classList.add("is-hidden");
+    });
+
+    authOverlay?.addEventListener("click", (event) => {
+      if (event.target === authOverlay) {
+        closeAuth();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (sortMenu && sortToggle) {
+        const clickedInsideSort = sortMenu.contains(event.target) || sortToggle.contains(event.target);
+        if (!clickedInsideSort) {
+          sortMenu.classList.remove("is-open");
+          sortToggle.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      if (topicMenu && moreToggle) {
+        const clickedInsideTopicMenu = topicMenu.contains(event.target) || moreToggle.contains(event.target);
+        if (!clickedInsideTopicMenu) {
+          moreExpanded = false;
+          syncMoreFilters();
+        }
+      }
+    });
+
+    extraFilterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        moreExpanded = false;
+        syncMoreFilters();
+      });
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && authOverlay?.classList.contains("is-open")) {
+        closeAuth();
+      }
+      if (event.key === "Escape") {
+        sortMenu?.classList.remove("is-open");
+        sortToggle?.setAttribute("aria-expanded", "false");
+        moreExpanded = false;
+        syncMoreFilters();
+      }
+    });
+  </script>
+</body>
+</html>
