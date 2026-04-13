@@ -196,6 +196,11 @@
 
         marker.addEventListener("click", (event) => {
           event.stopPropagation();
+          const questHref = marker.dataset.questHref;
+          if (questHref) {
+            window.location.hash = questHref;
+            return;
+          }
           openQuestDrawer(marker);
         });
       };
