@@ -241,6 +241,14 @@
       gap: 18px;
     }
 
+    .events-content.is-feed-layout {
+      padding: 0;
+      min-height: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
     .events-content.is-hidden,
     .event-shell.is-hidden {
       display: none;
@@ -767,12 +775,6 @@
       line-height: 1.6;
     }
 
-    .quest-checkpoint-actions {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-
     .quest-checkpoint-action {
       display: grid;
       gap: 8px;
@@ -788,6 +790,11 @@
       margin: 0;
       color: var(--text-soft);
       line-height: 1.55;
+    }
+
+    .quest-checkpoint-action .quest-location-link {
+      width: fit-content;
+      justify-self: start;
     }
 
     .quest-solve-panel {
@@ -1603,10 +1610,6 @@
         grid-template-columns: 1fr;
       }
 
-      .quest-checkpoint-actions {
-        grid-template-columns: 1fr;
-      }
-
       .player-profile-top,
       .player-profile-meta {
         grid-template-columns: 1fr;
@@ -2195,25 +2198,6 @@
         .filter((entry) => entry.location && mapCountryKey(entry.location.country) === countryKey);
 
       return entries.map((entry, index) => renderMapMarker(event, entry.location, entry.quest, index)).join("");
-    };
-    const renderQuestLocationLink = (event, quest) => {
-      const location = getQuestLocation(event, quest);
-      if (!location) return "";
-
-      return `
-        <div class="quest-details-actions">
-          ${DavinciCTAButton.render({
-        tag: "button",
-        type: "button",
-        label: "Open location",
-        variant: "outlined",
-        className: "quest-location-link",
-        attributes: {
-          "data-quest-location-id": location.id
-        }
-      })}
-        </div>
-      `;
     };
     const renderCommunityMap = (event, selectedLocation, options = {}) => `
       <div class="event-map-scroll" aria-label="${selectedLocation.title} map">
@@ -2965,41 +2949,31 @@
         <div class="quest-meta-section">
           <div class="quest-detail-divider" aria-hidden="true"></div>
           <strong>Checkpoint reference</strong>
-          <p class="quest-meta-copy">Use the reference first, then open navigation only if this quest has a real-world destination.</p>
-          <div class="quest-checkpoint-actions">
+          <p class="quest-meta-copy">Below is the owner-uploaded reference for this quest, such as a map, floor plan, or checkpoint image.</p>
+          <div class="quest-checkpoint-action">
+            <strong>Reference</strong>
+            <p>Use this visual reference to understand the exact checkpoint before you submit proof.</p>
+          </div>
+          <div class="quest-inline-map-host" data-quest-inline-map-host>
+            ${renderQuestInlineMap(event, quest)}
+          </div>
+          ${getQuestLocation(event, quest) ? `
             <div class="quest-checkpoint-action">
-              <strong>Open location reference</strong>
-              <p>This opens the owner-uploaded reference for the quest, for example a map, floor plan, or checkpoint image.</p>
+              <strong>Navigation</strong>
+              <p>Use navigation only when this quest has a real-world destination and you need turn-by-turn routing.</p>
               ${DavinciCTAButton.render({
-                tag: "button",
-                type: "button",
-                label: "Open reference",
+                tag: "a",
+                href: getExternalMapUrl(getQuestLocation(event, quest)),
+                label: "Open navigation",
                 variant: "outlined",
                 className: "quest-location-link",
                 attributes: {
-                  "data-quest-location-id": getQuestLocation(event, quest)?.id || ""
+                  target: "_blank",
+                  rel: "noopener noreferrer"
                 }
               })}
             </div>
-            ${getQuestLocation(event, quest) ? `
-              <div class="quest-checkpoint-action">
-                <strong>Open navigation</strong>
-                <p>This creates real navigation to the actual place when the quest has a concrete physical location.</p>
-                ${DavinciCTAButton.render({
-                  tag: "a",
-                  href: getExternalMapUrl(getQuestLocation(event, quest)),
-                  label: "Open navigation",
-                  variant: "outlined",
-                  className: "quest-location-link",
-                  attributes: {
-                    target: "_blank",
-                    rel: "noopener noreferrer"
-                  }
-                })}
-              </div>
-            ` : ""}
-          </div>
-          <div class="quest-inline-map-host is-hidden" data-quest-inline-map-host></div>
+          ` : ""}
         </div>
         ${renderQuestSolvePanel(event, quest)}
       </article>
@@ -3009,6 +2983,7 @@
       setViewMode("detail");
       const activeTab = ["feed", "about", "quests", "players", "locations"].includes(tab) ? tab : "feed";
       setMapScreenMode(activeTab === "locations" && Boolean(detailId) && subView === "map");
+      eventContentView.classList.toggle("is-feed-layout", activeTab === "feed");
       eventMenuTitle.textContent = event.title;
       eventMenuLogoWrap.classList.toggle("is-visible", Boolean(event.logo));
       if (event.logo) {
@@ -3036,14 +3011,7 @@
         eventContentView.querySelector("[data-back-to-selected-location]")?.addEventListener("click", (clickEvent) => {
           window.location.hash = `event/${event.id}/locations/${clickEvent.currentTarget.dataset.backToSelectedLocation}`;
         });
-        eventContentView.querySelector("[data-quest-location-id]")?.addEventListener("click", (clickEvent) => {
-          const host = eventContentView.querySelector("[data-quest-inline-map-host]");
-          if (!host) return;
-          host.classList.remove("is-hidden");
-          host.innerHTML = renderQuestInlineMap(event, quest);
-          DavinciCommunityMap.init(host);
-          host.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
+        DavinciCommunityMap.init(eventContentView.querySelector("[data-quest-inline-map-host]"));
         return;
       }
 
