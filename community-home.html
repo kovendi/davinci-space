@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Davinci Space - Community Feed</title>
+  <link rel="stylesheet" href="./components/user-card.css">
   <style>
     :root {
       --bg: #f5f1e8;
@@ -1507,7 +1508,7 @@
       <div class="layout">
         <section class="feed-column">
           <div class="panel composer">
-            <img class="composer-avatar" src="./assets/membership-6.png" alt="User card avatar">
+            <img class="composer-avatar" src="./assets/membership-2.png" alt="User card avatar">
             <div class="composer-input" data-auth-open="signup">Write something</div>
           </div>
 
@@ -1651,7 +1652,7 @@
                 <img src="./assets/membership-2.png" alt="Member avatar">
                 <img src="./assets/membership-3.png" alt="Member avatar">
                 <img src="./assets/membership-4.png" alt="Member avatar">
-                <img src="./assets/membership-5.png" alt="Member avatar">
+                <img src="./assets/membership-1.png" alt="Member avatar">
               </div>
               <span class="comment-link">New comment 15m ago</span>
             </div>
@@ -1704,7 +1705,7 @@
           <article class="panel post-card pinned" data-tag="Wins" data-following="true" data-order="3" data-score="161" data-unread="false">
             <div class="post-top">
               <div class="author">
-                <img src="./assets/membership-5.png" alt="Author avatar">
+                <img src="./assets/membership-1.png" alt="Author avatar">
                 <div class="author-meta">
                   <div class="author-name">YashChauhan</div>
                   <div class="author-sub">7d • Wins</div>
@@ -1737,7 +1738,7 @@
               </span>
               <div class="faces">
                 <img src="./assets/membership-1.png" alt="Member avatar">
-                <img src="./assets/membership-5.png" alt="Member avatar">
+                <img src="./assets/membership-1.png" alt="Member avatar">
                 <img src="./assets/membership-3.png" alt="Member avatar">
                 <img src="./assets/membership-4.png" alt="Member avatar">
               </div>
@@ -1803,17 +1804,7 @@
         <aside class="sidebar">
           <section class="identity-card" aria-label="User identity card">
             <p class="identity-label">User card</p>
-            <div class="identity-art">
-              <div class="identity-level">2</div>
-              <div class="identity-badge-stack" aria-hidden="true">
-                <div class="identity-badge">
-                  <img src="./assets/membership-2.png" alt="">
-                </div>
-                <div class="identity-badge fire">5X</div>
-              </div>
-
-              <img src="./assets/membership-6.png" alt="User identity card artwork">
-            </div>
+            <div id="homeUserCard"></div>
           </section>
 
           <section class="leaderboard-card" aria-label="Leaderboard">
@@ -1822,7 +1813,7 @@
             <div class="leaderboard-list">
               <div class="leaderboard-row">
                 <div class="leaderboard-rank medal gold">1</div>
-                <img class="leaderboard-avatar" src="./assets/membership-5.png" alt="Muskan Ahlawadia avatar">
+                <img class="leaderboard-avatar" src="./assets/membership-1.png" alt="Muskan Ahlawadia avatar">
                 <div class="leaderboard-name">Muskan Ahlawadia</div>
                 <div class="leaderboard-score">+5460</div>
               </div>
@@ -1912,6 +1903,7 @@
     </div>
   </div>
 
+  <script src="./components/user-card.js"></script>
   <script>
     const topbar = document.querySelector(".topbar");
     const authOverlay = document.querySelector("#authOverlay");
@@ -1937,11 +1929,24 @@
     const postsContainer = document.querySelector(".posts-list");
     const actionGuide = document.querySelector("[data-action-guide]");
     const actionGuideDismiss = document.querySelector("[data-action-guide-dismiss]");
+    const homeUserCard = document.querySelector("#homeUserCard");
 
     let activeScope = "all";
     let activeTopic = "General Discussion";
     let activeSort = "default";
     let moreExpanded = false;
+
+    if (homeUserCard && window.DavinciUserCard) {
+      homeUserCard.innerHTML = window.DavinciUserCard.render({
+        image: "./assets/membership-2.png",
+        alt: "User identity card artwork",
+        width: "200px",
+        badges: [
+          { text: "2", label: "Level 2 member" },
+          { text: "5X", label: "5x streak", variant: "accent" }
+        ]
+      });
+    }
 
     const syncTopbarState = () => {
       if (!topbar) return;

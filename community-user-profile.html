@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Davinci Space - User Profile</title>
+  <link rel="stylesheet" href="./components/user-card.css">
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --surface: rgba(255, 253, 248, 0.96);
+      --surface-soft: #fbf8f2;
+      --border: #e3d7bf;
+      --text: #18392b;
+      --text-soft: #5b6d62;
+      --text-muted: #7f8c84;
+      --brand: #173d2d;
+      --brand-2: #c9a24f;
+      --shadow: 0 18px 36px rgba(24, 57, 43, 0.09);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --container: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-image: linear-gradient(rgba(245, 241, 232, 0.92), rgba(245, 241, 232, 0.92)), url("./assets/background.png");
+      background-size: cover;
+      background-position: center;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .header-shell {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(245, 241, 232, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(227, 215, 191, 0.78);
+    }
+
+    .topbar-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 14px 20px 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+    }
+
+    .brand strong {
+      font-size: 1.02rem;
+      letter-spacing: -0.03em;
+    }
+
+    .subnav {
+      background: transparent;
+    }
+
+    .subnav-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .subnav-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .subnav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 46px;
+      padding: 0 0 1px;
+      color: var(--text-soft);
+      font-weight: 700;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+    }
+
+    .subnav-link:hover {
+      color: var(--brand);
+    }
+
+    .subnav-link.is-active {
+      color: var(--brand);
+      border-bottom-color: var(--brand);
+    }
+
+    .page-shell {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .profile-card,
+    .profile-content {
+      background: var(--surface);
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .profile-card {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .profile-card-kicker,
+    .profile-content-kicker {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .profile-card-copy {
+      display: grid;
+      gap: 8px;
+    }
+
+    .profile-card-copy strong {
+      font-size: 1.1rem;
+    }
+
+    .profile-card-copy p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.55;
+    }
+
+    .profile-content {
+      padding: 32px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .profile-content-head {
+      display: grid;
+      gap: 10px;
+    }
+
+    .profile-content-head h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .profile-content-head p {
+      margin: 0;
+      max-width: 720px;
+      color: var(--text-soft);
+      font-size: 1.06rem;
+      line-height: 1.7;
+    }
+
+    .profile-details {
+      display: grid;
+      gap: 0;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--surface-soft);
+    }
+
+    .profile-detail-row {
+      display: grid;
+      grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+      gap: 18px;
+      padding: 18px 22px;
+      border-top: 1px solid rgba(227, 215, 191, 0.72);
+    }
+
+    .profile-detail-row:first-child {
+      border-top: 0;
+    }
+
+    .profile-detail-label {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .profile-detail-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .profile-detail-value.is-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .profile-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(201, 162, 79, 0.12);
+      border: 1px solid rgba(201, 162, 79, 0.22);
+      color: var(--brand);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .profile-pill:hover {
+      background: rgba(201, 162, 79, 0.2);
+      border-color: rgba(201, 162, 79, 0.32);
+    }
+
+    @media (max-width: 920px) {
+      .profile-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-shell {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .profile-content,
+      .profile-card {
+        padding: 22px;
+      }
+
+      .profile-detail-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="./community-home.html">
+          <img src="./assets/logo-2.png" alt="Davinci Space logo">
+          <strong>Davinci Space</strong>
+        </a>
+      </div>
+    </header>
+    <nav class="subnav" aria-label="Community sections">
+      <div class="subnav-inner">
+        <a class="subnav-link is-active" href="./community-home.html">Home</a>
+        <a class="subnav-link" href="./community-board-game.html">Events</a>
+        <a class="subnav-link" href="./community-entrance.html">Entrance</a>
+        <a class="subnav-link" href="./community-leaderboard.html">Leaderboard</a>
+      </div>
+    </nav>
+  </div>
+
+  <main class="page-shell">
+    <section class="profile-layout">
+      <aside class="profile-card" aria-label="User card panel">
+        <p class="profile-card-kicker">Membership</p>
+        <div id="profileUserCard"></div>
+      </aside>
+
+      <section class="profile-content" aria-label="User profile details">
+        <div class="profile-content-head">
+          <p class="profile-content-kicker">User Profile</p>
+          <h1>Profile overview</h1>
+          <p>This page summarizes the member identity and their current community participation in event-focused spaces.</p>
+        </div>
+
+        <div class="profile-details">
+          <div class="profile-detail-row">
+            <div class="profile-detail-label">Username</div>
+            <div class="profile-detail-value">Nora Lane</div>
+          </div>
+          <div class="profile-detail-row">
+            <div class="profile-detail-label">Email</div>
+            <div class="profile-detail-value">nora@davinci.space</div>
+          </div>
+          <div class="profile-detail-row">
+            <div class="profile-detail-label">Events</div>
+            <div class="profile-detail-value is-list">
+              <a class="profile-pill" href="./community-board-game.html#event/grand-tour/feed">Grand Tour</a>
+              <a class="profile-pill" href="./community-board-game.html#event/eth-prague-scavenger-hunt/feed">ETH Prague Scavenger Hunt</a>
+            </div>
+          </div>
+          <div class="profile-detail-row">
+            <div class="profile-detail-label">Joined Community</div>
+            <div class="profile-detail-value">March 18, 2026</div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./components/user-card.js"></script>
+  <script>
+    const profileUserCard = document.querySelector("#profileUserCard");
+
+    if (profileUserCard && window.DavinciUserCard) {
+      profileUserCard.innerHTML = window.DavinciUserCard.render({
+        image: "./assets/membership-2.png",
+        alt: "Nora Lane user card",
+        width: "210px",
+        badges: [
+          { text: "L2", label: "Level 2 member" },
+          { iconName: "shield", label: "Verified member" },
+          { text: "5X", label: "5x streak", variant: "accent" }
+        ],
+        meta: [
+          { label: "Status", value: "Active member" }
+        ]
+      });
+    }
+  </script>
+</body>
+</html>

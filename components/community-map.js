@@ -73,7 +73,7 @@
         name: marker.dataset.playerName || "Player",
         level: Number(marker.dataset.playerLevel || 1),
         fire: Number(String(marker.dataset.playerFire || "1").replace(/\D/g, "") || 1),
-        image: marker.dataset.playerImage || "./assets/membership-6.png",
+        image: marker.dataset.playerImage || "./assets/membership-2.png",
         title: marker.dataset.playerTitle || "Explorer",
         copy: marker.dataset.playerCopy || "",
         marker
@@ -501,7 +501,7 @@
         closeQuestDrawer();
         if (drawerCard) {
           drawerCard.innerHTML = DavinciUserCard.render({
-            image: button.dataset.playerImage || "./assets/membership-6.png",
+            image: button.dataset.playerImage || "./assets/membership-2.png",
             alt: `${button.dataset.playerName || "Player"} user card`,
             badges: buildPlayerCardBadges(button),
             width: "190px"

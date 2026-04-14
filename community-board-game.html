@@ -278,6 +278,75 @@
       margin-bottom: 16px;
     }
 
+    .mobile-menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      margin-left: auto;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.94);
+      color: var(--brand);
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .mobile-menu-toggle.is-hidden {
+      display: none;
+    }
+
+    .mobile-menu-toggle svg,
+    .mobile-event-menu-close svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mobile-event-menu-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      background: rgba(24, 57, 43, 0.28);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .mobile-event-menu-head {
+      display: none;
+    }
+
+    .mobile-event-menu-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .mobile-event-menu-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.94);
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
     .events-menu-item {
       justify-content: space-between;
       gap: 12px;
@@ -1035,33 +1104,24 @@
       gap: 18px;
     }
 
-    .location-detail-tabs {
+    .location-detail-switch {
       display: inline-flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .location-detail-tab {
-      padding: 9px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(211, 193, 154, 0.78);
-      background: rgba(255, 253, 248, 0.88);
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
       color: var(--text-soft);
-      font: inherit;
       font-weight: 700;
-      cursor: pointer;
-      transition: background 140ms ease, color 140ms ease, border-color 140ms ease, transform 140ms ease;
+      text-transform: lowercase;
     }
 
-    .location-detail-tab:hover {
-      transform: translateY(-1px);
-      border-color: rgba(201, 162, 79, 0.72);
-    }
-
-    .location-detail-tab.is-active {
-      background: var(--brand);
-      border-color: var(--brand);
-      color: #fff;
+    .location-detail-switch svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .locations-mode-block {
@@ -1384,6 +1444,11 @@
       flex-wrap: wrap;
     }
 
+    .quest-details-separator {
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
     .event-join-button[disabled] {
       opacity: 0.76;
       cursor: default;
@@ -1544,6 +1609,15 @@
       transform: translateY(0);
     }
 
+    .map-stage.is-quest-highlighted .quest-marker {
+      opacity: 0.34;
+      transition: opacity 140ms ease;
+    }
+
+    .map-stage.is-quest-highlighted .quest-marker.is-highlighted {
+      opacity: 1;
+    }
+
     .player-card-image {
       width: 42px;
       height: 42px;
@@ -1577,6 +1651,10 @@
 
     @media (max-width: 720px) {
 
+      body.is-event-menu-open {
+        overflow: hidden;
+      }
+
       .topbar-inner,
       .subnav-inner {
         padding-left: 16px;
@@ -1589,6 +1667,61 @@
 
       .page {
         min-height: 100dvh;
+      }
+
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+
+      .event-shell.is-mobile-menu-open .mobile-event-menu-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .event-shell .menu-card {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 60;
+        width: min(86vw, 320px);
+        height: 100dvh;
+        padding: 0;
+        overflow-y: auto;
+        transform: translateX(-100%);
+        transition: transform 220ms ease;
+        background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.96));
+        border-right: 1px solid rgba(227, 215, 191, 0.92);
+        border-radius: 0;
+        box-shadow: 18px 0 40px rgba(24, 57, 43, 0.18);
+      }
+
+      .event-shell.is-mobile-menu-open .menu-card {
+        transform: translateX(0);
+        margin-top: 60px;
+      }
+
+      .mobile-event-menu-head {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        min-height: 72px;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: rgba(255, 253, 248, 0.9);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(227, 215, 191, 0.9);
+      }
+
+      .event-shell .menu-card .event-menu-logo {
+        margin-top: 18px;
+      }
+
+      .event-shell .menu-card .menu-list {
+        padding: 18px;
+        padding-top: 0;
       }
 
       .events-rule-grid {
@@ -1682,7 +1815,17 @@
       <section class="panel content-card events-content" id="eventsListView" aria-label="Events list"></section>
 
       <div class="admin-layout event-shell is-hidden" id="eventDetailView">
+        <div class="mobile-event-menu-backdrop" data-event-drawer-close></div>
         <nav class="panel menu-card" aria-label="Events menu">
+          <div class="mobile-event-menu-head">
+            <span class="mobile-event-menu-title">Event menu</span>
+            <button class="mobile-event-menu-close" type="button" aria-label="Close event menu" data-event-drawer-close>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12"></path>
+                <path d="M18 6 6 18"></path>
+              </svg>
+            </button>
+          </div>
           <div class="event-menu-logo" id="eventMenuLogoWrap">
             <img id="eventMenuLogo" alt="">
           </div>
@@ -1728,12 +1871,30 @@
     };
 
     const topbar = document.querySelector(".topbar");
+    const topbarInner = document.querySelector(".topbar-inner");
     const eventsListView = document.getElementById("eventsListView");
     const eventDetailView = document.getElementById("eventDetailView");
     const eventContentView = document.getElementById("eventContentView");
     const eventMenuLogoWrap = document.getElementById("eventMenuLogoWrap");
     const eventMenuLogo = document.getElementById("eventMenuLogo");
     const eventMenuTitle = document.getElementById("eventMenuTitle");
+    let mobileMenuToggle = null;
+    let isEventMenuOpen = false;
+
+    const setEventMenuOpen = (nextOpen) => {
+      isEventMenuOpen = nextOpen;
+      eventDetailView.classList.toggle("is-mobile-menu-open", nextOpen);
+      document.body.classList.toggle("is-event-menu-open", nextOpen);
+    };
+
+    const closeEventMenu = () => {
+      setEventMenuOpen(false);
+    };
+
+    const openEventMenu = () => {
+      if (eventDetailView.classList.contains("is-hidden")) return;
+      setEventMenuOpen(true);
+    };
 
     const eventData = [
       {
@@ -1741,7 +1902,7 @@
         title: "Grand Tour",
         logo: "./assets/pan-european-logo.png",
         gallery: [
-          "./assets/image.png",
+          "./assets/pan-european-logo.png",
           "./assets/membership-1.png",
           "./assets/membership-2.png",
           "./assets/membership-3.png",
@@ -1763,7 +1924,7 @@
           { title: "Start", copy: "Open the event, choose a quest, and accept the task before visiting the location." },
           { title: "Proof", copy: "Complete the task at the location and upload a photo as evidence for review." },
           { title: "Review", copy: "Submissions stay in processing until an owner accepts them from the event dashboard." },
-          { title: "Reward", copy: "Accepted submissions mark the quest as completed and add the listed points to the player." }
+          { title: "Reward", copy: "Completed submissions mark the quest as completed and add the listed points to the player." }
         ],
         quests: [
           {
@@ -1778,6 +1939,50 @@
             completion: "The quest is complete when the uploaded proof confirms the checkpoint route and the owner accepts the submission."
           },
           {
+            id: "danube-checkpoint",
+            title: "Danube Checkpoint",
+            region: "Hungary - Pest",
+            locationId: "pest",
+            reward: "210 points",
+            status: "Open",
+            summary: "Trace the riverside path and submit proof from the final Danube-facing marker.",
+            task: "Follow the Pest riverside route, locate the marked checkpoint sequence, and upload proof from the last Danube stop.",
+            completion: "The quest is complete when the final riverside checkpoint proof is reviewed and completed."
+          },
+          {
+            id: "market-square-trace",
+            title: "Market Square Trace",
+            region: "Hungary - Pest",
+            locationId: "pest",
+            reward: "170 points",
+            status: "Submitted",
+            summary: "Complete the market-square trace by identifying the listed visual markers in order.",
+            task: "Walk the Pest market-square route, verify the visual markers, and submit one proof image from the final trace point.",
+            completion: "The quest is complete when the owner accepts the submitted trace proof."
+          },
+          {
+            id: "tramline-proof",
+            title: "Tramline Proof",
+            region: "Hungary - Pest",
+            locationId: "pest",
+            reward: "145 points",
+            status: "Open",
+            summary: "Use the tram corridor as your route and verify the checkpoint near the main interchange.",
+            task: "Reach the Pest tramline checkpoint, match the owner reference, and upload a location photo from the interchange marker.",
+            completion: "The quest is complete when the checkpoint photo matches the route reference."
+          },
+          {
+            id: "embassy-row-loop",
+            title: "Embassy Row Loop",
+            region: "Hungary - Pest",
+            locationId: "pest",
+            reward: "230 points",
+            status: "Completed",
+            summary: "Finish the embassy district loop without breaking checkpoint order.",
+            task: "Move across the Pest embassy route, clear each checkpoint in order, and submit final proof from the loop exit marker.",
+            completion: "The quest is complete when the full loop proof is completed by the event owner."
+          },
+          {
             id: "southern-relay",
             title: "Southern Relay",
             region: "Hungary - Baranya",
@@ -1786,7 +1991,7 @@
             status: "Submitted",
             summary: "Hold the southern county line for one full cycle without losing the relay chain.",
             task: "Move through the southern relay route, keep the handoff sequence intact, and submit proof from the final checkpoint.",
-            completion: "The quest is complete after a clean relay sequence is reviewed and accepted."
+            completion: "The quest is complete after a clean relay sequence is reviewed and completed."
           },
           {
             id: "cluj-circuit",
@@ -1797,7 +2002,7 @@
             status: "Completed",
             summary: "Complete all checkpoints on the western route in one continuous circuit.",
             task: "Complete the western Cluj circuit without breaking the checkpoint order, then upload proof from the closing point.",
-            completion: "The quest is complete when the circuit proof is accepted."
+            completion: "The quest is complete when the circuit proof is completed."
           },
           {
             id: "coastal-hold",
@@ -1819,44 +2024,21 @@
             summary: "Solve the event briefing cipher before choosing a field route.",
             task: "Read the briefing notes, decode the short cipher, and submit the answer from your event dashboard.",
             completion: "The quest is complete when the submitted answer matches the briefing cipher."
-          },
-          {
-            id: "prague-lantern",
-            title: "Prague Lantern",
-            region: "Prague",
-            locationId: "prague",
-            reward: "160 points",
-            status: "Open",
-            summary: "Follow the old-town signal route and submit proof from the final lantern checkpoint.",
-            task: "Move across the Prague route, find the final lantern marker, and upload a proof photo from the closing checkpoint.",
-            completion: "The quest is complete when the Prague checkpoint proof is reviewed and accepted."
-          },
-          {
-            id: "prague-bridge-signal",
-            title: "Prague Bridge Signal",
-            region: "Prague",
-            locationId: "prague",
-            reward: "190 points",
-            status: "Submitted",
-            summary: "Complete the bridge signal route and submit checkpoint proof for review.",
-            task: "Cross the Prague bridge route, capture the marked signal point, and upload proof from the final checkpoint.",
-            completion: "The quest is complete when the submitted bridge route proof is reviewed and accepted."
           }
         ],
         locations: [
           { id: "pest", title: "Pest", country: "Hungary", quest: "Budapest Sprint", markerClass: "hu-q1", copy: "The busiest gateway in the Hungarian board, built around high-traffic checkpoints and fast movement." },
           { id: "baranya", title: "Baranya", country: "Hungary", quest: "Southern Relay", markerClass: "hu-q2", copy: "A southern route with longer lanes where stable relay timing matters more than raw speed." },
           { id: "cluj", title: "Cluj", country: "Romania", quest: "Cluj Circuit", markerClass: "ro-q1", copy: "A western Romania path that links multiple board lanes and rewards clean checkpoint momentum." },
-          { id: "constanta", title: "Constanta", country: "Romania", quest: "Coastal Hold", markerClass: "ro-q2", copy: "An eastern sea-facing lane where players must secure and hold an exposed coastal node." },
-          { id: "prague", title: "Praga", country: "Europe", quest: "Prague Lantern", markerClass: "ro-q3", mapImage: "./assets/map/praga.jpg", copy: "A Prague checkpoint route built around compact movement, visual landmarks, and fast proof collection across the old town lanes." }
+          { id: "constanta", title: "Constanta", country: "Romania", quest: "Coastal Hold", markerClass: "ro-q2", copy: "An eastern sea-facing lane where players must secure and hold an exposed coastal node." }
         ],
         players: [
-          { id: 1, image: "./assets/membership-1.png", email: "muskan@davinci.space", name: "Muskan Ahlawadia", points: 2480, completedQuestIds: ["cluj-circuit", "budapest-sprint", "prague-lantern"] },
+          { id: 1, image: "./assets/membership-1.png", email: "muskan@davinci.space", name: "Muskan Ahlawadia", points: 2480, completedQuestIds: ["cluj-circuit", "budapest-sprint"] },
           { id: 2, image: "./assets/membership-2.png", email: "christian@davinci.space", name: "Christian Rio", points: 2210, completedQuestIds: ["cluj-circuit", "southern-relay"] },
-          { id: 3, image: "./assets/membership-3.png", email: "frank@davinci.space", name: "Frank van Bok", points: 1940, completedQuestIds: ["prague-bridge-signal", "cipher-briefing"] },
+          { id: 3, image: "./assets/membership-3.png", email: "frank@davinci.space", name: "Frank van Bok", points: 1940, completedQuestIds: ["cipher-briefing"] },
           { id: 4, image: "./assets/membership-4.png", email: "titus@davinci.space", name: "Titus Blair", points: 1750, completedQuestIds: ["coastal-hold"] },
-          { id: 5, image: "./assets/membership-5.png", email: "yash@davinci.space", name: "Yash Chauhan", points: 1620, completedQuestIds: ["budapest-sprint"] },
-          { id: 6, image: "./assets/membership-6.png", email: "nora@davinci.space", name: "Nora Lane", points: 1510, completedQuestIds: ["prague-lantern"] },
+          { id: 5, image: "./assets/membership-1.png", email: "yash@davinci.space", name: "Yash Chauhan", points: 1620, completedQuestIds: ["budapest-sprint"] },
+          { id: 6, image: "./assets/membership-2.png", email: "nora@davinci.space", name: "Nora Lane", points: 1510, completedQuestIds: [] },
           { id: 7, image: "./assets/membership-1.png", email: "sofia@davinci.space", name: "Sofia Trent", points: 1475, completedQuestIds: ["cipher-briefing"] },
           { id: 8, image: "./assets/membership-2.png", email: "isaac@davinci.space", name: "Isaac Bloom", points: 1390, completedQuestIds: [] },
           { id: 9, image: "./assets/membership-3.png", email: "elena@davinci.space", name: "Elena Park", points: 1260, completedQuestIds: [] },
@@ -1865,15 +2047,15 @@
         feed: [
           {
             type: "quest-complete",
-            title: "Nora Lane completed Prague Lantern",
-            copy: "Her proof from the final lantern checkpoint was accepted after review.",
+            title: "Muskan Ahlawadia completed Budapest Sprint",
+            copy: "Her checkpoint photo from the Pest route was marked completed after owner review.",
             meta: "42m ago",
             detail: "Quest completion"
           },
           {
             type: "join",
             title: "6 new players joined Grand Tour",
-            copy: "The active roster expanded ahead of the Prague route unlock this evening.",
+            copy: "The active roster expanded after the latest route pack went live across the board.",
             meta: "3h ago",
             detail: "Member activity"
           },
@@ -1887,71 +2069,103 @@
         ]
       },
       {
-        id: "city-signals",
-        title: "City Signals",
-        logo: "",
+        id: "eth-prague-scavenger-hunt",
+        title: "ETH Prague Scavenger Hunt",
+        logo: "./assets/eth-prague-scavenger-hunt-logo.png",
         gallery: [
-          "./assets/image.png",
-          "./assets/membership-6.png",
-          "./assets/membership-5.png",
+          "./assets/eth-prague-scavenger-hunt-logo.png",
           "./assets/membership-2.png",
-          "./assets/membership-1.png"
+          "./assets/membership-1.png",
+          "./assets/membership-3.png",
+          "./assets/membership-4.png"
         ],
         date: "May 2026",
-        startTime: "May 6, 2026 10:00",
-        endTime: "May 12, 2026 18:00",
+        startTime: "May 22, 2026 10:00",
+        endTime: "May 25, 2026 18:00",
         status: "Upcoming",
-        summary: "A city discovery event focused on short observation tasks, local checkpoints, and fast submissions.",
-        about: "City Signals is a shorter event format where players complete compact local tasks across public checkpoints.",
+        summary: "A Prague-focused scavenger hunt built for ETH attendees who unlock checkpoints, decode hints, and submit proof on-site.",
+        about: "ETH Prague Scavenger Hunt sends players across Prague with short IRL tasks, visual references, and checkpoint proof submissions tied to event locations.",
         joined: false,
         onboarding: [
-          { label: "Read the event brief before launch", done: true },
-          { label: "Join the opening discussion thread", done: false },
-          { label: "Pick your first city checkpoint", done: false }
+          { label: "Read the scavenger hunt brief before launch", done: true },
+          { label: "Join the ETH Prague kickoff thread", done: false },
+          { label: "Pick your first Prague checkpoint", done: false }
         ],
         rules: [
-          { title: "Choose", copy: "Pick a signal quest from the active city list." },
-          { title: "Visit", copy: "Go to the required place and complete the observation task." },
-          { title: "Submit", copy: "Upload proof from the checkpoint before the daily window closes." },
-          { title: "Score", copy: "Accepted submissions add points to the event leaderboard." }
+          { title: "Choose", copy: "Pick a Prague checkpoint quest from the active event list." },
+          { title: "Reference", copy: "Use the owner-provided reference image to verify the exact spot before submitting proof." },
+          { title: "Submit", copy: "Upload proof from the checkpoint before the event window closes." },
+          { title: "Score", copy: "Completed scavenger submissions add points to the ETH Prague leaderboard." }
         ],
         quests: [
           {
-            id: "station-signal",
-            title: "Station Signal",
-            region: "City Center",
-            locationId: "city-center",
-            reward: "120 points",
-            status: "Rejected",
-            summary: "Find the station checkpoint and submit proof from the marked public area.",
-            task: "Visit the station checkpoint, identify the marked area, and upload a clear proof photo.",
-            completion: "The quest is complete after the checkpoint proof is accepted."
+            id: "prague-lantern",
+            title: "Prague Lantern",
+            region: "Prague - Old Town",
+            locationId: "old-town",
+            reward: "160 points",
+            status: "Open",
+            summary: "Follow the old-town signal route and submit proof from the final lantern checkpoint.",
+            task: "Move across the old-town route, find the final lantern marker, and upload a proof photo from the closing checkpoint.",
+            completion: "The quest is complete when the lantern checkpoint proof is reviewed and completed."
           },
+          {
+            id: "prague-bridge-signal",
+            title: "Prague Bridge Signal",
+            region: "Prague - Charles Bridge",
+            locationId: "charles-bridge",
+            reward: "190 points",
+            status: "Submitted",
+            summary: "Complete the bridge signal route and submit checkpoint proof for review.",
+            task: "Cross the bridge route, capture the marked signal point, and upload proof from the final checkpoint.",
+            completion: "The quest is complete when the submitted bridge route proof is reviewed and completed."
+          },
+          {
+            id: "castle-cipher",
+            title: "Castle Cipher",
+            region: "Prague - Castle District",
+            locationId: "castle-district",
+            reward: "210 points",
+            status: "Open",
+            summary: "Decode the castle clue chain by visiting the right visual reference point on the ridge.",
+            task: "Use the uploaded reference, reach the castle district checkpoint, decode the short cipher, and submit the matching text answer.",
+            completion: "The quest is complete when the correct cipher answer and location proof are both completed."
+          }
         ],
         locations: [
-          { id: "city-center", title: "City Center", country: "Europe", quest: "Station Signal", markerClass: "hu-q3", copy: "A compact route designed for quick movement and clear proof collection." }
+          { id: "old-town", title: "Old Town", country: "Europe", quest: "Prague Lantern", markerClass: "ro-q1", mapImage: "./assets/map/praga.jpg", copy: "A dense old-town checkpoint route built around lantern landmarks, narrow lanes, and fast proof collection." },
+          { id: "charles-bridge", title: "Charles Bridge", country: "Europe", quest: "Prague Bridge Signal", markerClass: "ro-q2", mapImage: "./assets/map/praga.jpg", copy: "A bridge-side route where the checkpoint reference points are tied to statues, sightlines, and river-facing markers." },
+          { id: "castle-district", title: "Castle District", country: "Europe", quest: "Castle Cipher", markerClass: "ro-q3", mapImage: "./assets/map/praga.jpg", copy: "A hilltop location chain that mixes visual references with a short cipher task near the castle approach." }
         ],
         players: [
-          { id: 1, image: "./assets/membership-6.png", email: "nate@davinci.space", name: "Nate Herk", points: 620, completedQuestIds: ["station-signal"] },
-          { id: 2, image: "./assets/membership-1.png", email: "sayed@davinci.space", name: "Sayed Hridoy", points: 580, completedQuestIds: [] },
-          { id: 3, image: "./assets/membership-2.png", email: "rami@davinci.space", name: "Rami Cole", points: 540, completedQuestIds: [] },
-          { id: 4, image: "./assets/membership-3.png", email: "lucas@davinci.space", name: "Lucas Morel", points: 505, completedQuestIds: [] },
-          { id: 5, image: "./assets/membership-4.png", email: "kathy@davinci.space", name: "Kathy Rose", points: 480, completedQuestIds: [] }
+          { id: 1, image: "./assets/membership-2.png", email: "nora@davinci.space", name: "Nora Lane", points: 1510, completedQuestIds: ["prague-lantern"] },
+          { id: 2, image: "./assets/membership-1.png", email: "frank@davinci.space", name: "Frank van Bok", points: 1490, completedQuestIds: ["prague-bridge-signal"] },
+          { id: 3, image: "./assets/membership-3.png", email: "anika@davinci.space", name: "Anika Stern", points: 1320, completedQuestIds: ["castle-cipher"] },
+          { id: 4, image: "./assets/membership-4.png", email: "matej@davinci.space", name: "Matej Kral", points: 1190, completedQuestIds: [] },
+          { id: 5, image: "./assets/membership-2.png", email: "sofia@davinci.space", name: "Sofia Trent", points: 1105, completedQuestIds: [] },
+          { id: 6, image: "./assets/membership-1.png", email: "isaac@davinci.space", name: "Isaac Bloom", points: 980, completedQuestIds: [] }
         ],
         feed: [
           {
             type: "announcement",
-            title: "City Signals opens next",
-            copy: "Final route notes are published and the first checkpoint list is locked in.",
+            title: "ETH Prague Scavenger Hunt route pack is live",
+            copy: "Checkpoint references were published for Old Town, Charles Bridge, and the Castle District.",
             meta: "1d ago",
             detail: "Announcement"
           },
           {
             type: "join",
-            title: "12 players preregistered for launch",
-            copy: "Most signups came in after the city-center checkpoint preview went live.",
+            title: "18 players preregistered for launch",
+            copy: "Most signups came in after the Prague checkpoint preview and kickoff details were published.",
             meta: "Yesterday",
             detail: "Member activity"
+          },
+          {
+            type: "submission",
+            title: "Castle Cipher received a new dry-run submission",
+            copy: "The owner review queue now includes a full test proof from the castle district route.",
+            meta: "2d ago",
+            detail: "Submission update"
           }
         ]
       }
@@ -1963,8 +2177,15 @@
     };
 
     const eventMembershipState = new Map(eventData.map((event) => [event.id, Boolean(event.joined)]));
+    const eventQuestStatusState = new Map(
+      eventData.flatMap((event) => event.quests.map((quest) => [`${event.id}:${quest.id}`, quest.status]))
+    );
     const getEvent = (eventId) => eventData.find((event) => event.id === eventId) || eventData[0];
     const getQuest = (event, questId) => event.quests.find((quest) => quest.id === questId) || event.quests[0];
+    const getQuestStatus = (event, quest) => eventQuestStatusState.get(`${event.id}:${quest.id}`) || quest.status;
+    const setQuestStatus = (event, quest, status) => {
+      eventQuestStatusState.set(`${event.id}:${quest.id}`, status);
+    };
     const getLocation = (event, locationId) => event.locations.find((location) => location.id === locationId) || event.locations[0];
     const getLocationQuests = (event, location) => event.quests.filter((quest) => {
       if (quest.locationId) return quest.locationId === location.id;
@@ -2034,7 +2255,7 @@
       : `<span class="events-row-media is-placeholder" aria-hidden="true">${eventsIcons.placeholder}</span>`;
     const renderJoinEventButton = (event, label = "Join the event") => {
       if (isEventJoined(event.id)) {
-        return '<span class="event-member-chip">Joined</span>';
+        return "";
       }
 
       return DavinciCTAButton.render({
@@ -2156,6 +2377,20 @@
       const query = encodeURIComponent(`${location.title}, ${location.country}`);
       return `https://www.google.com/maps/search/?api=1&query=${query}`;
     };
+    const hasQuestNavigation = (event, quest) => {
+      const location = getQuestLocation(event, quest);
+      if (!location) return false;
+
+      const title = String(location.title || "").trim().toLowerCase();
+      const country = String(location.country || "").trim().toLowerCase();
+      const region = String(quest.region || "").trim().toLowerCase();
+
+      return title !== "online" && country !== "online" && region !== "online";
+    };
+    const isQuestClosed = (event, quest) => {
+      const status = String(getQuestStatus(event, quest) || "").trim().toLowerCase();
+      return status === "completed";
+    };
     const getLocationMarkerOffset = (index) => {
       const offsets = [
         { x: 0, y: 0 },
@@ -2178,9 +2413,10 @@
           data-quest-location="${location.copy}"
           data-quest-task="${quest.task}"
           data-quest-reward="${quest.reward}"
-          data-quest-status="${quest.status}"
+          data-quest-status="${getQuestStatus(event, quest)}"
           data-quest-completed="0"
           data-quest-created="${event.startTime}"
+          data-map-quest-id="${quest.id}"
           data-quest-href="event/${event.id}/quests/${quest.id}"
           data-quest-navigation-url="${getExternalMapUrl(location)}"
           aria-label="${location.title} map marker"
@@ -2300,10 +2536,36 @@
         </div>
       </div>
     `;
+    const bindLocationMapQuestHighlight = (scope = eventContentView) => {
+      const mapStage = scope.querySelector(".map-stage");
+      const questRows = Array.from(scope.querySelectorAll("[data-location-quest-id]"));
+      const questMarkers = Array.from(scope.querySelectorAll(".quest-marker[data-map-quest-id]"));
+
+      if (!mapStage || !questRows.length || !questMarkers.length) return;
+
+      const setHighlightedQuest = (questId) => {
+        mapStage.classList.toggle("is-quest-highlighted", Boolean(questId));
+        questMarkers.forEach((marker) => {
+          marker.classList.toggle("is-highlighted", marker.dataset.mapQuestId === questId);
+        });
+      };
+
+      questRows.forEach((row) => {
+        const { locationQuestId } = row.dataset;
+        row.addEventListener("mouseenter", () => setHighlightedQuest(locationQuestId));
+        row.addEventListener("mouseleave", () => setHighlightedQuest(""));
+        row.addEventListener("focus", () => setHighlightedQuest(locationQuestId));
+        row.addEventListener("blur", () => setHighlightedQuest(""));
+      });
+    };
 
     const setViewMode = (mode) => {
       eventsListView.classList.toggle("is-hidden", mode !== "list");
       eventDetailView.classList.toggle("is-hidden", mode !== "detail");
+      mobileMenuToggle?.classList.toggle("is-hidden", mode !== "detail");
+      if (mode !== "detail") {
+        closeEventMenu();
+      }
     };
 
     const setMapScreenMode = () => {};
@@ -2333,6 +2595,7 @@
           attributes: { "data-event-tab": tab.id }
         });
         mount.querySelector("button")?.addEventListener("click", () => {
+          closeEventMenu();
           window.location.hash = `event/${event.id}/${tab.id}`;
         });
         const button = mount.querySelector("button");
@@ -2484,7 +2747,7 @@
                   <div class="event-table-primary"><span>${quest.title}</span></div>
                   <div class="event-table-text">${getQuestLocation(event, quest)?.title || quest.region}</div>
                   <div class="event-table-text">${quest.reward}</div>
-                  <div class="event-table-text">${quest.status}</div>
+                  <div class="event-table-text">${getQuestStatus(event, quest)}</div>
                 </button>
               `).join("")}
             </div>
@@ -2548,6 +2811,20 @@
                 attributes: {
                   "data-back-to-players": "true"
                 }
+              })}
+            </div>
+            <div class="quest-details-actions-secondary">
+              ${DavinciCTAButton.render({
+                tag: "a",
+                href: "./community-user-profile.html",
+                label: "Open profile",
+                variant: "text",
+                className: "events-back",
+                xPadding: "0px",
+                color: "var(--text-muted)",
+                hoverColor: "var(--brand)",
+                hoverBackground: "transparent",
+                icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M5 20a7 7 0 0 1 14 0"></path></svg>'
               })}
             </div>
           </div>
@@ -2637,10 +2914,6 @@
 
     const renderLocationDetail = (event, location, view = "list") => {
       const quests = getLocationQuests(event, location);
-      const tabs = [
-        { id: "list", label: "List" },
-        { id: "map", label: "Map" }
-      ];
 
       return `
         <article class="events-panel is-active">
@@ -2666,17 +2939,20 @@
                 <p>${location.copy}</p>
               </div>
             </div>
-            <div class="location-detail-tabs" role="tablist" aria-label="Location views">
-              ${tabs.map((tab) => `
-                <button
-                  class="location-detail-tab${tab.id === view ? " is-active" : ""}"
-                  type="button"
-                  role="tab"
-                  aria-selected="${tab.id === view ? "true" : "false"}"
-                  data-location-view="${tab.id}"
-                >${tab.label}</button>
-              `).join("")}
-            </div>
+          ${DavinciCTAButton.render({
+            tag: "button",
+            type: "button",
+            label: "Map",
+            variant: "outlined",
+            className: "location-detail-switch",
+            color: "var(--text-soft)",
+            hoverColor: "var(--brand)",
+            hoverBackground: "transparent",
+            icon: eventsIcons.locations,
+            attributes: {
+              "data-location-view": "map"
+              }
+            })}
             ${quests.length ? `
               <div class="event-table-scroll" aria-label="Scrollable location quests table">
                 <section class="event-table location-detail-quests-table" aria-label="Location quests table">
@@ -2690,7 +2966,7 @@
                       <button class="event-table-row is-clickable" type="button" data-location-quest-id="${quest.id}">
                         <div class="event-table-primary"><span>${quest.title}</span></div>
                         <div class="event-table-text">${quest.reward}</div>
-                        <div class="event-table-text">${quest.status}</div>
+                        <div class="event-table-text">${getQuestStatus(event, quest)}</div>
                       </button>
                     `).join("")}
                   </div>
@@ -2714,7 +2990,7 @@
           ${DavinciCTAButton.render({
             tag: "button",
             type: "button",
-            label: "Back to location",
+            label: "Back to locations",
             variant: "text",
             className: "events-back",
             xPadding: "0px",
@@ -2729,35 +3005,30 @@
           <div class="location-detail-panel">
             <div class="content-heading">
               <div>
-                <h2>${location.title} map</h2>
+                <h2>${location.title}</h2>
                 <p>${location.copy}</p>
               </div>
             </div>
-            ${quests.length ? `
-              <div class="event-table-scroll" aria-label="Scrollable location quests table">
-                <section class="event-table location-detail-quests-table" aria-label="Location quests table">
-                  <div class="event-table-head" aria-hidden="true">
-                    <span>Quest</span>
-                    <span>Reward</span>
-                    <span>Status</span>
-                  </div>
-                  <div class="event-table-body">
-                    ${quests.map((quest) => `
-                      <button class="event-table-row is-clickable" type="button" data-location-quest-id="${quest.id}">
-                        <div class="event-table-primary"><span>${quest.title}</span></div>
-                        <div class="event-table-text">${quest.reward}</div>
-                        <div class="event-table-text">${quest.status}</div>
-                      </button>
-                    `).join("")}
-                  </div>
-                </section>
-              </div>
-            ` : ""}
+            ${DavinciCTAButton.render({
+              tag: "button",
+              type: "button",
+              label: "List",
+              variant: "outlined",
+              className: "location-detail-switch",
+              color: "var(--text-soft)",
+              hoverColor: "var(--brand)",
+              hoverBackground: "transparent",
+              icon: eventsIcons.quests,
+              attributes: {
+                "data-location-view": "list"
+              }
+            })}
             <div class="event-map-shell">
               ${renderCommunityMap(event, location, {
                 questIds: quests.map((quest) => quest.id),
                 showLogo: false,
-                mapNoteLabel: location.title
+                mapNoteLabel: location.title,
+                showBackButton: false
               })}
             </div>
           </div>
@@ -2767,35 +3038,43 @@
 
     const renderQuestSolvePanel = (event, quest) => {
       const location = getQuestLocation(event, quest);
+      const questStatus = getQuestStatus(event, quest);
+      const isClosed = isQuestClosed(event, quest);
+      const proofImage = "./assets/membership-2.png";
+      const proofFileName = `${quest.id}-proof.jpg`;
+
       return `
         <section class="quest-solve-panel" aria-label="Complete this quest">
           <div class="quest-detail-divider" aria-hidden="true"></div>
           <div class="quest-solve-head">
             <div>
               <p class="quest-solve-kicker">How To Complete</p>
-              <strong>Submit the required proof</strong>
-              <p>Use the location map, then send the proof items below for review.</p>
+              <strong>${isClosed ? "Submitted proof" : "Submit the required proof"}</strong>
+              <p>${isClosed ? "This quest is already closed, so only the submitted proof is shown below." : "Use the location map, then send the proof items below for review."}</p>
             </div>
-            <span class="quest-solve-status">${quest.status}</span>
           </div>
           <div class="quest-solve-grid">
             <section class="quest-solve-card">
               <span class="quest-step" data-step="1">Photo</span>
               <strong>Photo</strong>
-              <p>Upload one clear checkpoint photo with the visible marker.</p>
-              <label class="quest-solve-upload">
-                <input type="file" accept="image/*" data-selected-quest-proof-input>
-                <span class="quest-solve-upload-trigger">Choose image</span>
-                <span class="quest-solve-file" data-selected-quest-proof-file></span>
-              </label>
-              <div class="quest-solve-preview" data-selected-quest-proof-preview>
-                <img src="" alt="Selected proof preview" data-selected-quest-proof-image>
+              <p>${isClosed ? "Attached checkpoint photo from the submitted proof." : "Upload one clear checkpoint photo with the visible marker."}</p>
+              ${isClosed ? `
+                <span class="quest-solve-file is-visible">${proofFileName}</span>
+              ` : `
+                <label class="quest-solve-upload">
+                  <input type="file" accept="image/*" data-selected-quest-proof-input>
+                  <span class="quest-solve-upload-trigger">Choose image</span>
+                  <span class="quest-solve-file" data-selected-quest-proof-file></span>
+                </label>
+              `}
+              <div class="quest-solve-preview${isClosed ? " is-visible" : ""}" data-selected-quest-proof-preview>
+                <img src="${isClosed ? proofImage : ""}" alt="Selected proof preview" data-selected-quest-proof-image>
               </div>
             </section>
             <section class="quest-solve-card">
               <span class="quest-step" data-step="2">QR Token</span>
               <strong>QR code</strong>
-              <p>Use this QR token from the checkpoint scan.</p>
+              <p>${isClosed ? "Submitted QR token captured at the checkpoint." : "Use this QR token from the checkpoint scan."}</p>
               <label class="quest-solve-field">
                 <span class="quest-solve-field-value">PRAGA-LANTERN-204</span>
               </label>
@@ -2803,14 +3082,14 @@
             <section class="quest-solve-card">
               <span class="quest-step" data-step="3">Text Answer</span>
               <strong>Text</strong>
-              <p>Include the written checkpoint answer required for review.</p>
+              <p>${isClosed ? "Submitted written answer attached to this proof." : "Include the written checkpoint answer required for review."}</p>
               <label class="quest-solve-field">
                 <span class="quest-solve-field-value">The lantern inscription reads: Lux in transitu.</span>
               </label>
             </section>
           </div>
           <div class="quest-detail-divider" aria-hidden="true"></div>
-          ${DavinciCTAButton.render({
+          ${isClosed ? "" : DavinciCTAButton.render({
             tag: "button",
             type: "button",
             label: "Submit proof",
@@ -2821,12 +3100,12 @@
               "aria-disabled": "true"
             }
           })}
-          <p class="quest-solve-note" data-selected-quest-note>Once submitted, the proof goes into review before the quest is marked completed.</p>
+          <p class="quest-solve-note" data-selected-quest-note>${isClosed ? "This proof was already submitted and marked completed, so no further upload is needed." : "Once submitted, the proof goes into review before the quest is marked completed."}</p>
         </section>
       `;
     };
 
-    const bindSelectedQuestPanel = () => {
+    const bindSelectedQuestPanel = (event, quest) => {
       const proofInput = eventContentView.querySelector("[data-selected-quest-proof-input]");
       const proofFile = eventContentView.querySelector("[data-selected-quest-proof-file]");
       const proofPreview = eventContentView.querySelector("[data-selected-quest-proof-preview]");
@@ -2834,6 +3113,13 @@
       const submitButton = eventContentView.querySelector("[data-selected-quest-submit]");
       const note = eventContentView.querySelector("[data-selected-quest-note]");
       let previewUrl = "";
+
+      if (isQuestClosed(event, quest)) {
+        if (proofPreview) {
+          proofPreview.classList.add("is-visible");
+        }
+        return;
+      }
 
       proofInput?.addEventListener("change", () => {
         const file = proofInput.files && proofInput.files[0];
@@ -2864,11 +3150,13 @@
         submitButton.setAttribute("aria-disabled", "true");
         submitButton.addEventListener("click", () => {
           if (submitButton.getAttribute("aria-disabled") === "true") return;
+          setQuestStatus(event, quest, "Submitted");
           submitButton.textContent = "Submitted";
           submitButton.setAttribute("aria-disabled", "true");
           if (note) {
             note.textContent = "Proof submitted. The quest is now waiting for review.";
           }
+          renderRoute();
         });
       }
     };
@@ -2905,11 +3193,11 @@
               icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>',
               attributes: {
                 "data-back-to-quests": "true"
-              }
-            })}
-          </div>
-          <div class="quest-details-actions-secondary">
-            ${getQuestLocation(event, quest) ? DavinciCTAButton.render({
+                }
+              })}
+            ${getQuestLocation(event, quest) ? `
+              <span class="quest-details-separator" aria-hidden="true">|</span>
+              ${DavinciCTAButton.render({
               tag: "button",
               type: "button",
               label: "Go to location",
@@ -2923,7 +3211,8 @@
               attributes: {
                 "data-back-to-selected-location": getQuestLocation(event, quest).id
               }
-            }) : ""}
+              })}
+            ` : ""}
           </div>
         </div>
         <div class="quest-detail-topbar">
@@ -2931,7 +3220,7 @@
             <div>
               <h2>${quest.title}</h2>
               <p>${quest.summary}</p>
-              ${meta([quest.region, quest.reward, quest.status])}
+              ${meta([quest.region, quest.reward, getQuestStatus(event, quest)])}
             </div>
           </div>
         </div>
@@ -2957,7 +3246,7 @@
           <div class="quest-inline-map-host" data-quest-inline-map-host>
             ${renderQuestInlineMap(event, quest)}
           </div>
-          ${getQuestLocation(event, quest) ? `
+          ${hasQuestNavigation(event, quest) ? `
             <div class="quest-checkpoint-action">
               <strong>Navigation</strong>
               <p>Use navigation only when this quest has a real-world destination and you need turn-by-turn routing.</p>
@@ -3004,7 +3293,7 @@
       if (activeTab === "quests" && detailId) {
         const quest = getQuest(event, detailId);
         eventContentView.innerHTML = renderQuestDetail(event, quest);
-        bindSelectedQuestPanel();
+        bindSelectedQuestPanel(event, quest);
         eventContentView.querySelector("[data-back-to-quests]")?.addEventListener("click", () => {
           window.location.hash = `event/${event.id}/quests`;
         });
@@ -3049,14 +3338,13 @@
           if (locationView === "map") {
             eventContentView.innerHTML = renderLocationMap(event, location);
             eventContentView.querySelector("[data-back-to-location]")?.addEventListener("click", () => {
+              window.location.hash = `event/${event.id}/locations`;
+            });
+            eventContentView.querySelector("[data-location-view='list']")?.addEventListener("click", () => {
               window.location.hash = `event/${event.id}/locations/${location.id}`;
             });
-            eventContentView.querySelectorAll("[data-location-quest-id]").forEach((row) => {
-              row.addEventListener("click", () => {
-                window.location.hash = `event/${event.id}/quests/${row.dataset.locationQuestId}`;
-              });
-            });
             DavinciCommunityMap.init(eventContentView);
+            bindLocationMapQuestHighlight(eventContentView);
             return;
           }
 
@@ -3064,13 +3352,8 @@
           eventContentView.querySelector("[data-back-to-locations]")?.addEventListener("click", () => {
             window.location.hash = `event/${event.id}/locations`;
           });
-          eventContentView.querySelectorAll("[data-location-view]").forEach((button) => {
-            button.addEventListener("click", () => {
-              const nextView = button.dataset.locationView;
-              window.location.hash = nextView === "map"
-                ? `event/${event.id}/locations/${location.id}/map`
-                : `event/${event.id}/locations/${location.id}`;
-            });
+          eventContentView.querySelector("[data-location-view='map']")?.addEventListener("click", () => {
+            window.location.hash = `event/${event.id}/locations/${location.id}/map`;
           });
           eventContentView.querySelectorAll("[data-location-quest-id]").forEach((row) => {
             row.addEventListener("click", () => {
@@ -3105,6 +3388,31 @@
     };
 
     syncTopbarState();
+    if (topbarInner) {
+      mobileMenuToggle = document.createElement("button");
+      mobileMenuToggle.type = "button";
+      mobileMenuToggle.className = "mobile-menu-toggle";
+      mobileMenuToggle.setAttribute("aria-label", "Open event menu");
+      mobileMenuToggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>';
+      topbarInner.appendChild(mobileMenuToggle);
+      mobileMenuToggle.addEventListener("click", () => {
+        if (isEventMenuOpen) {
+          closeEventMenu();
+          return;
+        }
+        openEventMenu();
+      });
+    }
+    eventDetailView.addEventListener("click", (event) => {
+      if (event.target.closest("[data-event-drawer-close]")) {
+        closeEventMenu();
+      }
+    });
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 720) {
+        closeEventMenu();
+      }
+    });
     window.addEventListener("scroll", syncTopbarState, { passive: true });
     window.addEventListener("hashchange", renderRoute);
     renderRoute();
