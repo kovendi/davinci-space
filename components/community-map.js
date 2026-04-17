@@ -8,6 +8,7 @@
       mapStage.dataset.communityMapInitialized = "true";
       const mapSurface = scope.querySelector(".map-surface");
       const hungaryTrigger = scope.querySelector(".hungary-trigger");
+      const czechTrigger = scope.querySelector(".czech-trigger");
       const romaniaTrigger = scope.querySelector(".romania-trigger");
       const mapNote = scope.querySelector(".map-note");
       const initialCountry = mapStage.dataset.mapInitialCountry || "europe";
@@ -60,6 +61,8 @@
       const EUROPE_FOCUS = { x: 0.53, y: 0.5 };
       const HUNGARY_ENTRY_SCALE = 1.58;
       const HUNGARY_FOCUS = { x: 0.5, y: 0.5 };
+      const CZECH_ENTRY_SCALE = 1.62;
+      const CZECH_FOCUS = { x: 0.5, y: 0.5 };
       const ROMANIA_ENTRY_SCALE = 1.5;
       const ROMANIA_FOCUS = { x: 0.5, y: 0.53 };
       const MOBILE_BREAKPOINT = 720;
@@ -123,6 +126,7 @@
         const labels = {
           europe: "Map: Europe",
           hungary: "Map: Hungary",
+          czech: "Map: Czech Republic",
           romania: "Map: Romania"
         };
         mapNote.textContent = labels[panState.activeMap] || "Map: Europe";
@@ -130,6 +134,7 @@
 
       const countryNameForMap = (map) => {
         if (map === "hungary") return "Hungary";
+        if (map === "czech") return "Czech Republic";
         if (map === "romania") return "Romania";
         return "Europe";
       };
@@ -141,7 +146,7 @@
           setDashboardPanelCollapsed(false);
           setPlayersPanelCollapsed(true);
         }
-        dashboardPanel.classList.toggle("is-owner-active", COMMUNITY_OWNER && (panState.activeMap === "hungary" || panState.activeMap === "romania"));
+        dashboardPanel.classList.toggle("is-owner-active", COMMUNITY_OWNER && (panState.activeMap === "hungary" || panState.activeMap === "czech" || panState.activeMap === "romania"));
         dashboardPanel.classList.toggle("is-owner-europe", COMMUNITY_OWNER && panState.activeMap === "europe");
         dashboardPanel.classList.toggle("has-draft-quest", Boolean(draftQuest));
         dashboardPanel.classList.toggle("is-form-mode", Boolean(draftQuest?.formOpen));
@@ -151,6 +156,9 @@
       const getActiveQuestOverlay = () => {
         if (panState.activeMap === "hungary") {
           return scope.querySelector(".hungary-overlay");
+        }
+        if (panState.activeMap === "czech") {
+          return scope.querySelector(".czech-overlay");
         }
         if (panState.activeMap === "romania") {
           return scope.querySelector(".romania-overlay");
@@ -477,6 +485,7 @@
         const overlay = marker.closest(".map-overlay");
         if (!overlay) return true;
         if (overlay.classList.contains("hungary-overlay")) return panState.activeMap === "hungary";
+        if (overlay.classList.contains("czech-overlay")) return panState.activeMap === "czech";
         if (overlay.classList.contains("romania-overlay")) return panState.activeMap === "romania";
         if (overlay.classList.contains("europe-overlay")) return panState.activeMap === "europe";
         return true;
@@ -609,6 +618,7 @@
         closeDrawer();
         closeQuestDrawer();
         mapSurface.classList.remove("is-hungary-view");
+        mapSurface.classList.remove("is-czech-view");
         mapSurface.classList.remove("is-romania-view");
         panState.activeMap = "europe";
         focusSurface(EUROPE_FOCUS.x, EUROPE_FOCUS.y, EUROPE_SCALE);
@@ -686,10 +696,35 @@
 
         window.setTimeout(() => {
           panState.activeMap = "hungary";
+          mapSurface.classList.remove("is-czech-view");
           mapSurface.classList.remove("is-romania-view");
           mapSurface.classList.add("is-hungary-view");
           syncMapLabel();
           focusSurface(HUNGARY_FOCUS.x, HUNGARY_FOCUS.y, EUROPE_SCALE);
+          syncMarkerSearch();
+          renderDashboardPanel();
+          updateDashboardMode();
+        }, 260);
+      };
+
+      const zoomToCzech = () => {
+        if (!mapSurface || panState.activeMap === "czech") return;
+
+        stopDrag();
+        closeDashboardSubmissions();
+        clearDraftQuest();
+        closeDrawer();
+        closeQuestDrawer();
+        mapSurface.style.transition = "";
+        focusSurface(0.542, 0.628, CZECH_ENTRY_SCALE);
+
+        window.setTimeout(() => {
+          panState.activeMap = "czech";
+          mapSurface.classList.remove("is-hungary-view");
+          mapSurface.classList.remove("is-romania-view");
+          mapSurface.classList.add("is-czech-view");
+          syncMapLabel();
+          focusSurface(CZECH_FOCUS.x, CZECH_FOCUS.y, EUROPE_SCALE);
           syncMarkerSearch();
           renderDashboardPanel();
           updateDashboardMode();
@@ -710,6 +745,7 @@
         window.setTimeout(() => {
           panState.activeMap = "romania";
           mapSurface.classList.remove("is-hungary-view");
+          mapSurface.classList.remove("is-czech-view");
           mapSurface.classList.add("is-romania-view");
           syncMapLabel();
           focusSurface(ROMANIA_FOCUS.x, ROMANIA_FOCUS.y, EUROPE_SCALE);
@@ -722,15 +758,26 @@
       const setInitialMapView = () => {
         if (initialCountry === "hungary") {
           panState.activeMap = "hungary";
+          mapSurface.classList.remove("is-czech-view");
           mapSurface.classList.remove("is-romania-view");
           mapSurface.classList.add("is-hungary-view");
           focusSurface(HUNGARY_FOCUS.x, HUNGARY_FOCUS.y, EUROPE_SCALE);
           return;
         }
 
+        if (initialCountry === "czech") {
+          panState.activeMap = "czech";
+          mapSurface.classList.remove("is-hungary-view");
+          mapSurface.classList.remove("is-romania-view");
+          mapSurface.classList.add("is-czech-view");
+          focusSurface(CZECH_FOCUS.x, CZECH_FOCUS.y, EUROPE_SCALE);
+          return;
+        }
+
         if (initialCountry === "romania") {
           panState.activeMap = "romania";
           mapSurface.classList.remove("is-hungary-view");
+          mapSurface.classList.remove("is-czech-view");
           mapSurface.classList.add("is-romania-view");
           focusSurface(ROMANIA_FOCUS.x, ROMANIA_FOCUS.y, EUROPE_SCALE);
           return;
@@ -738,6 +785,7 @@
 
         panState.activeMap = "europe";
         mapSurface.classList.remove("is-hungary-view");
+        mapSurface.classList.remove("is-czech-view");
         mapSurface.classList.remove("is-romania-view");
         focusSurface(EUROPE_FOCUS.x, EUROPE_FOCUS.y, EUROPE_SCALE);
       };
@@ -756,6 +804,8 @@
       window.addEventListener("resize", () => {
         if (panState.activeMap === "hungary") {
           focusSurface(HUNGARY_FOCUS.x, HUNGARY_FOCUS.y, EUROPE_SCALE);
+        } else if (panState.activeMap === "czech") {
+          focusSurface(CZECH_FOCUS.x, CZECH_FOCUS.y, EUROPE_SCALE);
         } else if (panState.activeMap === "romania") {
           focusSurface(ROMANIA_FOCUS.x, ROMANIA_FOCUS.y, EUROPE_SCALE);
         } else {
@@ -791,6 +841,15 @@
       hungaryTrigger?.addEventListener("click", (event) => {
         event.stopPropagation();
         zoomToHungary();
+      });
+
+      czechTrigger?.addEventListener("pointerdown", (event) => {
+        event.stopPropagation();
+      });
+
+      czechTrigger?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        zoomToCzech();
       });
 
       romaniaTrigger?.addEventListener("pointerdown", (event) => {

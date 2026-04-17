@@ -54,16 +54,25 @@
       opacity: 0;
     }
 
+    .content-image.cz-image {
+      opacity: 0;
+    }
+
     .content-image.ro-image {
       opacity: 0;
     }
 
     .map-surface.is-hungary-view .content-image.europe-image,
+    .map-surface.is-czech-view .content-image.europe-image,
     .map-surface.is-romania-view .content-image.europe-image {
       opacity: 0;
     }
 
     .map-surface.is-hungary-view .content-image.hu-image {
+      opacity: 1;
+    }
+
+    .map-surface.is-czech-view .content-image.cz-image {
       opacity: 1;
     }
 
@@ -79,6 +88,7 @@
     }
 
     .map-surface.is-hungary-view .europe-overlay,
+    .map-surface.is-czech-view .europe-overlay,
     .map-surface.is-romania-view .europe-overlay {
       opacity: 0;
       pointer-events: none;
@@ -90,6 +100,16 @@
     }
 
     .map-surface.is-hungary-view .hungary-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .czech-overlay {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .map-surface.is-czech-view .czech-overlay {
       opacity: 1;
       pointer-events: auto;
     }
@@ -308,6 +328,31 @@
       pointer-events: none;
     }
 
+    .czech-trigger {
+      position: absolute;
+      left: 51.6%;
+      top: 64.5%;
+      width: 108px;
+      height: 52px;
+      transform: translate(-50%, -50%);
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      z-index: 3;
+      transition: transform 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
+    }
+
+    .czech-trigger:hover {
+      cursor: pointer;
+    }
+
+    .map-surface.is-hungary-view .czech-trigger,
+    .map-surface.is-czech-view .czech-trigger,
+    .map-surface.is-romania-view .czech-trigger {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .map-note {
       position: absolute;
       left: 20px;
@@ -348,6 +393,7 @@
     }
 
     .map-surface.is-hungary-view~.back-to-europe,
+    .map-surface.is-czech-view~.back-to-europe,
     .map-surface.is-romania-view~.back-to-europe {
       opacity: 1;
       pointer-events: auto;
@@ -681,6 +727,7 @@
     }
 
     .map-surface.is-hungary-view~.map-dashboard-panel,
+    .map-surface.is-czech-view~.map-dashboard-panel,
     .map-surface.is-romania-view~.map-dashboard-panel {
       top: 76px;
     }
@@ -733,6 +780,7 @@
     }
 
     .map-surface.is-hungary-view~.map-players-panel,
+    .map-surface.is-czech-view~.map-players-panel,
     .map-surface.is-romania-view~.map-players-panel {
       top: 20px;
     }
@@ -1219,13 +1267,9 @@
     }
 
     .quest-marker.hu-q1 {
-      left: 48%;
-      top: 41%;
     }
 
     .quest-marker.hu-q2 {
-      left: 54%;
-      top: 58%;
     }
 
     .quest-marker.hu-q3 {
@@ -1256,6 +1300,22 @@
     .quest-marker.ro-q4 {
       left: 28%;
       top: 41%;
+    }
+
+    .quest-marker.cz-q1 {
+    }
+
+    .quest-marker.cz-q2 {
+    }
+
+    .quest-marker.cz-q3 {
+      left: 41%;
+      top: 47%;
+    }
+
+    .quest-marker.cz-q4 {
+      left: 61%;
+      top: 42%;
     }
 
     .quest-drawer {
@@ -1884,6 +1944,11 @@
         height: 42px;
       }
 
+      .czech-trigger {
+        width: 56px;
+        height: 42px;
+      }
+
       .romania-trigger {
         width: 56px;
         height: 42px;
@@ -1972,6 +2037,7 @@
       }
 
       .map-surface.is-hungary-view~.map-dashboard-panel,
+      .map-surface.is-czech-view~.map-dashboard-panel,
       .map-surface.is-romania-view~.map-dashboard-panel {
         top: 58px;
       }

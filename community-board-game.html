@@ -1104,6 +1104,11 @@
       gap: 18px;
     }
 
+    .locations-browser-actions {
+      display: flex;
+      justify-content: flex-start;
+    }
+
     .location-detail-switch {
       display: inline-flex;
       align-items: center;
@@ -1618,6 +1623,22 @@
       opacity: 1;
     }
 
+    .quest-marker.country-hungary {
+      left: 49.9%;
+      top: 67.2%;
+      background: #5f6d7a;
+      color: #fff;
+      box-shadow: 0 14px 24px rgba(47, 58, 70, 0.26);
+    }
+
+    .quest-marker.country-czech {
+      left: 45%;
+      top: 60%;
+      background: #5f6d7a;
+      color: #fff;
+      box-shadow: 0 14px 24px rgba(47, 58, 70, 0.26);
+    }
+
     .player-card-image {
       width: 42px;
       height: 42px;
@@ -1994,26 +2015,26 @@
             completion: "The quest is complete after a clean relay sequence is reviewed and completed."
           },
           {
-            id: "cluj-circuit",
-            title: "Cluj Circuit",
-            region: "Romania - Cluj",
-            locationId: "cluj",
+            id: "prague-passage",
+            title: "Prague Passage",
+            region: "Czech Republic - Prague",
+            locationId: "prague",
             reward: "240 points",
             status: "Completed",
-            summary: "Complete all checkpoints on the western route in one continuous circuit.",
-            task: "Complete the western Cluj circuit without breaking the checkpoint order, then upload proof from the closing point.",
-            completion: "The quest is complete when the circuit proof is completed."
+            summary: "Complete the Prague route in one continuous city-center chain.",
+            task: "Complete the Prague passage without breaking checkpoint order, then upload proof from the closing bridge marker.",
+            completion: "The quest is complete when the Prague route proof is completed."
           },
           {
-            id: "coastal-hold",
-            title: "Coastal Hold",
-            region: "Romania - Constanta",
-            locationId: "constanta",
+            id: "brno-circuit",
+            title: "Brno Circuit",
+            region: "Czech Republic - Brno",
+            locationId: "brno",
             reward: "300 points",
             status: "Open",
-            summary: "Secure the eastern coastal node before sunset and maintain control through the final timer.",
-            task: "Reach the coastal node, stay through the final timer window, and upload proof from the location.",
-            completion: "The quest is complete when the owner confirms the location proof and timing."
+            summary: "Secure the Brno checkpoint loop before sunset and maintain control through the final timer.",
+            task: "Reach the Brno route, stay through the final timer window, and upload proof from the location.",
+            completion: "The quest is complete when the owner confirms the Brno location proof and timing."
           },
           {
             id: "cipher-briefing",
@@ -2027,16 +2048,45 @@
           }
         ],
         locations: [
-          { id: "pest", title: "Pest", country: "Hungary", quest: "Budapest Sprint", markerClass: "hu-q1", copy: "The busiest gateway in the Hungarian board, built around high-traffic checkpoints and fast movement." },
-          { id: "baranya", title: "Baranya", country: "Hungary", quest: "Southern Relay", markerClass: "hu-q2", copy: "A southern route with longer lanes where stable relay timing matters more than raw speed." },
-          { id: "cluj", title: "Cluj", country: "Romania", quest: "Cluj Circuit", markerClass: "ro-q1", copy: "A western Romania path that links multiple board lanes and rewards clean checkpoint momentum." },
-          { id: "constanta", title: "Constanta", country: "Romania", quest: "Coastal Hold", markerClass: "ro-q2", copy: "An eastern sea-facing lane where players must secure and hold an exposed coastal node." }
+          {
+            id: "europe",
+            title: "Europe",
+            country: "Board",
+            mapImage: "./assets/map/europe.png",
+            copy: "Europe is the main Grand Tour board. Select a country marker on the map to open its second-level locations.",
+            locations: [
+              {
+                id: "hungary",
+                title: "Hungary",
+                country: "Hungary",
+                markerClass: "country-hungary",
+                mapImage: "./assets/map/hu-map.jpg",
+                copy: "Hungary opens the western branch of the Grand Tour board with fast city routes and longer southern relays.",
+                locations: [
+                  { id: "pest", title: "Pest", country: "Hungary", quest: "Budapest Sprint", markerClass: "hu-q1", markerPosition: { left: "50%", top: "46%" }, copy: "The busiest gateway in the Hungarian board, built around high-traffic checkpoints and fast movement." },
+                  { id: "baranya", title: "Baranya", country: "Hungary", quest: "Southern Relay", markerClass: "hu-q2", markerPosition: { left: "31%", top: "81%" }, copy: "A southern route with longer lanes where stable relay timing matters more than raw speed." }
+                ]
+              },
+              {
+                id: "czech-republic",
+                title: "Czech Republic",
+                country: "Czech Republic",
+                markerClass: "country-czech",
+                mapImage: "./assets/map/cr-map.png",
+                copy: "Czech Republic adds a central route pack with dense city checkpoints and fast urban movement loops.",
+                locations: [
+                  { id: "prague", title: "Prague", country: "Czech Republic", quest: "Prague Passage", markerClass: "cz-q1", markerPosition: { left: "45%", top: "38%" }, mapImage: "./assets/map/cr-map.png", copy: "A capital-city route with compact checkpoint density, bridge crossings, and fast proof collection windows." },
+                  { id: "brno", title: "Brno", country: "Czech Republic", quest: "Brno Circuit", markerClass: "cz-q2", markerPosition: { left: "65%", top: "67%" }, mapImage: "./assets/map/cr-map.png", copy: "A Moravian circuit that rewards steady checkpoint sequencing across a wider downtown movement loop." }
+                ]
+              }
+            ]
+          }
         ],
         players: [
-          { id: 1, image: "./assets/membership-1.png", email: "muskan@davinci.space", name: "Muskan Ahlawadia", points: 2480, completedQuestIds: ["cluj-circuit", "budapest-sprint"] },
-          { id: 2, image: "./assets/membership-2.png", email: "christian@davinci.space", name: "Christian Rio", points: 2210, completedQuestIds: ["cluj-circuit", "southern-relay"] },
+          { id: 1, image: "./assets/membership-1.png", email: "muskan@davinci.space", name: "Muskan Ahlawadia", points: 2480, completedQuestIds: ["prague-passage", "budapest-sprint"] },
+          { id: 2, image: "./assets/membership-2.png", email: "christian@davinci.space", name: "Christian Rio", points: 2210, completedQuestIds: ["prague-passage", "southern-relay"] },
           { id: 3, image: "./assets/membership-3.png", email: "frank@davinci.space", name: "Frank van Bok", points: 1940, completedQuestIds: ["cipher-briefing"] },
-          { id: 4, image: "./assets/membership-4.png", email: "titus@davinci.space", name: "Titus Blair", points: 1750, completedQuestIds: ["coastal-hold"] },
+          { id: 4, image: "./assets/membership-4.png", email: "titus@davinci.space", name: "Titus Blair", points: 1750, completedQuestIds: ["brno-circuit"] },
           { id: 5, image: "./assets/membership-1.png", email: "yash@davinci.space", name: "Yash Chauhan", points: 1620, completedQuestIds: ["budapest-sprint"] },
           { id: 6, image: "./assets/membership-2.png", email: "nora@davinci.space", name: "Nora Lane", points: 1510, completedQuestIds: [] },
           { id: 7, image: "./assets/membership-1.png", email: "sofia@davinci.space", name: "Sofia Trent", points: 1475, completedQuestIds: ["cipher-briefing"] },
@@ -2061,8 +2111,8 @@
           },
           {
             type: "submission",
-            title: "Southern Relay received a new proof submission",
-            copy: "A fresh relay chain is waiting for owner review in the Baranya route.",
+            title: "Brno Circuit received a new proof submission",
+            copy: "A fresh checkpoint chain is waiting for owner review in the Brno route.",
             meta: "Today",
             detail: "Submission update"
           }
@@ -2186,11 +2236,67 @@
     const setQuestStatus = (event, quest, status) => {
       eventQuestStatusState.set(`${event.id}:${quest.id}`, status);
     };
-    const getLocation = (event, locationId) => event.locations.find((location) => location.id === locationId) || event.locations[0];
-    const getLocationQuests = (event, location) => event.quests.filter((quest) => {
-      if (quest.locationId) return quest.locationId === location.id;
-      return quest.region === location.title || quest.region === `${location.country} - ${location.title}`;
-    });
+    const locationHasChildren = (location) => Array.isArray(location?.locations) && location.locations.length > 0;
+    const flattenLocationNodes = (locations = []) => locations.flatMap((location) => [
+      location,
+      ...(locationHasChildren(location) ? flattenLocationNodes(location.locations) : [])
+    ]);
+    const flattenLocations = (locations = []) => locations.flatMap((location) => locationHasChildren(location) ? flattenLocations(location.locations) : [location]);
+    const countLocationNodes = (locations = []) => flattenLocationNodes(locations).length;
+    const findLocationRecordInTree = (locations, locationId, ancestors = []) => {
+      for (const location of locations || []) {
+        if (location.id === locationId) {
+          return {
+            location,
+            parent: ancestors[ancestors.length - 1] || null,
+            ancestors
+          };
+        }
+        if (locationHasChildren(location)) {
+          const match = findLocationRecordInTree(location.locations, locationId, [...ancestors, location]);
+          if (match) return match;
+        }
+      }
+      return null;
+    };
+    const getLocationRecord = (event, locationId) => findLocationRecordInTree(event.locations, locationId);
+    const getLeafLocations = (event) => flattenLocations(event.locations);
+    const getLocation = (event, locationId) => getLocationRecord(event, locationId)?.location || getLeafLocations(event)[0] || event.locations[0];
+    const getLocationParent = (event, locationId) => getLocationRecord(event, locationId)?.parent || null;
+    const getLocationAncestors = (event, locationId) => getLocationRecord(event, locationId)?.ancestors || [];
+    const getLocationChildren = (location) => locationHasChildren(location) ? location.locations : [];
+    const getLocationLeafDescendants = (location) => locationHasChildren(location) ? flattenLocations(location.locations) : [location];
+    const getLocationMarkerStyle = (location) => location?.markerPosition
+      ? `left: ${location.markerPosition.left}; top: ${location.markerPosition.top};`
+      : "";
+    const getLocationPath = (event, location) => {
+      if (!location?.id) return "";
+      return [...getLocationAncestors(event, location.id).map((ancestor) => ancestor.id), location.id].join("/");
+    };
+    const getLocationBackMeta = (event, location) => {
+      const parent = getLocationParent(event, location.id);
+      if (!parent) {
+        return {
+          label: "Back to locations",
+          target: "root"
+        };
+      }
+
+      return {
+        label: `Back to ${parent.title}`,
+        target: getLocationPath(event, parent)
+      };
+    };
+    const eventHasNestedLocations = (event) => event.locations.some((location) => locationHasChildren(location));
+    const getLocationQuests = (event, location) => {
+      const candidateLocations = getLocationLeafDescendants(location);
+      const candidateIds = new Set(candidateLocations.map((item) => item.id));
+      return event.quests.filter((quest) => {
+        if (quest.locationId) return candidateIds.has(quest.locationId);
+        return candidateLocations.some((candidate) => quest.region === candidate.title || quest.region === `${candidate.country} - ${candidate.title}`);
+      });
+    };
+    const formatLocationCount = (count, singular, plural = `${singular}s`) => `${count} ${count === 1 ? singular : plural}`;
     const isEventJoined = (eventId) => Boolean(eventMembershipState.get(eventId));
     const joinEvent = (eventId) => {
       eventMembershipState.set(eventId, true);
@@ -2210,10 +2316,10 @@
     const formatEventSchedule = (event) => `From ${formatEventDateTime(event.startTime)} to ${formatEventDateTime(event.endTime)}.`;
     const getQuestLocation = (event, quest) => {
       if (quest.locationId) {
-        return event.locations.find((location) => location.id === quest.locationId) || null;
+        return getLeafLocations(event).find((location) => location.id === quest.locationId) || null;
       }
 
-      return event.locations.find((location) => location.quest === quest.title) || null;
+      return getLeafLocations(event).find((location) => location.quest === quest.title) || null;
     };
     const getLocationQuest = (event, location) => getLocationQuests(event, location)[0] || event.quests[0];
     const meta = (items) => `<span class="events-list-meta">${items.map((item) => `<span>${item}</span>`).join("")}</span>`;
@@ -2370,6 +2476,7 @@
     const mapCountryKey = (country) => {
       const key = country.toLowerCase();
       if (key === "hungary") return "hungary";
+      if (key === "czech republic") return "czech";
       if (key === "romania") return "romania";
       return "europe";
     };
@@ -2402,11 +2509,12 @@
     };
     const renderMapMarker = (event, location, quest, index = 0) => {
       const offset = getLocationMarkerOffset(index);
+      const markerStyle = `${getLocationMarkerStyle(location)} margin-left: ${offset.x}%; margin-top: ${offset.y}%;`;
       return `
         <button
           class="quest-marker ${location.markerClass || ""}"
           type="button"
-          style="margin-left: ${offset.x}%; margin-top: ${offset.y}%;"
+          style="${markerStyle}"
           data-quest-title="${quest.title}"
           data-quest-subtitle="${location.title}"
           data-quest-region="${location.country}"
@@ -2441,14 +2549,19 @@
           <div class="map-surface">
             <img class="content-image europe-image" src="${selectedLocation.mapImage || "./assets/map/europe.png"}" alt="${selectedLocation.title} map">
             <img class="content-image hu-image" src="./assets/map/hu-map.jpg" alt="Hungary map">
+            <img class="content-image cz-image" src="./assets/map/cr-map.png" alt="Czech Republic map">
             <img class="content-image ro-image" src="./assets/map/ro-map.jpg" alt="Romania map">
             <div class="map-overlay europe-overlay">
               <button class="hungary-trigger" type="button" aria-label="Open Hungary map"></button>
+              <button class="czech-trigger" type="button" aria-label="Open Czech Republic map"></button>
               <button class="romania-trigger" type="button" aria-label="Open Romania map"></button>
               ${renderMapMarkers(event, "europe", options)}
             </div>
             <div class="map-overlay hungary-overlay">
               ${renderMapMarkers(event, "hungary", options)}
+            </div>
+            <div class="map-overlay czech-overlay">
+              ${renderMapMarkers(event, "czech", options)}
             </div>
             <div class="map-overlay romania-overlay">
               ${renderMapMarkers(event, "romania", options)}
@@ -2582,7 +2695,7 @@
         const badge = tab.id === "quests"
           ? event.quests.length
           : tab.id === "locations"
-            ? event.locations.length
+            ? countLocationNodes(event.locations)
             : "";
 
         mount.innerHTML = DavinciCTAButton.render({
@@ -2885,25 +2998,58 @@
       `;
     };
 
-    const renderLocations = (event) => `
+    const renderLocationCollection = (event, locations, options = {}) => `
       <article class="events-panel is-active">
+        ${options.showBackButton ? DavinciCTAButton.render({
+          tag: "button",
+          type: "button",
+          label: options.backLabel || "Back to locations",
+          variant: "text",
+          className: "events-back",
+          xPadding: "0px",
+          color: "var(--text-muted)",
+          hoverColor: "var(--text-muted)",
+          hoverBackground: "transparent",
+          icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>',
+          attributes: {
+            "data-location-collection-back": options.backTarget || ""
+          }
+        }) : ""}
         <div class="content-heading">
           <div>
-            <h2>Locations</h2>
-            <p>Open a location to review its quests and map.</p>
+            <h2>${options.title || "Locations"}</h2>
+            <p>${options.copy || "Open a location to review its quests and map."}</p>
           </div>
         </div>
+        ${options.showMapToggle ? `
+          <div class="locations-browser-actions">
+            ${DavinciCTAButton.render({
+              tag: "button",
+              type: "button",
+              label: "Map",
+              variant: "outlined",
+              className: "location-detail-switch",
+              color: "var(--text-soft)",
+              hoverColor: "var(--brand)",
+              hoverBackground: "transparent",
+              icon: eventsIcons.locations,
+              attributes: {
+                "data-location-collection-view": "map"
+              }
+            })}
+          </div>
+        ` : ""}
         <div class="event-table-scroll" aria-label="Scrollable locations table">
           <section class="event-table locations-table" aria-label="Locations table">
             <div class="event-table-head" aria-hidden="true">
-              <span>Location</span>
-              <span>Quests</span>
+              <span>${options.primaryLabel || "Location"}</span>
+              <span>${options.secondaryLabel || "Quests"}</span>
             </div>
             <div class="event-table-body">
-              ${event.locations.map((location) => `
-                <button class="event-table-row is-clickable" type="button" data-location-id="${location.id}">
+              ${locations.map((location) => `
+                <button class="event-table-row is-clickable" type="button" data-location-target="${options.getTarget ? options.getTarget(location) : getLocationPath(event, location)}">
                   <div class="event-table-primary"><span>${location.title}</span></div>
-                  <div class="event-table-text">${getLocationQuests(event, location).length}</div>
+                  <div class="event-table-text">${options.getCount ? options.getCount(location) : getLocationQuests(event, location).length}</div>
                 </button>
               `).join("")}
             </div>
@@ -2911,6 +3057,114 @@
         </div>
       </article>
     `;
+
+    const renderLocations = (event) => renderLocationCollection(event, flattenLocationNodes(event.locations), {
+      title: "Locations",
+      copy: eventHasNestedLocations(event)
+        ? "Choose a location. Group locations open their child locations, and leaf locations open their quests."
+        : "Open a location to review its quests and map.",
+      secondaryLabel: "Quests",
+      getCount: (location) => formatLocationCount(getLocationQuests(event, location).length, "quest"),
+      getTarget: (location) => getLocationPath(event, location),
+      showMapToggle: false
+    });
+
+    const renderLocationGroupMap = (event, locationGroup) => `
+      <article class="events-panel is-active">
+        ${DavinciCTAButton.render({
+          tag: "button",
+          type: "button",
+          label: getLocationBackMeta(event, locationGroup).label,
+          variant: "text",
+          className: "events-back",
+          xPadding: "0px",
+          color: "var(--text-muted)",
+          hoverColor: "var(--text-muted)",
+          hoverBackground: "transparent",
+          icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>',
+          attributes: {
+            "data-back-to-locations-root": getLocationBackMeta(event, locationGroup).target
+          }
+        })}
+        <div class="location-detail-panel">
+          <div class="content-heading">
+            <div>
+              <h2>${locationGroup.title}</h2>
+              <p>${locationGroup.copy || "Select a marker to open the next level location."}</p>
+            </div>
+          </div>
+          ${DavinciCTAButton.render({
+            tag: "button",
+            type: "button",
+            label: "List",
+            variant: "outlined",
+            className: "location-detail-switch",
+            color: "var(--text-soft)",
+            hoverColor: "var(--brand)",
+            hoverBackground: "transparent",
+            icon: eventsIcons.quests,
+            attributes: {
+              "data-location-group-view": "list"
+            }
+          })}
+          <div class="event-map-shell">
+            ${(() => {
+              const childLocations = getLocationChildren(locationGroup);
+              const hasNestedChildLocations = childLocations.some((location) => locationHasChildren(location));
+
+              if (hasNestedChildLocations) {
+                return `
+                  <div class="event-map-scroll" aria-label="Locations map">
+                    <div class="map-stage" data-map-initial-country="${mapCountryKey(locationGroup.title)}">
+                      <div class="map-surface">
+                        <img class="content-image europe-image" src="${locationGroup.mapImage || "./assets/map/europe.png"}" alt="${locationGroup.title} map">
+                        <img class="content-image hu-image" src="./assets/map/hu-map.jpg" alt="Hungary map">
+                        <img class="content-image cz-image" src="./assets/map/cr-map.png" alt="Czech Republic map">
+                        <img class="content-image ro-image" src="./assets/map/ro-map.jpg" alt="Romania map">
+                        <div class="map-overlay europe-overlay">
+                          ${childLocations.map((location) => `
+                            <button
+                              class="quest-marker ${location.markerClass || ""}"
+                              type="button"
+                              style="${getLocationMarkerStyle(location)}"
+                              data-quest-href="event/${event.id}/locations/${getLocationPath(event, location)}"
+                              aria-label="${location.title} map marker"
+                            >${location.title.slice(0, 1).toUpperCase()}</button>
+                          `).join("")}
+                        </div>
+                        <div class="map-overlay hungary-overlay"></div>
+                        <div class="map-overlay czech-overlay"></div>
+                        <div class="map-overlay romania-overlay"></div>
+                      </div>
+                      <div class="map-note" aria-live="polite">Map: ${locationGroup.title}</div>
+                    </div>
+                  </div>
+                `;
+              }
+
+              return renderCommunityMap(event, locationGroup, {
+                questIds: getLocationQuests(event, locationGroup).map((quest) => quest.id),
+                mapNoteLabel: locationGroup.title,
+                showLogo: false,
+                showBackButton: false
+              });
+            })()}
+          </div>
+        </div>
+      </article>
+    `;
+
+    const renderLocationGroup = (event, locationGroup) => renderLocationCollection(event, getLocationChildren(locationGroup), {
+      title: locationGroup.title,
+      copy: locationGroup.copy || "Choose one of the locations in this group.",
+      secondaryLabel: "Quests",
+      getCount: (location) => formatLocationCount(getLocationQuests(event, location).length, "quest"),
+      getTarget: (location) => `${getLocationPath(event, locationGroup)}/${location.id}`,
+      showBackButton: true,
+      backTarget: getLocationBackMeta(event, locationGroup).target,
+      backLabel: getLocationBackMeta(event, locationGroup).label,
+      showMapToggle: true
+    });
 
     const renderLocationDetail = (event, location, view = "list") => {
       const quests = getLocationQuests(event, location);
@@ -2920,7 +3174,7 @@
           ${DavinciCTAButton.render({
             tag: "button",
             type: "button",
-            label: "Back to locations",
+            label: getLocationBackMeta(event, location).label,
             variant: "text",
             className: "events-back",
             xPadding: "0px",
@@ -2990,7 +3244,7 @@
           ${DavinciCTAButton.render({
             tag: "button",
             type: "button",
-            label: "Back to locations",
+            label: getLocationBackMeta(event, location).label,
             variant: "text",
             className: "events-back",
             xPadding: "0px",
@@ -2999,7 +3253,7 @@
             hoverBackground: "transparent",
             icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>',
             attributes: {
-              "data-back-to-location": location.id
+              "data-back-to-location": getLocationPath(event, location)
             }
           })}
           <div class="location-detail-panel">
@@ -3209,9 +3463,9 @@
               hoverBackground: "transparent",
               icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>',
               attributes: {
-                "data-back-to-selected-location": getQuestLocation(event, quest).id
+                "data-back-to-selected-location": getLocationPath(event, getQuestLocation(event, quest))
               }
-              })}
+            })}
             ` : ""}
           </div>
         </div>
@@ -3268,10 +3522,10 @@
       </article>
     `;
 
-    const renderEventDetail = (event, tab, detailId, subView) => {
+    const renderEventDetail = (event, tab, detailId, subView, nestedDetailId, extraDetailId) => {
       setViewMode("detail");
       const activeTab = ["feed", "about", "quests", "players", "locations"].includes(tab) ? tab : "feed";
-      setMapScreenMode(activeTab === "locations" && Boolean(detailId) && subView === "map");
+      setMapScreenMode(activeTab === "locations" && [detailId, subView, nestedDetailId, extraDetailId].includes("map"));
       eventContentView.classList.toggle("is-feed-layout", activeTab === "feed");
       eventMenuTitle.textContent = event.title;
       eventMenuLogoWrap.classList.toggle("is-visible", Boolean(event.logo));
@@ -3331,42 +3585,90 @@
       }
 
       if (activeTab === "locations") {
-        if (detailId) {
-          const location = getLocation(event, detailId);
-          const locationView = subView === "map" ? "map" : "list";
+        const rawLocationSegments = [detailId, subView, nestedDetailId, extraDetailId].filter(Boolean);
+        const locationView = rawLocationSegments[rawLocationSegments.length - 1] === "map" ? "map" : "list";
+        const locationSegments = rawLocationSegments.filter((segment) => segment !== "map");
+        const activeLocationId = locationSegments[locationSegments.length - 1];
+        const activeRecord = activeLocationId ? getLocationRecord(event, activeLocationId) : null;
+        const activeLocation = activeRecord?.location || null;
 
-          if (locationView === "map") {
-            eventContentView.innerHTML = renderLocationMap(event, location);
-            eventContentView.querySelector("[data-back-to-location]")?.addEventListener("click", () => {
-              window.location.hash = `event/${event.id}/locations`;
-            });
-            eventContentView.querySelector("[data-location-view='list']")?.addEventListener("click", () => {
-              window.location.hash = `event/${event.id}/locations/${location.id}`;
-            });
-            DavinciCommunityMap.init(eventContentView);
-            bindLocationMapQuestHighlight(eventContentView);
-            return;
-          }
-
-          eventContentView.innerHTML = renderLocationDetail(event, location, locationView);
-          eventContentView.querySelector("[data-back-to-locations]")?.addEventListener("click", () => {
-            window.location.hash = `event/${event.id}/locations`;
+        if (!locationSegments.length) {
+          eventContentView.innerHTML = renderLocations(event);
+          eventContentView.querySelector("[data-location-collection-view='map']")?.addEventListener("click", () => {
+            window.location.hash = `event/${event.id}/locations/map`;
           });
-          eventContentView.querySelector("[data-location-view='map']")?.addEventListener("click", () => {
-            window.location.hash = `event/${event.id}/locations/${location.id}/map`;
-          });
-          eventContentView.querySelectorAll("[data-location-quest-id]").forEach((row) => {
+          eventContentView.querySelectorAll("[data-location-target]").forEach((row) => {
             row.addEventListener("click", () => {
-              window.location.hash = `event/${event.id}/quests/${row.dataset.locationQuestId}`;
+              window.location.hash = `event/${event.id}/locations/${row.dataset.locationTarget}`;
             });
           });
           return;
         }
 
-        eventContentView.innerHTML = renderLocations(event);
-        eventContentView.querySelectorAll("[data-location-id]").forEach((row) => {
+        if (activeLocation && locationHasChildren(activeLocation) && locationView === "map") {
+          eventContentView.innerHTML = renderLocationGroupMap(event, activeLocation);
+          eventContentView.querySelector("[data-back-to-locations-root]")?.addEventListener("click", (clickEvent) => {
+            const target = clickEvent.currentTarget.dataset.backToLocationsRoot;
+            window.location.hash = target === "root"
+              ? `event/${event.id}/locations`
+              : `event/${event.id}/locations/${target}`;
+          });
+          eventContentView.querySelector("[data-location-group-view='list']")?.addEventListener("click", () => {
+            window.location.hash = `event/${event.id}/locations/${getLocationPath(event, activeLocation)}`;
+          });
+          DavinciCommunityMap.init(eventContentView);
+          return;
+        }
+
+        if (activeLocation && locationHasChildren(activeLocation)) {
+          eventContentView.innerHTML = renderLocationGroup(event, activeLocation);
+          eventContentView.querySelector("[data-location-collection-back]")?.addEventListener("click", (clickEvent) => {
+            const target = clickEvent.currentTarget.dataset.locationCollectionBack;
+            window.location.hash = target === "root"
+              ? `event/${event.id}/locations`
+              : `event/${event.id}/locations/${target}`;
+          });
+          eventContentView.querySelector("[data-location-collection-view='map']")?.addEventListener("click", () => {
+            window.location.hash = `event/${event.id}/locations/${getLocationPath(event, activeLocation)}/map`;
+          });
+          eventContentView.querySelectorAll("[data-location-target]").forEach((row) => {
+            row.addEventListener("click", () => {
+              window.location.hash = `event/${event.id}/locations/${row.dataset.locationTarget}`;
+            });
+          });
+          return;
+        }
+
+        const leafLocation = activeLocation || getLeafLocations(event)[0];
+        const leafLocationPath = getLocationPath(event, leafLocation);
+
+        if (locationView === "map") {
+          eventContentView.innerHTML = renderLocationMap(event, leafLocation);
+          eventContentView.querySelector("[data-back-to-location]")?.addEventListener("click", (clickEvent) => {
+            const target = clickEvent.currentTarget.dataset.backToLocation;
+            window.location.hash = `event/${event.id}/locations/${target}`;
+          });
+          eventContentView.querySelector("[data-location-view='list']")?.addEventListener("click", () => {
+            window.location.hash = `event/${event.id}/locations/${leafLocationPath}`;
+          });
+          DavinciCommunityMap.init(eventContentView);
+          bindLocationMapQuestHighlight(eventContentView);
+          return;
+        }
+
+        eventContentView.innerHTML = renderLocationDetail(event, leafLocation, locationView);
+        eventContentView.querySelector("[data-back-to-locations]")?.addEventListener("click", () => {
+          const parent = getLocationParent(event, leafLocation.id);
+          window.location.hash = parent
+            ? `event/${event.id}/locations/${getLocationPath(event, parent)}`
+            : `event/${event.id}/locations`;
+        });
+        eventContentView.querySelector("[data-location-view='map']")?.addEventListener("click", () => {
+          window.location.hash = `event/${event.id}/locations/${leafLocationPath}/map`;
+        });
+        eventContentView.querySelectorAll("[data-location-quest-id]").forEach((row) => {
           row.addEventListener("click", () => {
-            window.location.hash = `event/${event.id}/locations/${row.dataset.locationId}`;
+            window.location.hash = `event/${event.id}/quests/${row.dataset.locationQuestId}`;
           });
         });
         return;
@@ -3384,7 +3686,7 @@
       }
 
       const event = getEvent(parts[1]);
-      renderEventDetail(event, parts[2] || "feed", parts[3], parts[4]);
+      renderEventDetail(event, parts[2] || "feed", parts[3], parts[4], parts[5], parts[6]);
     };
 
     syncTopbarState();
