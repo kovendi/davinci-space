@@ -2498,18 +2498,21 @@
       const status = String(getQuestStatus(event, quest) || "").trim().toLowerCase();
       return status === "completed";
     };
-    const getLocationMarkerOffset = (index) => {
-      const offsets = [
+    const getQuestMarkerOffset = (index, total) => {
+      if (total <= 1) return { x: 0, y: 0 };
+
+      const spread = [
         { x: 0, y: 0 },
-        { x: 3.2, y: -2.8 },
-        { x: -3.2, y: 2.4 },
-        { x: 4.8, y: 3.4 }
+        { x: 30, y: -24 },
+        { x: -30, y: 24 },
+        { x: 34, y: 18 },
+        { x: -34, y: -18 }
       ];
-      return offsets[index] || { x: index * 1.8, y: index * -1.4 };
+
+      return spread[index] || { x: (index - Math.floor(total / 2)) * 24, y: (index % 2 === 0 ? -1 : 1) * 18 };
     };
-    const renderMapMarker = (event, location, quest, index = 0) => {
-      const offset = getLocationMarkerOffset(index);
-      const markerStyle = `${getLocationMarkerStyle(location)} margin-left: ${offset.x}%; margin-top: ${offset.y}%;`;
+    const renderMapMarker = (event, location, quest, offset = { x: 0, y: 0 }) => {
+      const markerStyle = `${getLocationMarkerStyle(location)} --quest-marker-offset-x: ${offset.x}px; --quest-marker-offset-y: ${offset.y}px;`;
       return `
         <button
           class="quest-marker ${location.markerClass || ""}"
@@ -2541,7 +2544,19 @@
         }))
         .filter((entry) => entry.location && mapCountryKey(entry.location.country) === countryKey);
 
-      return entries.map((entry, index) => renderMapMarker(event, entry.location, entry.quest, index)).join("");
+      const clusteredEntries = new Map();
+      entries.forEach((entry) => {
+        const key = entry.location.id;
+        const cluster = clusteredEntries.get(key) || [];
+        cluster.push(entry);
+        clusteredEntries.set(key, cluster);
+      });
+
+      return entries.map((entry) => {
+        const cluster = clusteredEntries.get(entry.location.id) || [entry];
+        const offset = getQuestMarkerOffset(cluster.findIndex((item) => item.quest.id === entry.quest.id), cluster.length);
+        return renderMapMarker(event, entry.location, entry.quest, offset);
+      }).join("");
     };
     const renderCommunityMap = (event, selectedLocation, options = {}) => `
       <div class="event-map-scroll" aria-label="${selectedLocation.title} map">

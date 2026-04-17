@@ -1218,7 +1218,10 @@
       position: absolute;
       width: 34px;
       height: 34px;
-      transform: translate(-50%, -100%);
+      transform: translate(
+        calc(-50% + var(--quest-marker-offset-x, 0px)),
+        calc(-100% + var(--quest-marker-offset-y, 0px))
+      );
       border: 0;
       border-radius: 50% 50% 50% 50%;
       background: #d54b3d;
