@@ -453,6 +453,53 @@
       flex-wrap: wrap;
     }
 
+    .quest-detail-submit-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(39, 138, 72, 0.22);
+      background: linear-gradient(135deg, rgba(232, 248, 235, 0.98), rgba(214, 240, 221, 0.98));
+      color: #24683d;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 10px 22px rgba(39, 138, 72, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quest-detail-submit-badge::before {
+      content: none;
+    }
+
+    .quest-detail-submit-badge svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    .quest-detail-submit-badge::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.7), transparent 42%);
+      pointer-events: none;
+    }
+
+    .quest-detail-submit-badge.is-hidden {
+      display: none;
+    }
+
     .event-row strong {
       color: var(--brand);
       font-size: 1rem;
@@ -902,39 +949,42 @@
     }
 
     .quest-tab-menu {
-      display: inline-flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      width: fit-content;
-      max-width: 100%;
-      padding: 4px;
-      border-radius: 18px;
-      background: rgba(247, 242, 231, 0.96);
-      border: 1px solid rgba(211, 193, 154, 0.58);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.58);
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      border-bottom: 1px solid rgba(211, 193, 154, 0.65);
     }
 
     .quest-tab-button {
-      min-height: 40px;
-      padding: 10px 14px;
-      border: 1px solid transparent;
-      border-radius: 12px;
+      position: relative;
+      padding: 11px 2px 10px;
+      border: 0;
       background: transparent;
       color: var(--text-soft);
       font: inherit;
-      font-weight: 700;
+      font-weight: 600;
+      white-space: nowrap;
       cursor: pointer;
-      transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+      transition: color 180ms ease;
     }
 
     .quest-tab-button.is-active {
-      background: rgba(23, 61, 45, 0.08);
       color: var(--brand);
-      border-color: rgba(23, 61, 45, 0.12);
+      font-weight: 800;
+    }
+
+    .quest-tab-button.is-active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--brand);
     }
 
     .quest-tab-button:not(.is-active):hover {
-      background: rgba(23, 61, 45, 0.04);
       color: var(--brand);
     }
 
@@ -954,17 +1004,6 @@
       max-width: 56ch;
     }
 
-    .quest-solve-status {
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(201, 162, 79, 0.14);
-      color: var(--brand);
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
     .quest-solve-actions {
       display: flex;
       flex-wrap: wrap;
@@ -972,14 +1011,8 @@
     }
 
     .quest-solve-grid {
-      display: flex;
+      display: grid;
       gap: 14px;
-      flex-direction: column;
-    }
-
-    .quest-solve-grid > .quest-solve-card {
-      flex: 0 0 auto;
-      width: 100%;
     }
 
     .quest-proof-options {
@@ -989,21 +1022,28 @@
     }
 
     .quest-solve-card {
-      padding: 14px 0 2px;
+      padding: 14px 16px 16px;
       display: grid;
       gap: 10px;
       align-content: start;
-      position: relative;
+      border: 1px solid rgba(227, 215, 191, 0.9);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 253, 248, 0.96);
+      transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
 
-    .quest-solve-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: rgba(227, 215, 191, 0.96);
+    .quest-solve-card.is-complete {
+      border-color: rgba(39, 138, 72, 0.34);
+      background: rgba(236, 247, 238, 0.96);
+      box-shadow: inset 0 0 0 1px rgba(39, 138, 72, 0.08);
+    }
+
+    .quest-solve-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .quest-solve-card strong {
@@ -1017,16 +1057,63 @@
       line-height: 1.55;
     }
 
+    .quest-solve-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(23, 61, 45, 0.08);
+      color: var(--brand);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .quest-solve-state::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.35;
+    }
+
+    .quest-solve-card.is-complete .quest-solve-state {
+      background: rgba(39, 138, 72, 0.12);
+      color: #2f7d46;
+    }
+
+    .quest-solve-card.is-complete .quest-solve-state::before {
+      content: "✓";
+      width: auto;
+      height: auto;
+      border-radius: 0;
+      background: transparent;
+      opacity: 1;
+      font-size: 0.7rem;
+      line-height: 1;
+      font-weight: 900;
+    }
+
     .quest-solve-upload,
     .quest-solve-field {
       display: grid;
       gap: 8px;
     }
 
-    .quest-solve-upload input {
+    .quest-solve-upload-input {
       position: absolute;
       opacity: 0;
       pointer-events: none;
+    }
+
+    .quest-solve-upload {
+      justify-items: start;
+      position: relative;
+      width: fit-content;
     }
 
     .quest-solve-upload-trigger,
@@ -1042,23 +1129,129 @@
     }
 
     .quest-solve-upload-trigger {
+      width: 160px;
+      aspect-ratio: 1 / 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px;
+      border: 1px dashed rgba(201, 162, 79, 0.55);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(247, 242, 231, 0.9));
       font-weight: 700;
-      color: var(--brand);
+      color: var(--text-soft);
       cursor: pointer;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
     }
 
-    .quest-solve-file {
-      display: none;
-      color: var(--text-muted);
-      font-size: 0.88rem;
-      font-weight: 600;
+    .quest-solve-upload-trigger svg {
+      width: 52px;
+      height: 52px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .quest-solve-file.is-visible {
+    .quest-solve-upload-trigger span {
       display: block;
+    }
+
+    .quest-solve-upload-trigger .quest-solve-upload-title {
+      color: var(--brand);
+    }
+
+    .quest-solve-upload-trigger .quest-solve-upload-copy {
+      font-size: 0.86rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .quest-solve-upload-trigger.has-image {
+      padding: 0;
+      border-style: solid;
+      border-color: rgba(227, 215, 191, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .quest-solve-upload-trigger img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .quest-solve-upload-clear {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      top: auto;
+      right: auto;
+      transform: translateX(-50%);
+      border: 0;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--brand);
+      font: inherit;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(24, 57, 43, 0.12);
+      display: none;
+      z-index: 2;
+    }
+
+    .quest-solve-upload-clear:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .quest-solve-upload-clear.is-visible {
+      display: inline-flex;
+    }
+
+    .quest-solve-field-shell {
+      position: relative;
+      width: 100%;
+    }
+
+    .quest-solve-field-clear {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      border: 0;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--brand);
+      font: inherit;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(24, 57, 43, 0.12);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      display: none;
+      z-index: 2;
+    }
+
+    .quest-solve-field-clear:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .quest-solve-field-clear.is-visible {
+      display: inline-flex;
     }
 
     .quest-solve-preview {
@@ -1083,29 +1276,6 @@
       object-fit: cover;
     }
 
-    .quest-solve-submit[aria-disabled="true"] {
-      opacity: 0.72;
-      pointer-events: none;
-    }
-
-    .quest-solve-submit {
-      width: fit-content;
-      justify-self: start;
-    }
-
-    .quest-solve-submit:disabled,
-    .quest-solve-submit[aria-disabled="true"] {
-      opacity: 0.72;
-      pointer-events: none;
-    }
-
-    .quest-solve-note {
-      margin: 0;
-      color: var(--text-muted);
-      font-size: 0.88rem;
-      line-height: 1.5;
-    }
-
     .quest-step {
       display: inline-flex;
       align-items: center;
@@ -1116,6 +1286,11 @@
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+    }
+
+    .quest-solve-field-value[type="text"] {
+      width: 100%;
+      padding-right: 74px;
     }
 
     .quest-step::before {
@@ -1602,6 +1777,18 @@
       background: var(--surface);
     }
 
+    .event-table-row.quest-status-success {
+      background: rgba(236, 247, 238, 0.92);
+    }
+
+    .event-table-row.quest-status-success:nth-child(even) {
+      background: rgba(229, 243, 232, 0.96);
+    }
+
+    .event-table-row.quest-status-success.is-clickable:hover {
+      background: rgba(226, 242, 229, 0.98);
+    }
+
     .event-map-shell {
       display: block;
       min-height: 540px;
@@ -1728,6 +1915,29 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .quest-status-mark {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #2f9e4c;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(47, 158, 76, 0.18);
+    }
+
+    .quest-status-mark svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     @media (max-width: 720px) {
@@ -2686,7 +2896,7 @@
                       <div class="quest-proof-option-head">
                         <p class="quest-proof-option-title">Photo</p>
                       </div>
-                      <p class="quest-proof-option-copy">Upload a checkpoint photo that clearly shows the location marker.</p>
+                      <p class="quest-proof-option-copy">Attach a photo you took at the checkpoint.</p>
                       <label class="quest-proof-upload">
                         <input class="quest-proof-input" type="file" accept="image/*" data-quest-proof-input>
                         <span class="quest-proof-trigger">Choose image</span>
@@ -2697,7 +2907,7 @@
                       <div class="quest-proof-option-head">
                         <p class="quest-proof-option-title">QR code</p>
                       </div>
-                      <p class="quest-proof-option-copy">Scan the QR code at the checkpoint and paste the returned token.</p>
+                      <p class="quest-proof-option-copy">Paste the QR code you received here.</p>
                       <label class="quest-proof-field">
                         <span class="quest-proof-field-label">QR token</span>
                         <input class="quest-proof-text-input" type="text" value="PRAGA-LANTERN-204" readonly>
@@ -2707,9 +2917,9 @@
                       <div class="quest-proof-option-head">
                         <p class="quest-proof-option-title">Text</p>
                       </div>
-                      <p class="quest-proof-option-copy">Submit a short written answer or checkpoint phrase as text proof.</p>
+                      <p class="quest-proof-option-copy">Write the solution here.</p>
                       <label class="quest-proof-field">
-                        <span class="quest-proof-field-label">Written answer</span>
+                        <span class="quest-proof-field-label">Result</span>
                         <textarea class="quest-proof-textarea" rows="3" readonly>The lantern inscription reads: Lux in transitu.</textarea>
                       </label>
                     </section>
@@ -2913,6 +3123,26 @@
       </article>
     `;
 
+    const renderQuestStatusMark = (event, quest) => {
+      const questStatus = String(getQuestStatus(event, quest)).toLowerCase();
+      if (questStatus !== "submitted" && questStatus !== "completed") {
+        return "";
+      }
+
+      return `
+        <span class="quest-status-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 12.5 9.2 16.5 19 7.5"></path>
+          </svg>
+        </span>
+      `;
+    };
+
+    const renderQuestRowClass = (event, quest) => {
+      const questStatus = String(getQuestStatus(event, quest)).toLowerCase();
+      return questStatus === "submitted" || questStatus === "completed" ? " quest-status-success" : "";
+    };
+
     const renderQuests = (event) => `
       <article class="events-panel is-active">
         <div class="content-heading">
@@ -2931,8 +3161,11 @@
             </div>
             <div class="event-table-body">
               ${event.quests.map((quest) => `
-                <button class="event-table-row is-clickable" type="button" data-quest-id="${quest.id}">
-                  <div class="event-table-primary"><span>${quest.title}</span></div>
+                <button class="event-table-row is-clickable${renderQuestRowClass(event, quest)}" type="button" data-quest-id="${quest.id}">
+                  <div class="event-table-primary">
+                    ${renderQuestStatusMark(event, quest)}
+                    <span>${quest.title}</span>
+                  </div>
                   <div class="event-table-text">${getQuestLocation(event, quest)?.title || quest.region}</div>
                   <div class="event-table-text">${quest.reward}</div>
                   <div class="event-table-text">${getQuestStatus(event, quest)}</div>
@@ -3292,8 +3525,11 @@
                   </div>
                   <div class="event-table-body">
                     ${quests.map((quest) => `
-                      <button class="event-table-row is-clickable" type="button" data-location-quest-id="${quest.id}">
-                        <div class="event-table-primary"><span>${quest.title}</span></div>
+                      <button class="event-table-row is-clickable${renderQuestRowClass(event, quest)}" type="button" data-location-quest-id="${quest.id}">
+                        <div class="event-table-primary">
+                          ${renderQuestStatusMark(event, quest)}
+                          <span>${quest.title}</span>
+                        </div>
                         <div class="event-table-text">${quest.reward}</div>
                         <div class="event-table-text">${getQuestStatus(event, quest)}</div>
                       </button>
@@ -3366,11 +3602,11 @@
     };
 
     const renderQuestSolvePanel = (event, quest) => {
-      const location = getQuestLocation(event, quest);
-      const questStatus = getQuestStatus(event, quest);
       const isClosed = isQuestClosed(event, quest);
-      const proofImage = "./assets/membership-2.png";
-      const proofFileName = `${quest.id}-proof.jpg`;
+      const draft = readQuestDraft(event.id, quest.id);
+      const proofImage = draft.photoDataUrl || "./assets/membership-2.png";
+      const qrValue = draft.qrValue || "";
+      const textValue = draft.textValue || "";
 
       return `
         <section class="quest-solve-panel" aria-label="Complete this quest">
@@ -3380,68 +3616,104 @@
             </div>
           </div>
           <div class="quest-solve-grid">
-            <section class="quest-solve-card">
-              <span class="quest-step" data-step="1">Photo</span>
-              <strong>Photo</strong>
-              <p>${isClosed ? "Attached checkpoint photo from the submitted proof." : "Upload one clear checkpoint photo with the visible marker."}</p>
+            <section class="quest-solve-card" data-quest-step-card="photo">
+              <div class="quest-solve-card-head">
+                <div>
+                  <span class="quest-step" data-step="1">Photo</span>
+                </div>
+                <span class="quest-solve-state" data-quest-step-state="photo">Pending</span>
+              </div>
+              <p>Attach a photo you took at the checkpoint.</p>
               ${isClosed ? `
-                <span class="quest-solve-file is-visible">${proofFileName}</span>
-              ` : `
-                <label class="quest-solve-upload">
-                  <input type="file" accept="image/*" data-selected-quest-proof-input>
-                  <span class="quest-solve-upload-trigger">Choose image</span>
-                  <span class="quest-solve-file" data-selected-quest-proof-file></span>
+                <label class="quest-solve-upload-trigger has-image" aria-label="Selected checkpoint photo">
+                  <img src="${proofImage}" alt="Selected proof preview">
                 </label>
+              ` : `
+                <div class="quest-solve-upload">
+                  <input class="quest-solve-upload-input" id="selectedQuestProofInput" type="file" accept="image/*" data-selected-quest-proof-input>
+                  <label class="quest-solve-upload-trigger" for="selectedQuestProofInput" data-selected-quest-proof-trigger>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V8"></path><path d="M8.5 11.5 12 8l3.5 3.5"></path><path d="M5 19h14"></path></svg>
+                    <span class="quest-solve-upload-title">Attach image</span>
+                    <span class="quest-solve-upload-copy">Only one file can be uploaded</span>
+                  </label>
+                  <button class="quest-solve-upload-clear" type="button" data-selected-quest-proof-clear>Clear</button>
+                </div>
               `}
-              <div class="quest-solve-preview${isClosed ? " is-visible" : ""}" data-selected-quest-proof-preview>
-                <img src="${isClosed ? proofImage : ""}" alt="Selected proof preview" data-selected-quest-proof-image>
+            </section>
+            <section class="quest-solve-card" data-quest-step-card="qr">
+              <div class="quest-solve-card-head">
+                <div>
+                  <span class="quest-step" data-step="2">QR code</span>
+                </div>
+                <span class="quest-solve-state" data-quest-step-state="qr">Pending</span>
+              </div>
+              <p>Paste the QR code you received here.</p>
+              <div class="quest-solve-field-shell">
+                <input class="quest-solve-field-value" type="text" value="${isClosed ? "PRAGA-LANTERN-204" : qrValue}" ${isClosed ? "readonly" : ""} data-selected-quest-qr-input placeholder="Paste QR code" autocomplete="off" spellcheck="false">
+                ${isClosed ? "" : '<button class="quest-solve-field-clear" type="button" data-selected-quest-qr-clear>Clear</button>'}
               </div>
             </section>
-            <section class="quest-solve-card">
-              <span class="quest-step" data-step="2">QR code</span>
-              <strong>QR code</strong>
-              <p>${isClosed ? "Submitted QR token captured at the checkpoint." : "Scan the checkpoint QR code and paste the returned token."}</p>
-              <label class="quest-solve-field">
-                <input class="quest-solve-field-value" type="text" value="${isClosed ? "PRAGA-LANTERN-204" : ""}" ${isClosed ? "readonly" : ""} data-selected-quest-qr-input placeholder="Enter QR token">
-              </label>
-            </section>
-            <section class="quest-solve-card">
-              <span class="quest-step" data-step="3">Text</span>
-              <strong>Text</strong>
-              <p>${isClosed ? "Submitted written answer attached to this proof." : "Add the written answer or checkpoint phrase required by the task."}</p>
-              <label class="quest-solve-field">
-                <textarea class="quest-solve-field-value" rows="3" ${isClosed ? "readonly" : ""} data-selected-quest-text-input placeholder="Enter text proof">${isClosed ? "The lantern inscription reads: Lux in transitu." : ""}</textarea>
-              </label>
+            <section class="quest-solve-card" data-quest-step-card="text">
+              <div class="quest-solve-card-head">
+                <div>
+                  <span class="quest-step" data-step="3">Text</span>
+                </div>
+                <span class="quest-solve-state" data-quest-step-state="text">Pending</span>
+              </div>
+              <p>Write the solution here.</p>
+              <div class="quest-solve-field-shell">
+                <input class="quest-solve-field-value" type="text" value="${isClosed ? "The lantern inscription reads: Lux in transitu." : textValue}" ${isClosed ? "readonly" : ""} data-selected-quest-text-input placeholder="Enter result" autocomplete="off" spellcheck="false">
+                ${isClosed ? "" : '<button class="quest-solve-field-clear" type="button" data-selected-quest-text-clear>Clear</button>'}
+              </div>
             </section>
           </div>
-          ${isClosed ? "" : DavinciCTAButton.render({
-            tag: "button",
-            type: "button",
-            label: "Submit",
-            variant: "contained",
-            className: "quest-solve-submit",
-            attributes: {
-              "data-selected-quest-submit": "true",
-              "aria-disabled": "true",
-              "disabled": "true"
-            }
-          })}
         </section>
       `;
     };
 
     const bindSelectedQuestPanel = (event, quest) => {
+      const questStatus = String(getQuestStatus(event, quest) || "").trim().toLowerCase();
+      const isQuestSubmitted = questStatus === "submitted";
+      const isQuestCompleted = questStatus === "completed";
+      const shouldShowSubmitBadge = isQuestSubmitted || isQuestCompleted;
       const tabButtons = Array.from(eventContentView.querySelectorAll("[data-quest-tab-target]"));
       const tabPanels = Array.from(eventContentView.querySelectorAll("[data-quest-tab-panel]"));
       const proofInput = eventContentView.querySelector("[data-selected-quest-proof-input]");
-      const proofFile = eventContentView.querySelector("[data-selected-quest-proof-file]");
-      const proofPreview = eventContentView.querySelector("[data-selected-quest-proof-preview]");
-      const proofImage = eventContentView.querySelector("[data-selected-quest-proof-image]");
+      const proofTrigger = eventContentView.querySelector("[data-selected-quest-proof-trigger]");
+      const proofClear = eventContentView.querySelector("[data-selected-quest-proof-clear]");
       const qrInput = eventContentView.querySelector("[data-selected-quest-qr-input]");
+      const qrClear = eventContentView.querySelector("[data-selected-quest-qr-clear]");
       const textInput = eventContentView.querySelector("[data-selected-quest-text-input]");
-      const submitButton = eventContentView.querySelector("[data-selected-quest-submit]");
-      const note = eventContentView.querySelector("[data-selected-quest-note]");
-      let previewUrl = "";
+      const textClear = eventContentView.querySelector("[data-selected-quest-text-clear]");
+      const submitBadge = eventContentView.querySelector("[data-quest-submit-badge]");
+      if (submitBadge) {
+        submitBadge.classList.toggle("is-hidden", !shouldShowSubmitBadge);
+        submitBadge.querySelector("span").textContent = isQuestCompleted ? "Completed" : "Submitted";
+      }
+      const stepCards = {
+        photo: eventContentView.querySelector("[data-quest-step-card='photo']"),
+        qr: eventContentView.querySelector("[data-quest-step-card='qr']"),
+        text: eventContentView.querySelector("[data-quest-step-card='text']")
+      };
+      const stepStates = {
+        photo: eventContentView.querySelector("[data-quest-step-state='photo']"),
+        qr: eventContentView.querySelector("[data-quest-step-state='qr']"),
+        text: eventContentView.querySelector("[data-quest-step-state='text']")
+      };
+      const draft = readQuestDraft(event.id, quest.id);
+      const fieldSaveTimers = {
+        qr: null,
+        text: null
+      };
+      const fieldPending = {
+        qr: false,
+        text: false
+      };
+      const fieldSaved = {
+        photo: Boolean(String(draft.photoName || "").trim() || String(draft.photoDataUrl || "").trim()),
+        qr: Boolean(String(draft.qrValue || "").trim()),
+        text: Boolean(String(draft.textValue || "").trim())
+      };
       const setActiveTab = (tabId) => {
         tabButtons.forEach((button) => {
           const active = button.dataset.questTabTarget === tabId;
@@ -3454,70 +3726,169 @@
           panel.setAttribute("aria-hidden", active ? "false" : "true");
         });
       };
-      const updateSubmitState = () => {
-        if (!submitButton) return;
-        const hasFile = Boolean(proofInput?.files && proofInput.files[0]);
-        const hasQr = Boolean(String(qrInput?.value || "").trim());
-        const hasText = Boolean(String(textInput?.value || "").trim());
-        const enabled = hasFile && hasQr && hasText;
-        submitButton.disabled = !enabled;
-        submitButton.setAttribute("aria-disabled", enabled ? "false" : "true");
+      const saveDraftNow = () => {
+        writeQuestDraft(event.id, quest.id, getDraftState());
       };
-
-      if (isQuestClosed(event, quest)) {
-        if (proofPreview) {
-          proofPreview.classList.add("is-visible");
+      const scheduleDraftSave = (field) => {
+        if (fieldSaveTimers[field]) {
+          window.clearTimeout(fieldSaveTimers[field]);
         }
-        return;
-      }
+        fieldPending[field] = true;
+        fieldSaved[field] = false;
+        fieldSaveTimers[field] = window.setTimeout(() => {
+          writeQuestDraft(event.id, quest.id, getDraftState());
+          fieldPending[field] = false;
+          fieldSaved[field] = Boolean(String((field === "qr" ? qrInput?.value : textInput?.value) || "").trim());
+          fieldSaveTimers[field] = null;
+          syncStepState();
+        }, 1000);
+        syncStepState();
+      };
+      const clearDraftField = (field, input) => {
+        if (!input) return;
+        input.value = "";
+        if (fieldSaveTimers[field]) {
+          window.clearTimeout(fieldSaveTimers[field]);
+          fieldSaveTimers[field] = null;
+        }
+        fieldPending[field] = false;
+        fieldSaved[field] = false;
+        saveDraftNow();
+        syncStepState();
+      };
+      const setFieldClearVisibility = (button, isVisible) => {
+        button?.classList.toggle("is-visible", Boolean(isVisible));
+      };
+      const renderProofUploadEmpty = () => {
+        if (!proofTrigger) return;
+        proofTrigger.classList.remove("has-image");
+        proofTrigger.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V8"></path><path d="M8.5 11.5 12 8l3.5 3.5"></path><path d="M5 19h14"></path></svg>
+          <span class="quest-solve-upload-title">Attach image</span>
+          <span class="quest-solve-upload-copy">Only one file can be uploaded</span>
+        `;
+        proofClear?.classList.remove("is-visible");
+      };
+      const renderProofUploadImage = (src) => {
+        if (!proofTrigger) return;
+        proofTrigger.classList.add("has-image");
+        proofTrigger.innerHTML = `
+          <img src="${src}" alt="Selected proof preview">
+        `;
+        proofClear?.classList.add("is-visible");
+      };
+      const getDraftState = () => ({
+        photoName: String(draft.photoName || "").trim(),
+        photoDataUrl: String(draft.photoDataUrl || "").trim(),
+        qrValue: String(qrInput?.value || "").trim(),
+        textValue: String(textInput?.value || "").trim()
+      });
+      const syncStepState = () => {
+        const hasPhoto = Boolean(String(draft.photoName || "").trim() || String(draft.photoDataUrl || "").trim());
+        fieldSaved.photo = hasPhoto;
+        const states = {
+          photo: hasPhoto,
+          qr: fieldSaved.qr && !fieldPending.qr,
+          text: fieldSaved.text && !fieldPending.text
+        };
+
+        setFieldClearVisibility(qrClear, states.qr);
+        setFieldClearVisibility(textClear, states.text);
+
+        Object.entries(stepCards).forEach(([key, card]) => {
+          const complete = states[key];
+          card?.classList.toggle("is-complete", complete);
+          if (stepStates[key]) {
+            stepStates[key].textContent = complete ? "Saved" : "Pending";
+          }
+        });
+        if (!shouldShowSubmitBadge) {
+          submitBadge?.classList.toggle("is-hidden", !(states.photo && states.qr && states.text));
+        }
+      };
 
       tabButtons.forEach((button) => {
         button.addEventListener("click", () => setActiveTab(button.dataset.questTabTarget || "task"));
       });
       setActiveTab("task");
 
+      if (isQuestClosed(event, quest)) {
+        return;
+      }
+
+      if (qrInput && draft.qrValue) {
+        qrInput.value = draft.qrValue;
+      }
+      if (textInput && draft.textValue) {
+        textInput.value = draft.textValue;
+      }
+      if (draft.photoDataUrl && proofTrigger) {
+        renderProofUploadImage(draft.photoDataUrl);
+      }
+      syncStepState();
+
       proofInput?.addEventListener("change", () => {
         const file = proofInput.files && proofInput.files[0];
-        if (proofFile) {
-          proofFile.textContent = file ? file.name : "";
-          proofFile.classList.toggle("is-visible", Boolean(file));
+        if (!file) {
+          draft.photoName = "";
+          draft.photoDataUrl = "";
+          fieldSaved.photo = false;
+          renderProofUploadEmpty();
+          saveDraftNow();
+          syncStepState();
+          return;
         }
-        if (previewUrl) {
-          URL.revokeObjectURL(previewUrl);
-          previewUrl = "";
-        }
-        if (proofPreview && proofImage) {
-          if (file) {
-            previewUrl = URL.createObjectURL(file);
-            proofImage.src = previewUrl;
-            proofPreview.classList.add("is-visible");
-          } else {
-            proofImage.removeAttribute("src");
-            proofPreview.classList.remove("is-visible");
-          }
-        }
-        if (submitButton) {
-          updateSubmitState();
-        }
+
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+          draft.photoName = file.name;
+          draft.photoDataUrl = String(reader.result || "");
+          fieldSaved.photo = true;
+          renderProofUploadImage(draft.photoDataUrl);
+          saveDraftNow();
+          syncStepState();
+        });
+        reader.readAsDataURL(file);
       });
 
-      qrInput?.addEventListener("input", updateSubmitState);
-      textInput?.addEventListener("input", updateSubmitState);
+      eventContentView.addEventListener("click", (clickEvent) => {
+        const clearButton = clickEvent.target.closest("[data-selected-quest-proof-clear]");
+        if (!clearButton) return;
+        clickEvent.preventDefault();
+        clickEvent.stopPropagation();
+        draft.photoName = "";
+        draft.photoDataUrl = "";
+        fieldSaved.photo = false;
+        if (proofInput) {
+          proofInput.value = "";
+        }
+        renderProofUploadEmpty();
+        saveDraftNow();
+        syncStepState();
+      });
 
-      if (submitButton) {
-        updateSubmitState();
-        submitButton.addEventListener("click", () => {
-          if (submitButton.getAttribute("aria-disabled") === "true") return;
-          setQuestStatus(event, quest, "Submitted");
-          submitButton.textContent = "Submitted";
-          submitButton.setAttribute("aria-disabled", "true");
-          submitButton.disabled = true;
-          if (note) {
-            note.textContent = "Proof submitted. The quest is now waiting for review.";
-          }
-          renderRoute();
-        });
-      }
+      qrClear?.addEventListener("click", (clickEvent) => {
+        clickEvent.preventDefault();
+        clickEvent.stopPropagation();
+        if (!qrClear.classList.contains("is-visible")) return;
+        clearDraftField("qr", qrInput);
+      });
+
+      textClear?.addEventListener("click", (clickEvent) => {
+        clickEvent.preventDefault();
+        clickEvent.stopPropagation();
+        if (!textClear.classList.contains("is-visible")) return;
+        clearDraftField("text", textInput);
+      });
+
+      qrInput?.addEventListener("input", () => {
+        scheduleDraftSave("qr");
+      });
+      textInput?.addEventListener("input", () => {
+        scheduleDraftSave("text");
+      });
+
+      syncStepState();
     };
 
     const renderQuestInlineMap = (event, quest) => {
@@ -3535,8 +3906,32 @@
       `;
     };
 
-    const renderQuestDetail = (event, quest) => `
-      <article class="events-panel is-active">
+    const getQuestDraftKey = (eventId, questId) => `davinci.questDraft.${eventId}.${questId}`;
+    const readQuestDraft = (eventId, questId) => {
+      try {
+        const raw = window.localStorage.getItem(getQuestDraftKey(eventId, questId));
+        return raw ? JSON.parse(raw) : {};
+      } catch {
+        return {};
+      }
+    };
+    const writeQuestDraft = (eventId, questId, draft) => {
+      try {
+        window.localStorage.setItem(getQuestDraftKey(eventId, questId), JSON.stringify(draft));
+      } catch {
+        // Best effort only.
+      }
+    };
+
+    const renderQuestDetail = (event, quest) => {
+      const questStatus = String(getQuestStatus(event, quest) || "").trim().toLowerCase();
+      const isQuestSubmitted = questStatus === "submitted";
+      const isQuestCompleted = questStatus === "completed";
+      const showQuestSuccessBadge = isQuestSubmitted || isQuestCompleted;
+      const questSuccessBadgeLabel = isQuestCompleted ? "Completed" : "Submitted";
+
+      return `
+      <article class="events-panel is-active quest-detail-panel${isQuestSubmitted ? " is-submitted" : ""}${isQuestCompleted ? " is-completed" : ""}">
         <div class="quest-details-actions quest-details-actions--top">
           <div class="quest-details-actions-primary">
             ${DavinciCTAButton.render({
@@ -3578,7 +3973,11 @@
             <div>
               <h2>${quest.title}</h2>
               <p>${quest.summary}</p>
-              ${meta([quest.region, quest.reward, getQuestStatus(event, quest)])}
+              ${meta(showQuestSuccessBadge ? [quest.region, quest.reward] : [quest.region, quest.reward, getQuestStatus(event, quest)])}
+              <span class="quest-detail-submit-badge${showQuestSuccessBadge ? "" : " is-hidden"}" data-quest-submit-badge>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.2 16.5 19 7.5"></path></svg>
+                <span>${questSuccessBadgeLabel}</span>
+              </span>
             </div>
           </div>
         </div>
@@ -3622,7 +4021,8 @@
         </div>
         ${renderQuestSolvePanel(event, quest)}
       </article>
-    `;
+      `;
+    };
 
     const renderEventDetail = (event, tab, detailId, subView, nestedDetailId, extraDetailId) => {
       setViewMode("detail");
