@@ -800,8 +800,7 @@
 
     .quest-overview {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
-      gap: 22px;
+      grid-template-columns: auto;
       align-items: start;
     }
 
@@ -869,6 +868,7 @@
     .quest-solve-panel {
       display: grid;
       gap: 18px;
+      padding-top: 6px;
     }
 
     .quest-solve-head {
@@ -901,6 +901,59 @@
       text-transform: uppercase;
     }
 
+    .quest-tab-menu {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      width: fit-content;
+      max-width: 100%;
+      padding: 4px;
+      border-radius: 18px;
+      background: rgba(247, 242, 231, 0.96);
+      border: 1px solid rgba(211, 193, 154, 0.58);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.58);
+    }
+
+    .quest-tab-button {
+      min-height: 40px;
+      padding: 10px 14px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--text-soft);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+    }
+
+    .quest-tab-button.is-active {
+      background: rgba(23, 61, 45, 0.08);
+      color: var(--brand);
+      border-color: rgba(23, 61, 45, 0.12);
+    }
+
+    .quest-tab-button:not(.is-active):hover {
+      background: rgba(23, 61, 45, 0.04);
+      color: var(--brand);
+    }
+
+    .quest-tab-panel {
+      display: none;
+    }
+
+    .quest-tab-panel.is-active {
+      display: grid;
+      gap: 18px;
+      justify-items: start;
+      max-width: 58ch;
+      width: 100%;
+    }
+
+    .quest-tab-panel .quest-overview-item p {
+      max-width: 56ch;
+    }
+
     .quest-solve-status {
       padding: 7px 10px;
       border-radius: 999px;
@@ -912,11 +965,6 @@
       text-transform: uppercase;
     }
 
-    .quest-detail-divider {
-      height: 1px;
-      background: rgba(227, 215, 191, 0.96);
-    }
-
     .quest-solve-actions {
       display: flex;
       flex-wrap: wrap;
@@ -924,9 +972,20 @@
     }
 
     .quest-solve-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      display: flex;
       gap: 14px;
+      flex-direction: column;
+    }
+
+    .quest-solve-grid > .quest-solve-card {
+      flex: 0 0 auto;
+      width: 100%;
+    }
+
+    .quest-proof-options {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
     }
 
     .quest-solve-card {
@@ -1032,6 +1091,12 @@
     .quest-solve-submit {
       width: fit-content;
       justify-self: start;
+    }
+
+    .quest-solve-submit:disabled,
+    .quest-solve-submit[aria-disabled="true"] {
+      opacity: 0.72;
+      pointer-events: none;
     }
 
     .quest-solve-note {
@@ -1447,11 +1512,6 @@
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
-    }
-
-    .quest-details-separator {
-      color: var(--text-muted);
-      font-weight: 700;
     }
 
     .event-join-button[disabled] {
@@ -3314,12 +3374,9 @@
 
       return `
         <section class="quest-solve-panel" aria-label="Complete this quest">
-          <div class="quest-detail-divider" aria-hidden="true"></div>
           <div class="quest-solve-head">
             <div>
               <p class="quest-solve-kicker">How To Complete</p>
-              <strong>${isClosed ? "Submitted proof" : "Submit the required proof"}</strong>
-              <p>${isClosed ? "This quest is already closed, so only the submitted proof is shown below." : "Use the location map, then send the proof items below for review."}</p>
             </div>
           </div>
           <div class="quest-solve-grid">
@@ -3341,47 +3398,71 @@
               </div>
             </section>
             <section class="quest-solve-card">
-              <span class="quest-step" data-step="2">QR Token</span>
+              <span class="quest-step" data-step="2">QR code</span>
               <strong>QR code</strong>
-              <p>${isClosed ? "Submitted QR token captured at the checkpoint." : "Use this QR token from the checkpoint scan."}</p>
+              <p>${isClosed ? "Submitted QR token captured at the checkpoint." : "Scan the checkpoint QR code and paste the returned token."}</p>
               <label class="quest-solve-field">
-                <span class="quest-solve-field-value">PRAGA-LANTERN-204</span>
+                <input class="quest-solve-field-value" type="text" value="${isClosed ? "PRAGA-LANTERN-204" : ""}" ${isClosed ? "readonly" : ""} data-selected-quest-qr-input placeholder="Enter QR token">
               </label>
             </section>
             <section class="quest-solve-card">
-              <span class="quest-step" data-step="3">Text Answer</span>
+              <span class="quest-step" data-step="3">Text</span>
               <strong>Text</strong>
-              <p>${isClosed ? "Submitted written answer attached to this proof." : "Include the written checkpoint answer required for review."}</p>
+              <p>${isClosed ? "Submitted written answer attached to this proof." : "Add the written answer or checkpoint phrase required by the task."}</p>
               <label class="quest-solve-field">
-                <span class="quest-solve-field-value">The lantern inscription reads: Lux in transitu.</span>
+                <textarea class="quest-solve-field-value" rows="3" ${isClosed ? "readonly" : ""} data-selected-quest-text-input placeholder="Enter text proof">${isClosed ? "The lantern inscription reads: Lux in transitu." : ""}</textarea>
               </label>
             </section>
           </div>
-          <div class="quest-detail-divider" aria-hidden="true"></div>
           ${isClosed ? "" : DavinciCTAButton.render({
             tag: "button",
             type: "button",
-            label: "Submit proof",
+            label: "Submit",
             variant: "contained",
             className: "quest-solve-submit",
             attributes: {
               "data-selected-quest-submit": "true",
-              "aria-disabled": "true"
+              "aria-disabled": "true",
+              "disabled": "true"
             }
           })}
-          <p class="quest-solve-note" data-selected-quest-note>${isClosed ? "This proof was already submitted and marked completed, so no further upload is needed." : "Once submitted, the proof goes into review before the quest is marked completed."}</p>
         </section>
       `;
     };
 
     const bindSelectedQuestPanel = (event, quest) => {
+      const tabButtons = Array.from(eventContentView.querySelectorAll("[data-quest-tab-target]"));
+      const tabPanels = Array.from(eventContentView.querySelectorAll("[data-quest-tab-panel]"));
       const proofInput = eventContentView.querySelector("[data-selected-quest-proof-input]");
       const proofFile = eventContentView.querySelector("[data-selected-quest-proof-file]");
       const proofPreview = eventContentView.querySelector("[data-selected-quest-proof-preview]");
       const proofImage = eventContentView.querySelector("[data-selected-quest-proof-image]");
+      const qrInput = eventContentView.querySelector("[data-selected-quest-qr-input]");
+      const textInput = eventContentView.querySelector("[data-selected-quest-text-input]");
       const submitButton = eventContentView.querySelector("[data-selected-quest-submit]");
       const note = eventContentView.querySelector("[data-selected-quest-note]");
       let previewUrl = "";
+      const setActiveTab = (tabId) => {
+        tabButtons.forEach((button) => {
+          const active = button.dataset.questTabTarget === tabId;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        tabPanels.forEach((panel) => {
+          const active = panel.dataset.questTabPanel === tabId;
+          panel.classList.toggle("is-active", active);
+          panel.setAttribute("aria-hidden", active ? "false" : "true");
+        });
+      };
+      const updateSubmitState = () => {
+        if (!submitButton) return;
+        const hasFile = Boolean(proofInput?.files && proofInput.files[0]);
+        const hasQr = Boolean(String(qrInput?.value || "").trim());
+        const hasText = Boolean(String(textInput?.value || "").trim());
+        const enabled = hasFile && hasQr && hasText;
+        submitButton.disabled = !enabled;
+        submitButton.setAttribute("aria-disabled", enabled ? "false" : "true");
+      };
 
       if (isQuestClosed(event, quest)) {
         if (proofPreview) {
@@ -3389,6 +3470,11 @@
         }
         return;
       }
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => setActiveTab(button.dataset.questTabTarget || "task"));
+      });
+      setActiveTab("task");
 
       proofInput?.addEventListener("change", () => {
         const file = proofInput.files && proofInput.files[0];
@@ -3411,17 +3497,21 @@
           }
         }
         if (submitButton) {
-          submitButton.setAttribute("aria-disabled", file ? "false" : "true");
+          updateSubmitState();
         }
       });
 
+      qrInput?.addEventListener("input", updateSubmitState);
+      textInput?.addEventListener("input", updateSubmitState);
+
       if (submitButton) {
-        submitButton.setAttribute("aria-disabled", "true");
+        updateSubmitState();
         submitButton.addEventListener("click", () => {
           if (submitButton.getAttribute("aria-disabled") === "true") return;
           setQuestStatus(event, quest, "Submitted");
           submitButton.textContent = "Submitted";
           submitButton.setAttribute("aria-disabled", "true");
+          submitButton.disabled = true;
           if (note) {
             note.textContent = "Proof submitted. The quest is now waiting for review.";
           }
@@ -3465,7 +3555,6 @@
                 }
               })}
             ${getQuestLocation(event, quest) ? `
-              <span class="quest-details-separator" aria-hidden="true">|</span>
               ${DavinciCTAButton.render({
               tag: "button",
               type: "button",
@@ -3493,44 +3582,42 @@
             </div>
           </div>
         </div>
-        <div class="quest-overview">
-          <div class="quest-overview-item">
-            <strong>Location</strong>
-            <p>${getQuestLocation(event, quest)?.copy || getQuestLocation(event, quest)?.title || quest.region}</p>
+        <div class="quest-tab-menu" role="tablist" aria-label="Quest sections" data-quest-tab-menu>
+          <button class="quest-tab-button is-active" type="button" role="tab" aria-selected="true" data-quest-tab-target="task">Task</button>
+          <button class="quest-tab-button" type="button" role="tab" aria-selected="false" data-quest-tab-target="about">About the location</button>
+        </div>
+        <div class="quest-tab-panel is-active" data-quest-tab-panel="task" role="tabpanel">
+          <div class="quest-overview">
+            <div class="quest-overview-item">
+              <strong>Task</strong>
+              <p>${quest.task}</p>
+            </div>
           </div>
-          <div class="quest-overview-divider" aria-hidden="true"></div>
-          <div class="quest-overview-item">
-            <strong>Task</strong>
-            <p>${quest.task}</p>
+        </div>
+        <div class="quest-tab-panel" data-quest-tab-panel="about" role="tabpanel" aria-hidden="true">
+          <div class="quest-overview">
+            <div class="quest-overview-item">
+              <strong>About the location</strong>
+              <p>${getQuestLocation(event, quest)?.copy || getQuestLocation(event, quest)?.title || quest.region}</p>
+            </div>
           </div>
         </div>
         <div class="quest-meta-section">
-          <div class="quest-detail-divider" aria-hidden="true"></div>
-          <strong>Checkpoint reference</strong>
-          <p class="quest-meta-copy">Below is the owner-uploaded reference for this quest, such as a map, floor plan, or checkpoint image.</p>
-          <div class="quest-checkpoint-action">
-            <strong>Reference</strong>
-            <p>Use this visual reference to understand the exact checkpoint before you submit proof.</p>
-          </div>
           <div class="quest-inline-map-host" data-quest-inline-map-host>
             ${renderQuestInlineMap(event, quest)}
           </div>
           ${hasQuestNavigation(event, quest) ? `
-            <div class="quest-checkpoint-action">
-              <strong>Navigation</strong>
-              <p>Use navigation only when this quest has a real-world destination and you need turn-by-turn routing.</p>
-              ${DavinciCTAButton.render({
-                tag: "a",
-                href: getExternalMapUrl(getQuestLocation(event, quest)),
-                label: "Open navigation",
-                variant: "outlined",
-                className: "quest-location-link",
-                attributes: {
-                  target: "_blank",
-                  rel: "noopener noreferrer"
-                }
-              })}
-            </div>
+            ${DavinciCTAButton.render({
+              tag: "a",
+              href: getExternalMapUrl(getQuestLocation(event, quest)),
+              label: "Open navigation",
+              variant: "outlined",
+              className: "quest-location-link",
+              attributes: {
+                target: "_blank",
+                rel: "noopener noreferrer"
+              }
+            })}
           ` : ""}
         </div>
         ${renderQuestSolvePanel(event, quest)}
